@@ -5,3 +5,4 @@ parameters:
     - tests
   excludePaths:
     - src/Bindings/*
+    - tests/*/testdata/*
