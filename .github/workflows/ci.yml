@@ -22,3 +22,29 @@ jobs:
         run: composer validate --strict --check-lock --with-dependencies
       - name: Install dependencies
         run: composer install --no-interaction --no-progress
+      - name: Test
+        run: vendor/bin/phpunit --coverage-text --coverage-cobertura=coverage.xml --colors=never
+        env:
+          XDEBUG_MODE: coverage
+
+  lint-phpstan:
+    name: PHPStan
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: ['8.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Validate composer
+        run: composer validate --strict --check-lock --with-dependencies
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+      - name: PHPStan
+        run: vendor/bin/phpstan
