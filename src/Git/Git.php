@@ -9,7 +9,7 @@ use function implode;
 use function strlen;
 use function substr;
 
-final class Git
+final readonly class Git
 {
     /**
      * Returns the version of the Git repository in the current directory.

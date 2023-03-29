@@ -10,12 +10,12 @@ use PhpParser\Node;
 use function strlen;
 use function strrpos;
 
-final class PosResolver
+final readonly class PosResolver
 {
-    private readonly int $codeLen;
+    private int $codeLen;
 
     /** @param  non-empty-string  $code */
-    public function __construct(private readonly string $code)
+    public function __construct(private string $code)
     {
         $this->codeLen = strlen($code);
     }
