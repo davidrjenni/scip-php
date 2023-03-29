@@ -10,6 +10,10 @@ SCIP Code Intelligence Protocol (SCIP) indexer for PHP
 
 ## Development
 
+- Run `composer lint` to run all linters.
+- Run `composer test` to run the unit tests.
+- Run `composer cover` to generate a coverage report.
+
 ### Bindings
 
 The directory [`src/Bindings`](src/Bindings) contains auto-generated
