@@ -21,6 +21,9 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">src/Bindings</directory>
+        </exclude>
         <report>
             <html outputDirectory=".phpunit.result/coverage-html"/>
             <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="true"/>
