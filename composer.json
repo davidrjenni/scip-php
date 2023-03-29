@@ -16,6 +16,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "GPBMetadata\\": "src/Bindings/GPBMetadata",
+            "Scip\\": "src/Bindings/Scip",
             "ScipPhp\\": "src"
         }
     },
@@ -27,7 +29,8 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "composer-runtime-api": "^2.2"
+        "composer-runtime-api": "^2.2",
+        "google/protobuf": "^3.22"
     },
     "require-dev": {
         "phpstan/extension-installer": "^1.2",
@@ -38,6 +41,7 @@
         "phpunit/phpunit": "^10.0"
     },
     "scripts": {
+        "gen-bindings": "protoc --proto_path=src/Bindings --php_out=src/Bindings src/Bindings/scip.proto",
         "lint": [
             "@putenv XDEBUG_MODE=off",
             "composer validate --strict --check-lock --with-dependencies",
