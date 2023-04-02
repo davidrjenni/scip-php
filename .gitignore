@@ -1,3 +1,4 @@
 /.phpunit.result/
+/cachegrind.out.*
 /index.scip
 /vendor/
