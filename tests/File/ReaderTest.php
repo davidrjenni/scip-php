@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use ScipPhp\File\CannotReadFileException;
 use ScipPhp\File\Reader;
 
+use function chmod;
+
 use const DIRECTORY_SEPARATOR;
 
 final class ReaderTest extends TestCase
@@ -19,11 +21,26 @@ final class ReaderTest extends TestCase
         self::assertEquals("The quick brown fox jumps\nover the lazy dog", $contents);
     }
 
-    public function testReadFails(): void
+    public function testReadNonExistent(): void
     {
-        self::expectException(CannotReadFileException::class);
-        self::expectExceptionMessage('Cannot read file: non-existent.txt');
+        $filename = 'non-existent.txt';
 
-        Reader::read('non-existent.txt');
+        self::expectException(CannotReadFileException::class);
+        self::expectExceptionMessage("Cannot read file: {$filename}.");
+
+        Reader::read($filename);
+    }
+
+    public function testReadUnreadable(): void
+    {
+        $filename = __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'unreadable.txt';
+
+        $result = chmod($filename, 0222);
+        self::assertTrue($result);
+
+        self::expectException(CannotReadFileException::class);
+        self::expectExceptionMessage("Cannot read file: {$filename}.");
+
+        Reader::read($filename);
     }
 }
