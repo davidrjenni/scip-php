@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="scip-php">
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<file>src</file>
+	<file>tests</file>
+	<exclude-pattern>src/Bindings/*</exclude-pattern>
+	<exclude-pattern>tests/*/testdata/*</exclude-pattern>
+
+	<rule ref="PSR12"/>
+</ruleset>

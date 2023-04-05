@@ -29,6 +29,28 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v3
 
+  lint-phpcs:
+    name: PHP CodeSniffer
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: ['8.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Validate composer
+        run: composer validate --strict --check-lock --with-dependencies
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+      - name: PHP CodeSniffer
+        run: vendor/bin/phpcs --no-colors
+
   lint-phpstan:
     name: PHPStan
     runs-on: ${{ matrix.os }}
