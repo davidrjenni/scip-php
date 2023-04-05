@@ -15,13 +15,13 @@ use PhpParser\Parser as PhpParser;
 use PhpParser\ParserFactory;
 use ScipPhp\File\Reader;
 
-final readonly class Parser
+final class Parser
 {
-    private ParentConnectingVisitor $parentConnectingVisitor;
+    private readonly ParentConnectingVisitor $parentConnectingVisitor;
 
-    private NameResolver $nameResolver;
+    private readonly NameResolver $nameResolver;
 
-    private PhpParser $parser;
+    private readonly PhpParser $parser;
 
     public function __construct()
     {

@@ -6,7 +6,7 @@ namespace ScipPhp\File;
 
 use function file_get_contents;
 
-final readonly class Reader
+final class Reader
 {
     /** @param  non-empty-string  $filename */
     public static function read(string $filename): string
