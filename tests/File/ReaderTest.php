@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
-use ScipPhp\File\CannotReadFileException;
+use RuntimeException;
 use ScipPhp\File\Reader;
 
 use function chmod;
@@ -25,7 +25,7 @@ final class ReaderTest extends TestCase
     {
         $filename = 'non-existent.txt';
 
-        self::expectException(CannotReadFileException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessage("Cannot read file: {$filename}.");
 
         Reader::read($filename);
@@ -38,7 +38,7 @@ final class ReaderTest extends TestCase
         $result = chmod($filename, 0222);
         self::assertTrue($result);
 
-        self::expectException(CannotReadFileException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessage("Cannot read file: {$filename}.");
 
         Reader::read($filename);

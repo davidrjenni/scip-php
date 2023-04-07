@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ScipPhp\File;
 
+use RuntimeException;
+
 use function file_get_contents;
 
 final class Reader
@@ -13,7 +15,7 @@ final class Reader
     {
         $contents = @file_get_contents($filename);
         if ($contents === false) {
-            throw new CannotReadFileException($filename);
+            throw new RuntimeException("Cannot read file: {$filename}.");
         }
         return $contents;
     }
