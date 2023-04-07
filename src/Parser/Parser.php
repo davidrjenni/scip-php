@@ -13,6 +13,7 @@ use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser as PhpParser;
 use PhpParser\ParserFactory;
+use RuntimeException;
 use ScipPhp\File\Reader;
 
 final class Parser
@@ -53,12 +54,12 @@ final class Parser
     {
         $code = Reader::read($filename);
         if ($code === '') {
-            throw new CannotParseFileException($filename);
+            throw new RuntimeException("Cannot parse file: $filename.");
         }
 
         $stmts = $this->parser->parse($code);
         if ($stmts === null) {
-            throw new CannotParseFileException($filename);
+            throw new RuntimeException("Cannot parse file: $filename.");
         }
 
         $pos = new PosResolver($code);
