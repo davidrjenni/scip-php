@@ -50,7 +50,7 @@
             "@putenv XDEBUG_MODE=off",
             "composer validate --strict --check-lock --with-dependencies",
             "phpcs",
-            "phpstan"
+            "phpstan --memory-limit=2G"
         ],
         "cover": [
             "@putenv XDEBUG_MODE=coverage",
