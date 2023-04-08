@@ -24,6 +24,7 @@ use function json_decode;
 use function realpath;
 use function rtrim;
 use function str_contains;
+use function str_replace;
 use function str_starts_with;
 use function trim;
 
@@ -41,6 +42,9 @@ final class Composer
 
     /** @var non-empty-string */
     private readonly string $vendorDir;
+
+    /** @var non-empty-string */
+    private readonly string $scipPhpVendorDir;
 
     /** @var array<int, non-empty-string> */
     private readonly array $projectFiles;
@@ -127,6 +131,12 @@ final class Composer
         $autoload = is_array($json['autoload'] ?? null) ? $json['autoload'] : [];
         $autoloadDev = is_array($json['autoload-dev'] ?? null) ? $json['autoload-dev'] : [];
 
+        $scipPhpVendorDir = self::join(__DIR__, '..', '..', 'vendor');
+        if (realpath($scipPhpVendorDir) === false) {
+            throw new RuntimeException("Invalid scip-php vendor directory: {$scipPhpVendorDir}.");
+        }
+        $this->scipPhpVendorDir = realpath($scipPhpVendorDir);
+
         // TODO(drj): add $json['bin']
         $this->projectFiles = array_merge(
             self::loadProjectFiles($projectRoot, $autoload),
@@ -202,22 +212,28 @@ final class Composer
     {
         $stub = $this->stub($ident);
         if ($stub !== null) {
-            $f = self::join(__DIR__, '..', '..', 'vendor', 'jetbrains', 'phpstorm-stubs', $stub);
+            $f = self::join($this->scipPhpVendorDir, 'jetbrains', 'phpstorm-stubs', $stub);
             $f = realpath($f);
             if ($f === false) {
                 throw new RuntimeException("Invalid path to stub file: {$stub}.");
             }
             return $f;
         }
+
         $f = $this->loader->findFile($ident);
         if ($f !== false && realpath($f) !== false) {
             return realpath($f);
         }
+
         if (function_exists($ident)) {
             $func = new ReflectionFunction($ident);
             $f = $func->getFileName();
             if ($f !== false && $f !== '') {
-                return $f;
+                // In case of a conflict between a function defined in a dependency of scip-php
+                // and a function defined in the analyzed project or its dependencies, the
+                // former is used here. Therefore, we patch the path, so that the latter is
+                // analyzed instead.
+                return str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
             }
         }
         if (class_exists($ident)) {
