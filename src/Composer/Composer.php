@@ -160,6 +160,11 @@ final class Composer
 
         $pkgsByPaths = [];
         foreach ($installed['versions'] as $name => $info) {
+            // Replaced packages do not have an install path.
+            // See https://getcomposer.org/doc/04-schema.md#replace
+            if (!isset($info['install_path'])) {
+                continue;
+            }
             $path = realpath($info['install_path']);
             if ($path === false) {
                 throw new RuntimeException("Invalid install path of package {$name}: {$info['install_path']}.");
