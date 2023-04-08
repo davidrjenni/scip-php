@@ -6,6 +6,10 @@
         "scip",
         "codeintel"
     ],
+    "support": {
+        "issues": "https://github.com/davidrjenni/scip-php/issues",
+        "source": "https://github.com/davidrjenni/scip-php"
+    },
     "config": {
         "allow-plugins": {
             "phpstan/extension-installer": true,
