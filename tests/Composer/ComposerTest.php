@@ -10,6 +10,7 @@ use ScipPhp\Composer\Composer;
 use function count;
 use function explode;
 use function implode;
+use function str_starts_with;
 
 use const DIRECTORY_SEPARATOR;
 use const PHP_VERSION;
@@ -181,7 +182,7 @@ final class ComposerTest extends TestCase
         foreach (self::BUILTIN as $idents) {
             foreach ($idents as $ident) {
                 $f = $this->composer->findFile($ident);
-                self::assertNotNull($f);
+                self::assertNotNull($f, $ident);
                 self::assertStringEndsWith('.php', $f);
                 self::assertStringContainsString(self::join('jetbrains', 'phpstorm-stubs'), $f);
             }
@@ -189,15 +190,35 @@ final class ComposerTest extends TestCase
         foreach (self::DEPS as $type => $idents) {
             foreach ($idents as $ident) {
                 $f = $this->composer->findFile($ident);
-                self::assertNotNull($f);
+                self::assertNotNull($f, $ident);
+                self::assertStringContainsString(self::join('tests', 'Composer', 'testdata', 'vendor'), $f);
+                self::assertStringEndsWith('.php', $f);
+
                 if ($type === 'classes') {
                     $parts = explode('\\', $ident);
                     $class = $parts[count($parts) - 1];
                     self::assertStringEndsWith("{$class}.php", $f);
-                } else {
-                    self::assertStringEndsWith('.php', $f);
                 }
-                /* self::assertStringContainsString(self::join('tests', 'Composer', 'testdata', 'vendor'), $f); */
+            }
+        }
+        foreach (self::PROJECT as $type => $idents) {
+            foreach ($idents as $ident) {
+                $f = $this->composer->findFile($ident);
+                if (str_starts_with($ident, 'anon-class-')) {
+                    self::assertNull($f, $ident);
+                    continue;
+                }
+
+                self::assertNotNull($f, $ident);
+                self::assertStringContainsString(self::join('tests', 'Composer', 'testdata'), $f);
+                self::assertStringNotContainsString('vendor', $f);
+                self::assertStringEndsWith('.php', $f);
+
+                if ($type === 'classes') {
+                    $parts = explode('\\', $ident);
+                    $class = $parts[count($parts) - 1];
+                    self::assertStringEndsWith("{$class}.php", $f);
+                }
             }
         }
         foreach (self::UNKNOWN as $idents) {
