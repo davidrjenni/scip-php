@@ -26,3 +26,6 @@ composer gen-bindings
 ```
 
 The protobuf compiler `protoc` must be present to generate the bindings.
+
+See [github.com/sourcegraph/scip](https://github.com/sourcegraph/scip)
+for further information.
