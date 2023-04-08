@@ -1,0 +1,22 @@
+{
+    "name": "davidrjenni/scip-php-composer-test",
+    "description": "A package containing test fixtures",
+    "license": "MIT",
+    "config": {
+        "vendor-dir": "vendor-dir/"
+    },
+    "autoload": {
+        "exclude-from-classmap": ["ClassB"],
+        "classmap": ["src"],
+        "files": ["src/file.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TestDataTests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^8.1|^8.2",
+        "myclabs/deep-copy": "^1.11"
+    }
+}

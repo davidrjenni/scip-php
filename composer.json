@@ -31,7 +31,9 @@
         "php": "^8.2",
         "ext-json": "*",
         "composer-runtime-api": "^2.2",
+        "composer/class-map-generator": "^1.0",
         "google/protobuf": "^3.22",
+        "jetbrains/phpstorm-stubs": "^2022.3",
         "nikic/php-parser": "^4.15"
     },
     "require-dev": {
