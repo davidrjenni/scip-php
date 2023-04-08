@@ -236,11 +236,15 @@ final class Composer
                 return str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
             }
         }
-        if (class_exists($ident)) {
+
+        if (str_starts_with($ident, 'Composer\\Autoload\\') && class_exists($ident)) {
             $class = new ReflectionClass($ident);
             $f = $class->getFileName();
             if ($f !== false && $f !== '') {
-                return $f;
+                // In case the analyzed project uses composer classes, patch
+                // the path, so that the composer file of the project is analyzed.
+                // There is no support for the global composer init classes.
+                return str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
             }
         }
         // TODO(drj): resolve constant location
@@ -277,7 +281,7 @@ final class Composer
         if (str_contains($ident, 'anon-class-')) {
             return true;
         }
-        if (str_starts_with($ident, 'Composer\\Autoload\\') || $this->isStub($ident)) {
+        if ($this->isStub($ident)) {
             return false;
         }
         $f = $this->findFile($ident);
