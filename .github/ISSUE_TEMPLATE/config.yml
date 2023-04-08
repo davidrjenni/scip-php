@@ -1,0 +1,4 @@
+contact_links:
+  - name: Support question
+    url: https://github.com/davidrjenni/scip-php/discussions/new
+    about: Open a new discussion.
