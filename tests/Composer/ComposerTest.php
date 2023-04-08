@@ -68,28 +68,28 @@ final class ComposerTest extends TestCase
     public function testIsBuiltinClass(): void
     {
         foreach (self::BUILTIN['classes'] as $class) {
-            self::assertTrue($this->composer->isBuiltinClass($class));
+            self::assertTrue($this->composer->isBuiltinClass($class), $class);
         }
         foreach (self::BUILTIN['consts'] as $const) {
-            self::assertFalse($this->composer->isBuiltinClass($const));
+            self::assertFalse($this->composer->isBuiltinClass($const), $const);
         }
         foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertFalse($this->composer->isBuiltinClass($func));
+            self::assertFalse($this->composer->isBuiltinClass($func), $func);
         }
 
         foreach (self::DEPS as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident));
+                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
             }
         }
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident));
+                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident));
+                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
             }
         }
     }
@@ -97,28 +97,28 @@ final class ComposerTest extends TestCase
     public function testIsBuiltinConst(): void
     {
         foreach (self::BUILTIN['classes'] as $class) {
-            self::assertFalse($this->composer->isBuiltinConst($class));
+            self::assertFalse($this->composer->isBuiltinConst($class), $class);
         }
         foreach (self::BUILTIN['consts'] as $const) {
-            self::assertTrue($this->composer->isBuiltinConst($const));
+            self::assertTrue($this->composer->isBuiltinConst($const), $const);
         }
         foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertFalse($this->composer->isBuiltinConst($func));
+            self::assertFalse($this->composer->isBuiltinConst($func), $func);
         }
 
         foreach (self::DEPS as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident));
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
             }
         }
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident));
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident));
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
             }
         }
     }
@@ -126,28 +126,28 @@ final class ComposerTest extends TestCase
     public function testIsBuiltinFunc(): void
     {
         foreach (self::BUILTIN['classes'] as $class) {
-            self::assertFalse($this->composer->isBuiltinFunc($class));
+            self::assertFalse($this->composer->isBuiltinFunc($class), $class);
         }
         foreach (self::BUILTIN['consts'] as $const) {
-            self::assertFalse($this->composer->isBuiltinFunc($const));
+            self::assertFalse($this->composer->isBuiltinFunc($const), $const);
         }
         foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertTrue($this->composer->isBuiltinFunc($func));
+            self::assertTrue($this->composer->isBuiltinFunc($func), $func);
         }
 
         foreach (self::DEPS as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident));
+                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
             }
         }
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident));
+                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident));
+                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
             }
         }
     }
@@ -156,22 +156,22 @@ final class ComposerTest extends TestCase
     {
         foreach (self::BUILTIN as $idents) {
             foreach ($idents as $ident) {
-                self::assertTrue($this->composer->isDependency($ident));
+                self::assertTrue($this->composer->isDependency($ident), $ident);
             }
         }
         foreach (self::DEPS as $idents) {
             foreach ($idents as $ident) {
-                self::assertTrue($this->composer->isDependency($ident));
+                self::assertTrue($this->composer->isDependency($ident), $ident);
             }
         }
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isDependency($ident));
+                self::assertFalse($this->composer->isDependency($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertTrue($this->composer->isDependency($ident));
+                self::assertTrue($this->composer->isDependency($ident), $ident);
             }
         }
     }
@@ -202,7 +202,7 @@ final class ComposerTest extends TestCase
         }
         foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertNull($this->composer->findFile($ident));
+                self::assertNull($this->composer->findFile($ident), $ident);
             }
         }
     }
