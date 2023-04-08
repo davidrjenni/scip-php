@@ -235,18 +235,36 @@ final class ComposerTest extends TestCase
                 self::assertEquals(
                     ['name' => 'php', 'version' => PHP_VERSION],
                     $this->composer->pkg($ident),
+                    $ident,
                 );
             }
         }
-        foreach (self::DEPS['funcs'] as $ident) {
-            $this->composer->pkg($ident);
-        }
+
+        self::assertEquals(
+            ['name' => 'myclabs/deep-copy', 'version' => '1.11.1'],
+            $this->composer->pkg(self::DEPS['funcs'][0]),
+        );
+
+        self::assertEquals(
+            ['name' => 'myclabs/deep-copy', 'version' => '1.11.1'],
+            $this->composer->pkg(self::DEPS['classes'][0]),
+        );
+
+        self::assertEquals(
+            ['name' => 'composer', 'version' => 'dev'],
+            $this->composer->pkg(self::DEPS['classes'][1]),
+        );
+
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals(
-                    'davidrjenni/scip-php-composer-test',
-                    $this->composer->pkg($ident)['name'],
-                );
+                $pkg = $this->composer->pkg($ident);
+                self::assertNotNull($pkg, $ident);
+                self::assertEquals('davidrjenni/scip-php-composer-test', $pkg['name'], $ident);
+            }
+        }
+        foreach (self::UNKNOWN as $idents) {
+            foreach ($idents as $ident) {
+                self::assertNull($this->composer->pkg($ident), $ident);
             }
         }
     }

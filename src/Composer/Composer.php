@@ -253,9 +253,9 @@ final class Composer
 
     /**
      * @param  non-empty-string  $ident
-     * @return array{name: non-empty-string, version: non-empty-string}
+     * @return ?array{name: non-empty-string, version: non-empty-string}
      */
-    public function pkg(string $ident): array
+    public function pkg(string $ident): ?array
     {
         if ($this->isStub($ident)) {
             return ['name' => 'php', 'version' => PHP_VERSION];
@@ -265,7 +265,7 @@ final class Composer
         }
         $f = $this->findFile($ident);
         if ($f === null) {
-            throw new RuntimeException("Cannot find file for identifier: {$ident}.");
+            return null;
         }
         foreach ($this->pkgsByPaths as $path => $info) {
             if (str_starts_with($f, $path)) {
