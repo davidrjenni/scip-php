@@ -53,17 +53,13 @@ final class ComposerTest extends TestCase
     {
         $files = $this->composer->projectFiles();
 
-        self::assertCount(2, $files);
+        self::assertCount(4, $files);
 
-        self::assertStringEndsWith(
-            self::join('tests', 'Composer', 'testdata', 'src', 'ClassA.php'),
-            $files[0],
-        );
-
-        self::assertStringEndsWith(
-            self::join('tests', 'Composer', 'testdata', 'tests', 'ClassATestCase.php'),
-            $files[1],
-        );
+        $root = self::join('tests', 'Composer', 'testdata');
+        self::assertStringEndsWith(self::join($root, 'bin', 'main'), $files[0]);
+        self::assertStringEndsWith(self::join($root, 'src', 'file.php'), $files[1]);
+        self::assertStringEndsWith(self::join($root, 'src', 'ClassA.php'), $files[2]);
+        self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[3]);
     }
 
     public function testIsBuiltinClass(): void

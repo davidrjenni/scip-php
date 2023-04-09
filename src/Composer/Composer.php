@@ -109,9 +109,33 @@ final class Composer
 
         $map = $generator->getClassMap();
         $map->sort();
+        $classFiles = array_values($map->getMap());
 
-        // TODO(drj): add $autoload['files']
-        return array_values($map->getMap());
+        if (!is_array($autoload['files'] ?? null)) {
+            return $classFiles;
+        }
+        $files = self::collectPaths($projectRoot, $autoload['files']);
+        return array_merge($files, $classFiles);
+    }
+
+    /**
+     * @param  non-empty-string  $projectRoot
+     * @param  array<int, string>  $paths
+     * @return array<int, non-empty-string>
+     */
+    private static function collectPaths(string $projectRoot, array $paths): array
+    {
+        $files = [];
+        foreach ($paths as $p) {
+            if (!is_string($p) || $p === '') {
+                continue;
+            }
+            $p = self::join($projectRoot, $p);
+            if (realpath($p) !== false) {
+                $files[] = realpath($p);
+            }
+        }
+        return $files;
     }
 
     /**
@@ -137,8 +161,12 @@ final class Composer
         }
         $this->scipPhpVendorDir = realpath($scipPhpVendorDir);
 
-        // TODO(drj): add $json['bin']
+        $bin = [];
+        if (is_array($json['bin'] ?? null)) {
+            $bin = self::collectPaths($projectRoot, $json['bin']);
+        }
         $this->projectFiles = array_merge(
+            $bin,
             self::loadProjectFiles($projectRoot, $autoload),
             self::loadProjectFiles($projectRoot, $autoloadDev),
         );

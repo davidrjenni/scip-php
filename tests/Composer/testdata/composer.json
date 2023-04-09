@@ -5,6 +5,7 @@
     "config": {
         "vendor-dir": "vendor-dir/"
     },
+    "bin": ["bin/main"],
     "autoload": {
         "exclude-from-classmap": ["ClassB"],
         "classmap": ["src"],
