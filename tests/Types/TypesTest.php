@@ -6,6 +6,14 @@ namespace Tests\Types;
 
 use PhpParser\Lexer;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
@@ -20,6 +28,7 @@ use ScipPhp\File\Reader;
 use ScipPhp\SymbolNamer;
 use ScipPhp\Types\Types;
 
+use function in_array;
 use function str_ends_with;
 
 use const DIRECTORY_SEPARATOR;
@@ -44,7 +53,8 @@ final class TypesTest extends TestCase
         $composer = new Composer(self::TESTDATA_DIR);
         $namer = new SymbolNamer($composer);
 
-        $this->types = new Types($namer);
+        $this->types = new Types($composer, $namer);
+        $this->types->collect(...$composer->projectFiles());
     }
 
     public function testNameDefs(): void
@@ -92,6 +102,67 @@ final class TypesTest extends TestCase
         $this->assertName('TraitE.php', 'false', 31, null);
     }
 
+    public function testConstDefs(): void
+    {
+        $this->assertConstFetch('ClassA.php', 'B1', 28, 'TestData/ClassB#B1.');
+        $this->assertConstFetch('ClassA.php', 'B1', 29, 'TestData/ClassB#B1.');
+        $this->assertConstFetch('ClassA.php', 'I1', 25, 'Test/Dep/ClassI#I1.');
+        $this->assertConstFetch('ClassA.php', 'G1', 34, 'TestData/EnumG#G1.');
+        $this->assertConstFetch('ClassA.php', 'G2', 35, 'TestData/EnumG#G2.');
+        $this->assertConstFetch('TraitE.php', 'I1', 22, 'Test/Dep/ClassI#I1.');
+        $this->assertConstFetch('TraitE.php', 'I1', 23, 'Test/Dep/ClassI#I1.');
+    }
+
+    public function testMethDefs(): void
+    {
+        $this->assertMethCall('ClassA.php', 'a1', 23, 'TestData/ClassA#a1().');
+        $this->assertMethCall('ClassA.php', 'i1', 24, 'Test/Dep/ClassI#i1().');
+        $this->assertMethCall('ClassA.php', 'b1', 25, 'TestData/ClassB#b1().');
+        $this->assertMethCall('ClassA.php', 'c1', 27, 'TestData/ClassC#c1().');
+        $this->assertMethCall('ClassA.php', 'f1', 27, 'TestData/ClassF#f1().');
+        $this->assertMethCall('ClassA.php', 'c1', 42, 'TestData/ClassC#c1().');
+        $this->assertMethCall('ClassA.php', 'a1', 43, 'TestData/ClassA#a1().');
+        $this->assertMethCall('ClassA.php', 'f2', 43, 'TestData/ClassF#f2().');
+        $this->assertMethCall('ClassA.php', 'a1', 44, 'TestData/ClassA#a1().');
+
+        $this->assertMethCall('ClassH.php', '__construct', 14, 'Exception#__construct().');
+        $this->assertMethCall('ClassH.php', 'getCode', 19, 'Exception#getCode().');
+    }
+
+    public function testPropDefs(): void
+    {
+        $this->assertPropFetch('ClassA.php', 'a1', 15, 'TestData/ClassA#$a1.');
+        $this->assertPropFetch('ClassA.php', 'b1', 15, 'TestData/ClassB#$b1.');
+        $this->assertPropFetch('ClassA.php', 'c2', 15, 'TestData/ClassC#$c2.');
+        $this->assertPropFetch('ClassA.php', 'b2', 15, 'TestData/ClassB#$b2.');
+        $this->assertPropFetch('ClassA.php', 'e1', 16, 'TestData/TraitE#$e1.');
+        $this->assertPropFetch('ClassA.php', 'd1', 17, 'TestData/ClassD#$d1.');
+        $this->assertPropFetch('ClassA.php', 'f1', 17, 'TestData/ClassF#$f1.');
+        $this->assertPropFetch('ClassA.php', 'a1', 18, 'TestData/ClassA#$a1.');
+        $this->assertPropFetch('ClassA.php', 'b1', 18, 'TestData/ClassB#$b1.');
+        $this->assertPropFetch('ClassA.php', 'c2', 18, 'TestData/ClassC#$c2.');
+        $this->assertPropFetch('ClassA.php', 'a2', 18, 'TestData/ClassA#$a2.');
+        $this->assertPropFetch('ClassA.php', 'i1', 24, 'Test/Dep/ClassI#$i1.');
+        $this->assertPropFetch('ClassA.php', 'c1', 41, 'TestData/ClassC#$c1.');
+        $this->assertPropFetch('ClassA.php', 'z1', 47, 'TestData/anon-class-449#$z1.');
+        $this->assertPropFetch('ClassA.php', 'z1', 45, 'TestData/anon-class-449#$z1.');
+        $this->assertPropFetch('ClassA.php', 'f1', 49, 'TestData/ClassF#$f1.');
+        $this->assertPropFetch('ClassA.php', 'f1', 50, 'TestData/ClassF#$f1.');
+        $this->assertPropFetch('ClassA.php', 'b1', 51, 'TestData/ClassB#$b1.');
+        $this->assertPropFetch('ClassA.php', 'b1', 52, 'TestData/ClassB#$b1.');
+        $this->assertPropFetch('ClassA.php', 'c1', 53, 'TestData/ClassC#$c1.');
+        $this->assertPropFetch('ClassA.php', 'c1', 54, 'TestData/ClassC#$c1.');
+        $this->assertPropFetch('ClassA.php', 'b2', 58, 'TestData/ClassB#$b2.');
+        $this->assertPropFetch('ClassA.php', 'c1', 62, 'TestData/ClassC#$c1.');
+
+        $this->assertPropFetch('ClassB.php', 'b1', 17, 'TestData/ClassB#$b1.');
+        $this->assertPropFetch('ClassB.php', 'c2', 17, 'TestData/ClassC#$c2.');
+        $this->assertPropFetch('ClassB.php', 'd2', 17, 'TestData/ClassD#$d2.');
+
+        $this->assertPropFetch('TraitE.php', 'e2', 17, 'TestData/TraitE#$e2.');
+        $this->assertPropFetch('TraitE.php', 'i1', 17, 'Test/Dep/ClassI#$i1.');
+    }
+
     /**
      * @param  non-empty-string  $filename
      * @param  non-empty-string  $name
@@ -112,6 +183,97 @@ final class TypesTest extends TestCase
             self::assertNull($d);
             return;
         }
+        self::assertNotNull($d);
+        self::assertStringEndsWith($def, $d);
+    }
+
+    /**
+     * @param  non-empty-string  $filename
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $def
+     */
+    private function assertConstFetch(string $filename, string $name, int $line, string $def): void
+    {
+        $x = $this->findNode(
+            $filename,
+            $line,
+            fn(Node $n): bool => $n instanceof ClassConstFetch
+                && $n->name instanceof Identifier
+                && $n->name->toString() === $name,
+        );
+
+        self::assertInstanceOf(ClassConstFetch::class, $x);
+        self::assertInstanceOf(Identifier::class, $x->name);
+
+        $d = $this->types->constDef($x->class, $name);
+        self::assertNotNull($d);
+        self::assertStringEndsWith($def, $d);
+    }
+
+    /**
+     * @param  non-empty-string  $filename
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $def
+     */
+    private function assertMethCall(string $filename, string $name, int $line, string $def): void
+    {
+        $classes = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
+        $x = $this->findNode(
+            $filename,
+            $line,
+            fn(Node $n): bool => in_array($n::class, $classes, true)
+                && isset($n->name)
+                && $n->name instanceof Identifier
+                && $n->name->toString() === $name,
+        );
+
+        self::assertContains($x::class, $classes);
+        self::assertTrue(isset($x->name));
+        self::assertInstanceOf(Identifier::class, $x->name);
+
+        if ($x instanceof StaticCall) {
+            $d = $this->types->methDef($x->class, $name);
+        } elseif ($x instanceof MethodCall || $x instanceof NullsafeMethodCall) {
+            $d = $this->types->methDef($x->var, $name);
+        } else {
+            $class = $x::class;
+            self::fail("Unexpected class: {$class}.");
+        }
+
+        self::assertNotNull($d);
+        self::assertStringEndsWith($def, $d);
+    }
+
+    /**
+     * @param  non-empty-string  $filename
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $def
+     */
+    private function assertPropFetch(string $filename, string $name, int $line, string $def): void
+    {
+        $classes = [PropertyFetch::class, NullsafePropertyFetch::class, StaticPropertyFetch::class];
+        $x = $this->findNode(
+            $filename,
+            $line,
+            fn(Node $n): bool => in_array($n::class, $classes, true)
+                && isset($n->name)
+                && $n->name instanceof Identifier
+                && $n->name->toString() === $name,
+        );
+
+        self::assertContains($x::class, $classes);
+        self::assertTrue(isset($x->name));
+        self::assertInstanceOf(Identifier::class, $x->name);
+
+        if ($x instanceof StaticPropertyFetch) {
+            $d = $this->types->propDef($x->class, $name);
+        } elseif ($x instanceof PropertyFetch || $x instanceof NullsafePropertyFetch) {
+            $d = $this->types->propDef($x->var, $name);
+        } else {
+            $class = $x::class;
+            self::fail("Unexpected class: {$class}.");
+        }
+
         self::assertNotNull($d);
         self::assertStringEndsWith($def, $d);
     }

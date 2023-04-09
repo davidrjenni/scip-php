@@ -12,6 +12,7 @@ use ReflectionFunction;
 use RuntimeException;
 use ScipPhp\File\Reader;
 
+use function array_keys;
 use function array_merge;
 use function array_values;
 use function class_exists;
@@ -318,7 +319,15 @@ final class Composer
             return false;
         }
         $f = $this->findFile($ident);
-        return $f !== null && !str_starts_with($f, $this->vendorDir);
+        if ($f === null) {
+            return false;
+        }
+        foreach (array_keys($this->pkgsByPaths) as $path) {
+            if (str_starts_with($f, $path)) {
+                return false;
+            }
+        }
+        return !str_starts_with($f, $this->vendorDir);
     }
 
     /** @param  non-empty-string  $ident */
