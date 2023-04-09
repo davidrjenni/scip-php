@@ -11,6 +11,17 @@ updates:
       - "davidrjenni"
     reviewers:
       - "davidrjenni"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "Dockerfile"
+      include: "scope"
+    assignees:
+      - "davidrjenni"
+    reviewers:
+      - "davidrjenni"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
