@@ -3,6 +3,7 @@
 	<arg name="colors"/>
 	<arg value="sp"/>
 
+	<file>bin</file>
 	<file>src</file>
 	<file>tests</file>
 	<exclude-pattern>src/Bindings/*</exclude-pattern>

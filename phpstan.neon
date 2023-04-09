@@ -2,6 +2,7 @@ parameters:
   level: max
   treatPhpDocTypesAsCertain: false
   paths:
+    - bin
     - src
     - tests
   excludePaths:

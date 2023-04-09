@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+
+use Scip\Metadata;
+use Scip\ToolInfo;
+use ScipPhp\Indexer;
+
+$options = \getopt('h', ['help', 'memory-limit:']);
+if ($options === false) {
+    echo "Cannot parse options.\n";
+    exit(1);
+}
+
+if (isset($options['h']) || isset($options['help'])) {
+    echo "usage: {$argv[0]} [options]\n\n";
+    echo "scip-php is a SCIP indexer for PHP\n\n";
+    echo "Options:\n";
+    echo "  -h --help               display this help and exit\n";
+    echo "     --memory-limit=\"1G\"  memory limit\n";
+    exit(0);
+}
+
+$memoryLimit = $options['memory-limit'] ?? '1G';
+if (!\is_string($memoryLimit)) {
+    echo "Invalid memory limit.\n";
+    exit(1);
+}
+
+if (\ini_set('memory_limit', $memoryLimit) === false) {
+    echo "Cannot set memory limit {$memoryLimit}.\n";
+    exit(1);
+}
+
+$projectRoot = \getcwd();
+$metadata = new Metadata([
+    'version'      => 1,
+    'project_root' => 'file://' . $projectRoot,
+    'tool_info'    => new ToolInfo([
+        'name'      => 'scip-php',
+        'version'   => '0.0.1',
+        'arguments' => \array_splice($argv, 1),
+    ]),
+]);
+
+$indexer = new Indexer($projectRoot, $metadata);
+$index = $indexer->index();
+
+\file_put_contents(
+    'index.scip',
+    $index->serializeToString(),
+);
