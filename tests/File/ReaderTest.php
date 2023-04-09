@@ -41,6 +41,10 @@ final class ReaderTest extends TestCase
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage("Cannot read file: {$filename}.");
 
-        Reader::read($filename);
+        try {
+            Reader::read($filename);
+        } finally {
+            chmod($filename, 0422); // Change back to avoid having a pending change in git.
+        }
     }
 }
