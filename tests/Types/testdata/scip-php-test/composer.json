@@ -1,0 +1,21 @@
+{
+    "name": "davidrjenni/scip-php-test",
+    "description": "A package containing test fixtures",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "TestData\\": "src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../scip-php-test-dep"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "davidrjenni/scip-php-test-dep": "*"
+    }
+}
