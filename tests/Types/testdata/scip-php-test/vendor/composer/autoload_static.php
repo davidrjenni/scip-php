@@ -11,6 +11,8 @@ class ComposerStaticInita3986722be268485c857fd4bb82fda65
         array (
             'Test\\Dep\\' => 9,
             'TestData\\' => 9,
+            'TestData3\\' => 10,
+            'TestData2\\' => 10,
         ),
     );
 
@@ -20,6 +22,14 @@ class ComposerStaticInita3986722be268485c857fd4bb82fda65
             0 => __DIR__ . '/..' . '/davidrjenni/scip-php-test-dep/src',
         ),
         'TestData\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'TestData3\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'TestData2\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

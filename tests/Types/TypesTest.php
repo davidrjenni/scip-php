@@ -111,6 +111,11 @@ final class TypesTest extends TestCase
         $this->assertConstFetch('ClassA.php', 'G2', 35, 'TestData/EnumG#G2.');
         $this->assertConstFetch('TraitE.php', 'I1', 22, 'Test/Dep/ClassI#I1.');
         $this->assertConstFetch('TraitE.php', 'I1', 23, 'Test/Dep/ClassI#I1.');
+
+        $this->assertConstFetch('ClassB.php', 'J0', 22, 'TestData/ClassJ#J0.');
+        $this->assertConstFetch('ClassB.php', 'J1', 23, 'TestData3/ClassJ#J1.');
+        $this->assertConstFetch('ClassB.php', 'J2', 24, 'TestData2/ClassJ#J2.');
+        $this->assertConstFetch('ClassB.php', 'J3', 25, 'ClassJ#J3.');
     }
 
     public function testMethDefs(): void

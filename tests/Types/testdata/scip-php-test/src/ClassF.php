@@ -24,3 +24,10 @@ final class ClassF
         return self::$f3;
     }
 }
+
+namespace TestData3;
+
+final class ClassJ
+{
+    public const J1 = 42;
+}

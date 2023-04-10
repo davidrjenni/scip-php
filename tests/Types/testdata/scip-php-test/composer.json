@@ -5,7 +5,9 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "TestData\\": "src"
+            "TestData\\": "src",
+            "TestData2\\": "src",
+            "TestData3\\": "src"
         }
     },
     "repositories": [

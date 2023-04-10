@@ -16,4 +16,12 @@ final class ClassB
     {
         return self::$b1->c2->d2 * $p1;
     }
+
+    public function b2(): void
+    {
+        \TestData\ClassJ::J0;
+        \TestData3\ClassJ::J1;
+        \TestData2\ClassJ::J2;
+        \ClassJ::J3;
+    }
 }
