@@ -30,7 +30,13 @@ final class ComposerTest extends TestCase
     ];
 
     private const PROJECT = [
-        'classes' => ['anon-class-123', 'TestData\\ClassA', 'TestDataTests\\ClassATestCase'],
+        'classes' => [
+            'anon-class-123',
+            'TestData1\\ClassA',
+            'TestData2\\ClassC',
+            'TestDataTests\\ClassATestCase',
+            'TestDataTests\\ClassBTestCase',
+        ],
         // TODO(drj): 'consts' => [],
         'funcs' => ['fun1'],
     ];
@@ -209,12 +215,6 @@ final class ComposerTest extends TestCase
                 self::assertStringContainsString(self::join('tests', 'Composer', 'testdata'), $f);
                 self::assertStringNotContainsString('vendor', $f);
                 self::assertStringEndsWith('.php', $f);
-
-                if ($type === 'classes') {
-                    $parts = explode('\\', $ident);
-                    $class = $parts[count($parts) - 1];
-                    self::assertStringEndsWith("{$class}.php", $f);
-                }
             }
         }
         foreach (self::UNKNOWN as $idents) {

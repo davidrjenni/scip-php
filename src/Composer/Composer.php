@@ -6,6 +6,7 @@ namespace ScipPhp\Composer;
 
 use Composer\Autoload\ClassLoader;
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use Composer\ClassMapGenerator\PhpFileParser;
 use JetBrains\PHPStormStub\PhpStormStubsMap;
 use ReflectionClass;
 use ReflectionFunction;
@@ -14,6 +15,7 @@ use ScipPhp\File\Reader;
 
 use function array_keys;
 use function array_merge;
+use function array_unique;
 use function array_values;
 use function class_exists;
 use function count;
@@ -110,7 +112,7 @@ final class Composer
 
         $map = $generator->getClassMap();
         $map->sort();
-        $classFiles = array_values($map->getMap());
+        $classFiles = array_unique(array_values($map->getMap()));
 
         if (!is_array($autoload['files'] ?? null)) {
             return $classFiles;
@@ -186,6 +188,18 @@ final class Composer
         $installed = require self::join($this->vendorDir, 'composer', 'installed.php');
         $this->pkgName = $installed['root']['name'];
         $this->pkgVersion = $installed['root']['reference'];
+
+        $additionalClasses = [];
+        foreach ($this->projectFiles as $f) {
+            // TODO(drj): this does not work for enums.
+            $classes = PhpFileParser::findClasses($f);
+            foreach ($classes as $c) {
+                if ($this->loader->findFile($c) === false) {
+                    $additionalClasses[$c] = $f;
+                }
+            }
+        }
+        $this->loader->addClassMap($additionalClasses);
 
         $pkgsByPaths = [];
         foreach ($installed['versions'] as $name => $info) {

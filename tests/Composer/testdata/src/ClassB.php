@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestData;
+namespace TestData1;
 
 final class ClassB
 {

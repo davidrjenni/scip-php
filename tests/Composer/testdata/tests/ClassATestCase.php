@@ -7,3 +7,7 @@ namespace TestDataTests;
 class ClassATestCase
 {
 }
+
+class ClassBTestCase
+{
+}

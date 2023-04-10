@@ -35,8 +35,10 @@ class ComposerStaticInit9f27849cb28a3bc36461d153ef0f5435
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'TestData\\ClassA' => __DIR__ . '/../..' . '/src/ClassA.php',
-        'TestData\\ClassB' => __DIR__ . '/../..' . '/src/ClassB.php',
+        'TestData1\\ClassA' => __DIR__ . '/../..' . '/src/ClassA.php',
+        'TestData1\\ClassB' => __DIR__ . '/../..' . '/src/ClassB.php',
+        'TestData2\\ClassA' => __DIR__ . '/../..' . '/src/ClassA.php',
+        'TestData2\\ClassC' => __DIR__ . '/../..' . '/src/ClassA.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
