@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/github/license/davidrjenni/scip-php)](https://github.com/davidrjenni/scip-php/blob/main/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/davidrjenni/scip-php)](https://packagist.org/packages/davidrjenni/scip-php)
 [![PHP Version](https://img.shields.io/packagist/php-v/davidrjenni/scip-php)](https://packagist.org/packages/davidrjenni/scip-php)
+[![Docker Image Version](https://img.shields.io/docker/v/davidrjenni/scip-php?label=docker)](https://hub.docker.com/r/davidrjenni/scip-php)
+[![Docker Image Size](https://img.shields.io/docker/image-size/davidrjenni/scip-php)](https://hub.docker.com/r/davidrjenni/scip-php)
 
 SCIP Code Intelligence Protocol (SCIP) indexer for PHP
 
