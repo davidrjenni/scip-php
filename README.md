@@ -8,6 +8,9 @@ SCIP Code Intelligence Protocol (SCIP) indexer for PHP
 
 ---
 
+This repository is indexed using itself and available on
+[Sourcegraph](https://sourcegraph.com/github.com/davidrjenni/scip-php).
+
 ## Development
 
 - Run `composer lint` to run all linters.
