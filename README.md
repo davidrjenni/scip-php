@@ -15,6 +15,21 @@ SCIP Code Intelligence Protocol (SCIP) indexer for PHP
 This repository is indexed using itself and available on
 [Sourcegraph](https://sourcegraph.com/github.com/davidrjenni/scip-php).
 
+## Usage
+
+### Manual
+
+Install [`scip-php`](https://packagist.org/packages/davidrjenni/scip-php)
+with `composer` and the
+[`src`](https://docs.sourcegraph.com/cli/quickstart) binary. Then generate
+the SCIP index and upload it:
+
+```bash
+composer require --dev davidrjenni/scip-php
+vendor/bin/scip-php
+src code-intel upload
+```
+
 ## Development
 
 - Run `composer lint` to run all linters.
