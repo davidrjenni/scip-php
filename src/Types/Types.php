@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ScipPhp\Types;
 
-use Closure;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -275,7 +274,7 @@ final class Types
             if (isset($this->seenDepFiles[$f])) {
                 return null;
             }
-            $this->parser->traverse($f, $this, Closure::fromCallable([$this, 'collectDefs']));
+            $this->parser->traverse($f, $this, $this->collectDefs(...));
             $this->seenDepFiles[$f] = true;
             $type = $this->type($x);
             if ($type !== null) {
@@ -289,7 +288,7 @@ final class Types
     public function collect(string ...$filenames): void
     {
         foreach ($filenames as $f) {
-            $this->parser->traverse($f, $this, Closure::fromCallable($this->collectDefs(...)));
+            $this->parser->traverse($f, $this, $this->collectDefs(...));
         }
     }
 

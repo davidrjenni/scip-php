@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ScipPhp;
 
-use Closure;
 use Scip\Document;
 use Scip\Index;
 use Scip\Language;
@@ -46,7 +45,7 @@ final class Indexer
         $extSymbols = [];
         foreach ($projectFiles as $filename) {
             $indexer = new DocIndexer($this->composer, $this->namer, $this->types);
-            $this->parser->traverse($filename, $indexer, Closure::fromCallable([$indexer, 'index']));
+            $this->parser->traverse($filename, $indexer, $indexer->index(...));
             $documents[] = new Document([
                 'language'      => Language::PHP,
                 'relative_path' => str_replace($this->projectRoot . '/', '', $filename),
