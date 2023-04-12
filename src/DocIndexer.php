@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -38,6 +37,8 @@ use function str_starts_with;
 
 final class DocIndexer
 {
+    private readonly DocGenerator $docGenerator;
+
     /** @var array<non-empty-string, SymbolInformation> */
     public array $symbols;
 
@@ -52,6 +53,7 @@ final class DocIndexer
         private readonly SymbolNamer $namer,
         private readonly Types $types,
     ) {
+        $this->docGenerator = new DocGenerator();
         $this->symbols = [];
         $this->extSymbols = [];
         $this->occurrences = [];
@@ -139,7 +141,7 @@ final class DocIndexer
 
     private function def(
         PosResolver $pos,
-        Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty $n,
+        Const_|ClassLike|ClassMethod|Param|PropertyProperty $n,
         Node $posNode,
         int $kind = SyntaxKind::Identifier,
     ): void {
@@ -147,9 +149,10 @@ final class DocIndexer
         if ($symbol === null) {
             return;
         }
+        $doc = $this->docGenerator->create($n);
         $this->symbols[$symbol] = new SymbolInformation([
             'symbol'        => $symbol,
-            'documentation' => [$symbol], // TODO(drj): build hover content
+            'documentation' => [$doc], // TODO(drj): add doc string, if any
         ]);
         $this->occurrences[] = new Occurrence([
             'range'        => $pos->pos($posNode),
