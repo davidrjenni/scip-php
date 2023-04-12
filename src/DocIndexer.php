@@ -137,14 +137,13 @@ final class DocIndexer
         }
     }
 
-    /** @param  Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty|non-empty-string  $n */
     private function def(
         PosResolver $pos,
-        Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty|string $n,
+        Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty $n,
         Node $posNode,
         int $kind = SyntaxKind::Identifier,
     ): void {
-        $symbol = !is_string($n) ? $this->namer->name($n) : $n;
+        $symbol = $this->namer->name($n);
         if ($symbol === null) {
             return;
         }
