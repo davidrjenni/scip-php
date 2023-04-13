@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ScipPhp;
 
 use LogicException;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -19,6 +20,8 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 
 use function count;
+use function preg_replace;
+use function str_replace;
 
 final class DocGenerator
 {
@@ -29,104 +32,129 @@ final class DocGenerator
         $this->printer = new PrettyPrinter();
     }
 
-    /** @return non-empty-string */
-    public function create(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): string
+    /** @return non-empty-array<int, non-empty-string> */
+    public function create(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): array
     {
-        $s = $this->signature($n);
-        return "```php\n{$s}\n```";
+        ['sign' => $s, 'doc' => $doc] = $this->signature($n);
+        $s = "```php\n{$s}\n```";
+        if ($doc === '') {
+            return [$s];
+        }
+        return [$s, $doc];
     }
 
-    /** @return non-empty-string */
-    private function signature(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function signature(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): array
     {
         if ($n instanceof Const_) {
-            return $this->constInfo($n);
+            return $this->constSign($n);
         }
         if ($n instanceof Class_) {
-            return $this->classInfo($n);
+            return $this->classSign($n);
         }
         if ($n instanceof Interface_) {
-            return $this->interfaceInfo($n);
+            return $this->interfaceSign($n);
         }
         if ($n instanceof Trait_) {
-            return "trait {$n->name}";
+            $sign = "trait {$n->name}";
+            $comment = $n->getDocComment();
+            $doc = $this->cleanup($comment);
+            return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof Enum_) {
-            return "enum {$n->name}";
+            $sign = "enum {$n->name}";
+            $comment = $n->getDocComment();
+            $doc = $this->cleanup($comment);
+            return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof ClassMethod) {
-            return $this->methodInfo($n);
+            return $this->methodSign($n);
         }
         if ($n instanceof Param) {
-            $s = $this->printer->prettyPrint([$n]);
-            if ($s === '') {
+            $sign = $this->printer->prettyPrint([$n]);
+            if ($sign === '') {
                 throw new LogicException('Cannot pretty-print parameter.');
             }
-            return $s;
+            $comment = $n->getDocComment();
+            $doc = $this->cleanup($comment);
+            return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof PropertyProperty) {
-            return $this->propertyInfo($n);
+            return $this->propertySign($n);
         }
 
         throw new LogicException('Unexpected node type: ' . $n::class);
     }
 
-    /** @return non-empty-string */
-    private function classInfo(Class_ $class): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function classSign(Class_ $c): array
     {
-        $info = "class {$class->name}";
-
-        if ($class->isAbstract()) {
-            $info = "abstract {$info}";
-        } elseif ($class->isFinal()) {
-            $info = "final {$info}";
+        $sign = "class {$c->name}";
+        if ($c->isAbstract()) {
+            $sign = "abstract {$sign}";
+        } elseif ($c->isFinal()) {
+            $sign = "final {$sign}";
         }
-        if ($class->extends !== null) {
-            $info .= " extends {$class->extends}";
+        if ($c->extends !== null) {
+            $sign = "{$sign} extends {$c->extends}";
+        }
+        if (count($c->implements) > 0) {
+            $sign = "{$sign} implements " . $this->printer->prettyPrint($c->implements);
         }
 
-        return count($class->implements) > 0
-            ? "{$info} implements " . $this->printer->prettyPrint($class->implements)
-            : $info;
+        $comment = $c->getDocComment();
+        $doc = $this->cleanup($comment);
+
+        return ['sign' => $sign, 'doc' => $doc];
     }
 
-    /** @return non-empty-string */
-    private function interfaceInfo(Interface_ $interface): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function interfaceSign(Interface_ $i): array
     {
-        $info = "interface {$interface->name}";
-        return count($interface->extends) > 0
-            ? "{$info} implements " . $this->printer->prettyPrint($interface->extends)
-            : $info;
+        $sign = "interface {$i->name}";
+        if (count($i->extends) > 0) {
+            $sign = "{$sign} implements " . $this->printer->prettyPrint($i->extends);
+        }
+
+        $comment = $i->getDocComment();
+        $doc = $this->cleanup($comment);
+
+        return ['sign' => $sign, 'doc' => $doc];
     }
 
-    /** @return non-empty-string */
-    private function constInfo(Const_ $const): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function constSign(Const_ $c): array
     {
-        $info = $this->printer->prettyPrint([$const]);
-        if ($info === '') {
+        $sign = $this->printer->prettyPrint([$c]);
+        if ($sign === '') {
             throw new LogicException('Cannot pretty-print constant.');
         }
-        $classConst = $const->getAttribute('parent');
+        $classConst = $c->getAttribute('parent');
         if (!$classConst instanceof ClassConst) {
-            return $info;
+            return ['sign' => $sign, 'doc' => ''];
         }
         if ($classConst->isFinal()) {
-            $info = "final {$info}";
+            $sign = "final {$sign}";
         }
-        return $this->visibility($classConst) . " $info";
+        $sign = $this->visibility($classConst) . " {$sign}";
+
+        $comment = $classConst->getDocComment();
+        $doc = $this->cleanup($comment);
+
+        return ['sign' => $sign, 'doc' => $doc];
     }
 
-    /** @return non-empty-string */
-    private function propertyInfo(PropertyProperty $property): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function propertySign(PropertyProperty $p): array
     {
-        $classProperty = $property->getAttribute('parent');
+        $classProperty = $p->getAttribute('parent');
         if (!$classProperty instanceof Property) {
             // TODO(drj): side-effect of constructor property promotion.
-            $info = $this->printer->prettyPrint([$property]);
-            if ($info === '') {
+            $sign = $this->printer->prettyPrint([$p]);
+            if ($sign === '') {
                 throw new LogicException('Cannot pretty-print property.');
             }
-            return $info;
+            return ['sign' => $sign, 'doc' => ''];
         }
         $modifiers = $this->visibility($classProperty);
         if ($classProperty->isStatic()) {
@@ -136,39 +164,49 @@ final class DocGenerator
             $modifiers = "{$modifiers} readonly";
         }
 
-        $info = $classProperty->type !== null
-            ? "{$modifiers} " . $this->printer->prettyPrint([$classProperty->type]) . " \${$property->name}"
-            : "{$modifiers} \${$property->name}";
+        $sign = $classProperty->type !== null
+            ? "{$modifiers} " . $this->printer->prettyPrint([$classProperty->type]) . " \${$p->name}"
+            : "{$modifiers} \${$p->name}";
 
-        return $property->default !== null
-            ? "{$info} = " . $this->printer->prettyPrint([$property->default])
-            : $info;
+        if ($p->default !== null) {
+            $sign = "{$sign} = " . $this->printer->prettyPrint([$p->default]);
+        }
+
+        $comment = $classProperty->getDocComment();
+        $doc = $this->cleanup($comment);
+
+        return ['sign' => $sign, 'doc' => $doc];
     }
 
-    /** @return non-empty-string */
-    private function methodInfo(ClassMethod $method): string
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function methodSign(ClassMethod $m): array
     {
-        $modifiers = $this->visibility($method);
-        if ($method->isStatic()) {
+        $modifiers = $this->visibility($m);
+        if ($m->isStatic()) {
             $modifiers = "{$modifiers} static";
         }
-        if ($method->isFinal()) {
+        if ($m->isFinal()) {
             $modifiers = "{$modifiers} final";
-        } elseif ($method->isAbstract()) {
+        } elseif ($m->isAbstract()) {
             $modifiers = "{$modifiers} abstract";
         }
 
-        $info = "{$modifiers} function {$method->name}(";
-        foreach ($method->params as $i => $param) {
+        $sign = "{$modifiers} function {$m->name}(";
+        foreach ($m->params as $i => $param) {
             if ($i > 0) {
-                $info .= ', ';
+                $sign .= ', ';
             }
-            $info .= $this->printer->prettyPrint([$param]);
+            $sign .= $this->printer->prettyPrint([$param]);
         }
 
-        return $method->returnType !== null
-            ? "{$info}): " . $this->printer->prettyPrint([$method->returnType])
-            : "{$info})";
+        $sign = $m->returnType !== null
+            ? "{$sign}): " . $this->printer->prettyPrint([$m->returnType])
+            : "{$sign})";
+
+        $comment = $m->getDocComment();
+        $doc = $this->cleanup($comment);
+
+        return ['sign' => $sign, 'doc' => $doc];
     }
 
     private function visibility(ClassConst|Property|ClassMethod $n): string
@@ -183,5 +221,20 @@ final class DocGenerator
             return 'public';
         }
         return '';
+    }
+
+    private function cleanup(?Doc $doc): string
+    {
+        $comment = $doc?->getText() ?? '';
+        $comment = $this->remove('(^(\s+)?/\*\*\s)m', $comment);
+        $comment = $this->remove('(^(\s+)?\*\s)m', $comment, -1);
+        $comment = $this->remove('(^(\s+)?\*/)m', $comment);
+        $comment = $this->remove('((\s+)?\*/$)m', $comment);
+        return str_replace("\n", '<br>', $comment);
+    }
+
+    private function remove(string $pattern, string $subject, int $limit = 1): string
+    {
+        return preg_replace($pattern, '', $subject, $limit) ?? $subject;
     }
 }

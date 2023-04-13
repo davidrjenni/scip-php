@@ -152,7 +152,7 @@ final class DocIndexer
         $doc = $this->docGenerator->create($n);
         $this->symbols[$symbol] = new SymbolInformation([
             'symbol'        => $symbol,
-            'documentation' => [$doc], // TODO(drj): add doc string, if any
+            'documentation' => $doc,
         ]);
         $this->occurrences[] = new Occurrence([
             'range'        => $pos->pos($posNode),
