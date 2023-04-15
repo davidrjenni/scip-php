@@ -81,6 +81,8 @@ final class DocIndexer
             // Constructor property promotion.
             if ($n->flags !== 0) {
                 $p = new PropertyProperty($n->var->name, $n->default, $n->getAttributes());
+                $prop = new Property($n->flags, [$p], $n->getAttributes(), $n->type, $n->attrGroups);
+                $p->setAttribute('parent', $prop);
                 $this->def($pos, $p, $n->var, SyntaxKind::IdentifierParameter);
             }
             return;
