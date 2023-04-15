@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/davidrjenni/scip-php/actions/workflows/ci.yml/badge.svg)](https://github.com/davidrjenni/scip-php/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/davidrjenni/scip-php/branch/main/graph/badge.svg?token=JYJNWGSDWL)](https://codecov.io/gh/davidrjenni/scip-php)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/davidrjenni/scip-php/badge)](https://api.securityscorecards.dev/projects/github.com/davidrjenni/scip-php)
 [![License: MIT](https://img.shields.io/github/license/davidrjenni/scip-php)](https://github.com/davidrjenni/scip-php/blob/main/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/davidrjenni/scip-php)](https://packagist.org/packages/davidrjenni/scip-php)
 [![PHP Version](https://img.shields.io/packagist/php-v/davidrjenni/scip-php)](https://packagist.org/packages/davidrjenni/scip-php)
