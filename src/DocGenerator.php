@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ScipPhp;
 
 use LogicException;
-use PhpParser\Comment\Doc;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -17,6 +16,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\NodeAbstract;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 
 use function count;
@@ -57,14 +57,12 @@ final class DocGenerator
         }
         if ($n instanceof Trait_) {
             $sign = "trait {$n->name}";
-            $comment = $n->getDocComment();
-            $doc = $this->cleanup($comment);
+            $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof Enum_) {
             $sign = "enum {$n->name}";
-            $comment = $n->getDocComment();
-            $doc = $this->cleanup($comment);
+            $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof ClassMethod) {
@@ -75,8 +73,7 @@ final class DocGenerator
             if ($sign === '') {
                 throw new LogicException('Cannot pretty-print parameter.');
             }
-            $comment = $n->getDocComment();
-            $doc = $this->cleanup($comment);
+            $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
         }
         if ($n instanceof PropertyProperty) {
@@ -102,9 +99,7 @@ final class DocGenerator
             $sign = "{$sign} implements " . $this->printer->prettyPrint($c->implements);
         }
 
-        $comment = $c->getDocComment();
-        $doc = $this->cleanup($comment);
-
+        $doc = $this->docComment($c);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
@@ -115,10 +110,7 @@ final class DocGenerator
         if (count($i->extends) > 0) {
             $sign = "{$sign} implements " . $this->printer->prettyPrint($i->extends);
         }
-
-        $comment = $i->getDocComment();
-        $doc = $this->cleanup($comment);
-
+        $doc = $this->docComment($i);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
@@ -137,10 +129,7 @@ final class DocGenerator
             $sign = "final {$sign}";
         }
         $sign = $this->visibility($classConst) . " {$sign}";
-
-        $comment = $classConst->getDocComment();
-        $doc = $this->cleanup($comment);
-
+        $doc = $this->docComment($classConst);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
@@ -172,9 +161,7 @@ final class DocGenerator
             $sign = "{$sign} = " . $this->printer->prettyPrint([$p->default]);
         }
 
-        $comment = $classProperty->getDocComment();
-        $doc = $this->cleanup($comment);
-
+        $doc = $this->docComment($classProperty);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
@@ -203,9 +190,7 @@ final class DocGenerator
             ? "{$sign}): " . $this->printer->prettyPrint([$m->returnType])
             : "{$sign})";
 
-        $comment = $m->getDocComment();
-        $doc = $this->cleanup($comment);
-
+        $doc = $this->docComment($m);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
@@ -223,8 +208,9 @@ final class DocGenerator
         return '';
     }
 
-    private function cleanup(?Doc $doc): string
+    private function docComment(NodeAbstract $n): string
     {
+        $doc = $n->getDocComment();
         $comment = $doc?->getText() ?? '';
         $comment = $this->remove('(^(\s+)?/\*\*\s)m', $comment);
         $comment = $this->remove('(^(\s+)?\*\s)m', $comment, -1);
