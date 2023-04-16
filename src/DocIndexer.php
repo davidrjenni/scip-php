@@ -77,6 +77,10 @@ final class DocIndexer
             $this->def($pos, $n, $n->name);
             return;
         }
+        if ($n instanceof EnumCase) {
+            $this->def($pos, $n, $n->name, SyntaxKind::IdentifierConstant);
+            return;
+        }
         if ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
             // Constructor property promotion.
             if ($n->flags !== 0) {
@@ -143,7 +147,7 @@ final class DocIndexer
 
     private function def(
         PosResolver $pos,
-        Const_|ClassLike|ClassMethod|Param|PropertyProperty $n,
+        Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n,
         Node $posNode,
         int $kind = SyntaxKind::Identifier,
     ): void {

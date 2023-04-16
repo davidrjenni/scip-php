@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
@@ -33,7 +34,7 @@ final class DocGenerator
     }
 
     /** @return non-empty-array<int, non-empty-string> */
-    public function create(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): array
+    public function create(Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n): array
     {
         ['sign' => $s, 'doc' => $doc] = $this->signature($n);
         $s = "```php\n{$s}\n```";
@@ -44,7 +45,7 @@ final class DocGenerator
     }
 
     /** @return array{sign: non-empty-string, doc: string} */
-    private function signature(Const_|ClassLike|ClassMethod|Param|PropertyProperty $n): array
+    private function signature(Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n): array
     {
         if ($n instanceof Const_) {
             return $this->constSign($n);
@@ -62,6 +63,14 @@ final class DocGenerator
         }
         if ($n instanceof Enum_) {
             $sign = "enum {$n->name}";
+            $doc = $this->docComment($n);
+            return ['sign' => $sign, 'doc' => $doc];
+        }
+        if ($n instanceof EnumCase) {
+            $sign = $this->printer->prettyPrint([$n]);
+            if ($sign === '') {
+                throw new LogicException('Cannot pretty-print enum case.');
+            }
             $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
         }
