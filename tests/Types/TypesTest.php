@@ -93,6 +93,8 @@ final class TypesTest extends TestCase
         $this->assertName('ClassH.php', 'Exception', 7, 'Exception#');
         $this->assertName('ClassH.php', 'Exception', 9, 'Exception#');
         $this->assertName('ClassH.php', 'parent', 14, 'Exception#');
+        $this->assertName('ClassH.php', 'fun2', 19, 'TestData4/fun2().');
+        $this->assertName('ClassH.php', 'fun2', 20, 'fun2().');
 
         $this->assertName('TraitE.php', 'ClassI', 7, 'Test/Dep/ClassI#');
         $this->assertName('TraitE.php', 'ClassI', 13, 'Test/Dep/ClassI#');
@@ -131,7 +133,10 @@ final class TypesTest extends TestCase
         $this->assertMethCall('ClassA.php', 'a1', 44, 'TestData/ClassA#a1().');
 
         $this->assertMethCall('ClassH.php', '__construct', 14, 'Exception#__construct().');
-        $this->assertMethCall('ClassH.php', 'getCode', 19, 'Exception#getCode().');
+        $this->assertMethCall('ClassH.php', 'f2', 19, 'ClassF#f2().');
+        $this->assertMethCall('ClassH.php', 'a2', 19, 'ClassA#a2().');
+        $this->assertMethCall('ClassH.php', 'getCode', 20, 'Exception#getCode().');
+        $this->assertMethCall('ClassH.php', 'a2', 20, 'ClassA#a2().');
     }
 
     public function testPropDefs(): void

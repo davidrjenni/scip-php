@@ -159,10 +159,13 @@ final class SymbolNamer
             return $this->desc("{$ns}{$class}", "#{$n->name}.");
         }
 
-        if ($n instanceof Function_) {
-            $ns = $this->namespaceName($n);
-            $class = $this->classLikeName($n);
-            return $this->desc("{$ns}{$class}", "#{$n->name}().");
+        if ($n instanceof Function_ && $n->name->toString() !== '') {
+            $name = $n->namespacedName?->toString();
+            if ($name === null || $name === '') {
+                $name = $n->name->toString();
+            }
+            $name = str_replace('\\', '/', $name);
+            return $this->desc($name, '().');
         }
 
         if ($n instanceof Name) {
@@ -196,6 +199,9 @@ final class SymbolNamer
                 $ns = str_replace("\\", '/', $n->slice(0, -1)?->toString() ?? '');
                 if ($ns !== '') {
                     $ns = "{$ns}/";
+                }
+                if (function_exists($name)) {
+                    return $this->desc("{$ns}{$name}", '().');
                 }
                 return $this->desc("{$ns}{$name}", '#');
             }

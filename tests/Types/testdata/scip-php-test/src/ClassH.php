@@ -16,7 +16,8 @@ namespace TestData
 
         public function h1(): int
         {
-            return $this->getCode();
+            $x = \TestData4\fun2()->f2()->a2();
+            return $this->getCode() + fun2()->a2() * $x;
         }
     }
 }

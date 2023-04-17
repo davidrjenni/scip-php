@@ -4,6 +4,10 @@
     "license": "MIT",
     "minimum-stability": "dev",
     "autoload": {
+        "files": [
+            "src/func2.php",
+            "src/func3.php"
+        ],
         "psr-4": {
             "TestData\\": "src",
             "TestData2\\": "src",

@@ -6,11 +6,10 @@ namespace ScipPhp\Types;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Clone_;
-use PhpParser\Node\Expr\Closure as ClosureNode;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -21,13 +20,13 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
@@ -150,6 +149,11 @@ final class Types
 
         if ($x instanceof Clone_) {
             return $this->type($x->expr);
+        }
+
+        if ($x instanceof FuncCall && $x->name instanceof Name && $x->name->toString() !== '') {
+            $name = $this->namer->name($x->name);
+            return $this->defs[$name] ?? null;
         }
 
         if ($x instanceof Match_) {
@@ -294,13 +298,7 @@ final class Types
 
     private function collectDefs(PosResolver $pos, Node $n): void
     {
-        if ($n instanceof ArrowFunction || $n instanceof ClassMethod || $n instanceof ClosureNode) {
-            $name = $this->namer->name($n);
-            if ($name !== null) {
-                $type = $this->typeParser->parse($n->returnType);
-                $this->defs[$name] = $type;
-            }
-        } elseif ($n instanceof ClassConst) {
+        if ($n instanceof ClassConst) {
             foreach ($n->consts as $c) {
                 $name = $this->namer->name($c);
                 if ($name !== null) {
@@ -317,6 +315,12 @@ final class Types
             $name = $this->namer->name($n);
             if ($name !== null) {
                 $this->defs[$name] = null;
+            }
+        } elseif ($n instanceof FunctionLike) {
+            $name = $this->namer->name($n);
+            if ($name !== null) {
+                $type = $this->typeParser->parse($n->getReturnType());
+                $this->defs[$name] = $type;
             }
         } elseif ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
             // Constructor property promotion.
