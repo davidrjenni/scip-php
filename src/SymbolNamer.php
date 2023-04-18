@@ -200,7 +200,7 @@ final class SymbolNamer
                 if ($ns !== '') {
                     $ns = "{$ns}/";
                 }
-                if (function_exists($name)) {
+                if (function_exists($n->toString())) {
                     return $this->desc("{$ns}{$name}", '().');
                 }
                 return $this->desc("{$ns}{$name}", '#');
