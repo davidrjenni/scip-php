@@ -194,7 +194,6 @@ final class Composer
 
         $additionalClasses = [];
         foreach ($this->projectFiles as $f) {
-            // TODO(drj): this does not work for enums.
             $classes = PhpFileParser::findClasses($f);
             foreach ($classes as $c) {
                 if ($this->loader->findFile($c) === false) {

@@ -36,6 +36,9 @@ final class ComposerTest extends TestCase
             'TestData2\\ClassC',
             'TestDataTests\\ClassATestCase',
             'TestDataTests\\ClassBTestCase',
+            'TestDataTests\\EnumC',
+            'TestDataTests\\TraitD',
+            'TestDataTests\\InterfaceE',
         ],
         'consts' => [
             'CONST_1',
