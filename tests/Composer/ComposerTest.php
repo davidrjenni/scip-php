@@ -37,7 +37,11 @@ final class ComposerTest extends TestCase
             'TestDataTests\\ClassATestCase',
             'TestDataTests\\ClassBTestCase',
         ],
-        // TODO(drj): 'consts' => [],
+        'consts' => [
+            'CONST_1',
+            'CONST_2',
+            'CONST_3',
+        ],
         'funcs' => ['fun1'],
     ];
 

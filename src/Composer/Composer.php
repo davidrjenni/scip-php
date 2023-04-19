@@ -20,10 +20,13 @@ use function array_values;
 use function class_exists;
 use function count;
 use function function_exists;
+use function get_defined_constants;
+use function get_included_files;
 use function implode;
 use function is_array;
 use function is_string;
 use function json_decode;
+use function preg_match;
 use function realpath;
 use function rtrim;
 use function str_contains;
@@ -295,8 +298,7 @@ final class Composer
                 return str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
             }
         }
-        // TODO(drj): resolve constant location
-        return null;
+        return $this->findConstFile($ident);
     }
 
     /**
@@ -360,5 +362,31 @@ final class Composer
             ?? PhpStormStubsMap::FUNCTIONS[$ident]
             ?? PhpStormStubsMap::CONSTANTS[$ident]
             ?? null;
+    }
+
+    /**
+     * @param  non-empty-string  $c
+     * @return ?non-empty-string
+     */
+    private function findConstFile(string $c): ?string
+    {
+        $consts = get_defined_constants(categorize: true);
+        if (!isset($consts['user'][$c])) {
+            return null;
+        }
+
+        // TODO(drj): replace with an AST visitor.
+        $pattern = "/^\s*(?:define\s*\(\s*|const\s+)(?:{$c}\s*=|['\"]{$c}['\"]\s*,)/m";
+        $files = get_included_files();
+        foreach ($files as $f) {
+            if ($f === '') {
+                continue;
+            }
+            $content = Reader::read($f);
+            if (preg_match($pattern, $content) === 1 && realpath($f) !== false) {
+                return realpath($f);
+            }
+        }
+        return null;
     }
 }

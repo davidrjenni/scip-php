@@ -3,7 +3,7 @@
         'name' => 'davidrjenni/scip-php-composer-test',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'adbe02c46f0e10ccca4d48d2b58f47a2f799085d',
+        'reference' => 'aa10f8b0929de85c99d6afff001c83137116f149',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'davidrjenni/scip-php-composer-test' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'adbe02c46f0e10ccca4d48d2b58f47a2f799085d',
+            'reference' => 'aa10f8b0929de85c99d6afff001c83137116f149',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
