@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TestData;
 
-final class ClassA
+class ClassA
 {
     private ClassB $a1;
 

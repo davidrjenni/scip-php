@@ -154,8 +154,8 @@ final class TypesTest extends TestCase
         $this->assertPropFetch('ClassA.php', 'a2', 18, 'TestData/ClassA#$a2.');
         $this->assertPropFetch('ClassA.php', 'i1', 24, 'Test/Dep/ClassI#$i1.');
         $this->assertPropFetch('ClassA.php', 'c1', 41, 'TestData/ClassC#$c1.');
-        $this->assertPropFetch('ClassA.php', 'z1', 47, 'TestData/anon-class-449#$z1.');
-        $this->assertPropFetch('ClassA.php', 'z1', 45, 'TestData/anon-class-449#$z1.');
+        $this->assertPropFetch('ClassA.php', 'z1', 47, 'TestData/anon-class-447#$z1.');
+        $this->assertPropFetch('ClassA.php', 'z1', 45, 'TestData/anon-class-447#$z1.');
         $this->assertPropFetch('ClassA.php', 'f1', 49, 'TestData/ClassF#$f1.');
         $this->assertPropFetch('ClassA.php', 'f1', 50, 'TestData/ClassF#$f1.');
         $this->assertPropFetch('ClassA.php', 'b1', 51, 'TestData/ClassB#$b1.');
