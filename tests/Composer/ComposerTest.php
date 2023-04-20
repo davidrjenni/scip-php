@@ -243,15 +243,19 @@ final class ComposerTest extends TestCase
             }
         }
 
-        self::assertEquals(
-            ['name' => 'myclabs/deep-copy', 'version' => '1.11.1'],
-            $this->composer->pkg(self::DEPS['funcs'][0]),
-        );
+        foreach (self::DEPS['funcs'] as $ident) {
+            $pkg = $this->composer->pkg($ident);
+            self::assertNotNull($pkg, $ident);
+            ['name' => $name, 'version' => $version] = $pkg;
+            self::assertEquals('myclabs/deep-copy', $name);
+            self::assertMatchesRegularExpression('/^[a-f0-9]{40}$/', $version);
+        }
 
-        self::assertEquals(
-            ['name' => 'myclabs/deep-copy', 'version' => '1.11.1'],
-            $this->composer->pkg(self::DEPS['classes'][0]),
-        );
+        $pkg = $this->composer->pkg(self::DEPS['classes'][0]);
+        self::assertNotNull($pkg);
+        ['name' => $name, 'version' => $version] = $pkg;
+        self::assertEquals('myclabs/deep-copy', $name);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{40}$/', $version);
 
         self::assertEquals(
             ['name' => 'composer', 'version' => 'dev'],

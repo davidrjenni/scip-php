@@ -215,7 +215,7 @@ final class Composer
                 throw new RuntimeException("Invalid install path of package {$name}: {$info['install_path']}.");
             }
             if ($name !== $this->pkgName) {
-                $pkgsByPaths[$path] = ['name' => $name, 'version' => $info['pretty_version']];
+                $pkgsByPaths[$path] = ['name' => $name, 'version' => $info['reference']];
             }
         }
 
