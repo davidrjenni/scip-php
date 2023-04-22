@@ -19,10 +19,12 @@ use function array_unique;
 use function array_values;
 use function class_exists;
 use function count;
+use function enum_exists;
 use function function_exists;
 use function get_defined_constants;
 use function get_included_files;
 use function implode;
+use function interface_exists;
 use function is_array;
 use function is_string;
 use function json_decode;
@@ -32,6 +34,7 @@ use function rtrim;
 use function str_contains;
 use function str_replace;
 use function str_starts_with;
+use function trait_exists;
 use function trim;
 
 use const DIRECTORY_SEPARATOR;
@@ -252,6 +255,25 @@ final class Composer
     public function isDependency(string $ident): bool
     {
         return !$this->isFromProject($ident);
+    }
+
+    /** @param  non-empty-string  $c */
+    public function isClassLike(string $c): bool
+    {
+        return $this->isBuiltinClass($c)
+            || str_contains($c, 'anon-class-')
+            || (str_starts_with($c, 'Composer\\Autoload\\') && class_exists($c))
+            || (
+                // The goal is to avoid calling {class,interface,trait,enum}_exists if it is not absolutely necessary.
+                // This is because if the file contains a fatal error, it will generate a fatal error. Since findFile
+                // also returns the path to the file of a namespaced function, check that the identifier is not a
+                // function. However, since it is possible that a class-like and a function have the same name, we
+                // must call {class,interface,trait,enum}_exists as a last resort.
+                $this->loader->findFile($c) !== false && (
+                    !function_exists($c)
+                    || class_exists($c) || interface_exists($c) || trait_exists($c) || enum_exists($c)
+                )
+            );
     }
 
     /**

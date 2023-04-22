@@ -186,6 +186,30 @@ final class ComposerTest extends TestCase
         }
     }
 
+    public function testIsClass(): void
+    {
+        foreach (self::BUILTIN as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+            }
+        }
+        foreach (self::DEPS as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+            }
+        }
+        foreach (self::PROJECT as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+            }
+        }
+        foreach (self::UNKNOWN as $idents) {
+            foreach ($idents as $ident) {
+                self::assertFalse($this->composer->isClassLike($ident), $ident);
+            }
+        }
+    }
+
     public function testFindFile(): void
     {
         foreach (self::BUILTIN as $idents) {
@@ -210,7 +234,7 @@ final class ComposerTest extends TestCase
                 }
             }
         }
-        foreach (self::PROJECT as $type => $idents) {
+        foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
                 $f = $this->composer->findFile($ident);
                 if (str_starts_with($ident, 'anon-class-')) {
