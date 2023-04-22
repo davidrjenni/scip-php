@@ -24,18 +24,14 @@ use PhpParser\Node\Stmt\Trait_;
 use RuntimeException;
 use ScipPhp\Composer\Composer;
 
-use function class_exists;
 use function count;
-use function enum_exists;
 use function explode;
 use function function_exists;
-use function interface_exists;
 use function is_string;
 use function rtrim;
 use function str_replace;
 use function strpos;
 use function substr;
-use function trait_exists;
 
 final class SymbolNamer
 {
@@ -168,7 +164,7 @@ final class SymbolNamer
             return $this->desc($name, '().');
         }
 
-        if ($n instanceof Name) {
+        if ($n instanceof Name && $n->toString() !== '') {
             if ($n->toString() === 'self' || $n->toString() ===  'static') {
                 $ns = $this->namespaceName($n);
                 $class = $this->classLikeName($n);
@@ -189,35 +185,19 @@ final class SymbolNamer
                 throw new LogicException('Reference to parent in unexpected node type: ' . $classLike::class . '.');
             }
 
-            $name = $n->getLast();
-            if ($name === '') {
-                throw new RuntimeException("Last part of name is empty: {$n}.");
-            }
+            $name = $n->toString();
+            $desc = str_replace('\\', '/', $name);
 
-            // Fully-qualified, namespaced name.
-            if (count($n->parts) > 1) {
-                $ns = str_replace("\\", '/', $n->slice(0, -1)?->toString() ?? '');
-                if ($ns !== '') {
-                    $ns = "{$ns}/";
-                }
-                if (function_exists($n->toString())) {
-                    return $this->desc("{$ns}{$name}", '().');
-                }
-                return $this->desc("{$ns}{$name}", '#');
-            }
-
-            if (
-                $this->composer->isBuiltinClass($name)
-                || class_exists($name) || interface_exists($name) || trait_exists($name) || enum_exists($name)
-            ) {
-                return $this->desc($name, '#');
-            }
-            if (function_exists($name)) {
-                return $this->desc($name, '().');
-            }
             if ($this->composer->isBuiltinConst($name)) {
-                return $this->desc($name, '.');
+                return $this->desc($desc, '.');
             }
+            if ($this->composer->isClassLike($name)) {
+                return $this->desc($desc, '#');
+            }
+            if (function_exists($name) || $this->composer->isBuiltinFunc($name)) {
+                return $this->desc($desc, '().');
+            }
+            // TODO(drj): could be a constant
             return null;
         }
 
