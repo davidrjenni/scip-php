@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
@@ -34,7 +35,7 @@ final class DocGenerator
     }
 
     /** @return non-empty-array<int, non-empty-string> */
-    public function create(Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n): array
+    public function create(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n): array
     {
         ['sign' => $s, 'doc' => $doc] = $this->signature($n);
         $s = "```php\n{$s}\n```";
@@ -45,7 +46,7 @@ final class DocGenerator
     }
 
     /** @return array{sign: non-empty-string, doc: string} */
-    private function signature(Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n): array
+    private function signature(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n): array
     {
         if ($n instanceof Const_) {
             return $this->constSign($n);
@@ -73,6 +74,9 @@ final class DocGenerator
             }
             $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
+        }
+        if ($n instanceof Function_) {
+            return $this->funcSign($n);
         }
         if ($n instanceof ClassMethod) {
             return $this->methodSign($n);
@@ -171,6 +175,25 @@ final class DocGenerator
         }
 
         $doc = $this->docComment($classProperty);
+        return ['sign' => $sign, 'doc' => $doc];
+    }
+
+    /** @return array{sign: non-empty-string, doc: string} */
+    private function funcSign(Function_ $f): array
+    {
+        $sign = "function {$f->name}(";
+        foreach ($f->params as $i => $param) {
+            if ($i > 0) {
+                $sign .= ', ';
+            }
+            $sign .= $this->printer->prettyPrint([$param]);
+        }
+
+        $sign = $f->returnType !== null
+            ? "{$sign}): " . $this->printer->prettyPrint([$f->returnType])
+            : "{$sign})";
+
+        $doc = $this->docComment($f);
         return ['sign' => $sign, 'doc' => $doc];
     }
 
