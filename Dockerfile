@@ -16,5 +16,6 @@ COPY src /app/src
 
 COPY --from=src-cli /usr/bin/src /usr/bin/src
 RUN ln -s /app/bin/scip-php /usr/bin/scip-php
+RUN apk add --no-cache git
 
 WORKDIR /src
