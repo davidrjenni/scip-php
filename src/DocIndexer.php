@@ -21,6 +21,7 @@ use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
@@ -79,6 +80,10 @@ final class DocIndexer
         }
         if ($n instanceof EnumCase) {
             $this->def($pos, $n, $n->name, SyntaxKind::IdentifierConstant);
+            return;
+        }
+        if ($n instanceof Function_) {
+            $this->def($pos, $n, $n->name, SyntaxKind::IdentifierFunctionDefinition);
             return;
         }
         if ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
@@ -147,7 +152,7 @@ final class DocIndexer
 
     private function def(
         PosResolver $pos,
-        Const_|ClassLike|ClassMethod|EnumCase|Param|PropertyProperty $n,
+        Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n,
         Node $posNode,
         int $kind = SyntaxKind::Identifier,
     ): void {
