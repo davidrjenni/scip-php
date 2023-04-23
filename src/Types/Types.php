@@ -153,6 +153,9 @@ final class Types
 
         if ($x instanceof FuncCall && $x->name instanceof Name && $x->name->toString() !== '') {
             $name = $this->namer->name($x->name);
+            if ($name === null) {
+                return null;
+            }
             return $this->defs[$name] ?? null;
         }
 
