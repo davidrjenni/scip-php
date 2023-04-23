@@ -124,7 +124,7 @@ final class SymbolNamer
         if ($n instanceof ArrowFunction || $n instanceof ClosureNode) {
             $ns = $this->namespaceName($n);
             $func = "anon-func-{$n->getStartTokenPos()}";
-            return "{$ns}{$func}().";
+            return $this->desc("{$ns}{$func}", '().');
         }
 
         if ($n instanceof Const_) {
