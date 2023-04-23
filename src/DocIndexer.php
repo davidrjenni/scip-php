@@ -93,7 +93,9 @@ final class DocIndexer
                 $prop = new Property($n->flags, [$p], $n->getAttributes(), $n->type, $n->attrGroups);
                 $p->setAttribute('parent', $prop);
                 $this->def($pos, $p, $n->var, SyntaxKind::IdentifierParameter);
+                return;
             }
+            $this->def($pos, $n, $n->var, SyntaxKind::IdentifierParameter);
             return;
         }
         if ($n instanceof Property) {
