@@ -267,7 +267,7 @@ final class Composer
     /** @param  non-empty-string  $f */
     public function isFunc(string $f): bool
     {
-        return function_exists($f) || isset(PhpStormStubsMap::FUNCTIONS[$f]);
+        return function_exists($f) || isset(PhpStormStubsMap::FUNCTIONS[$f]) || str_contains($f, 'anon-func-');
     }
 
     /**
@@ -343,7 +343,7 @@ final class Composer
     /** @param  non-empty-string  $ident */
     private function isFromProject(string $ident): bool
     {
-        if (str_contains($ident, 'anon-class-')) {
+        if (str_contains($ident, 'anon-class-') || str_contains($ident, 'anon-func-')) {
             return true;
         }
         if ($this->isStub($ident)) {

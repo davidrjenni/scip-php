@@ -45,7 +45,7 @@ final class ComposerTest extends TestCase
             'CONST_2',
             'CONST_3',
         ],
-        'funcs' => ['fun1'],
+        'funcs' => ['anon-func-123', 'fun1'],
     ];
 
     private const UNKNOWN = [
@@ -198,7 +198,7 @@ final class ComposerTest extends TestCase
         foreach (self::PROJECT as $idents) {
             foreach ($idents as $ident) {
                 $f = $this->composer->findFile($ident);
-                if (str_starts_with($ident, 'anon-class-')) {
+                if (str_starts_with($ident, 'anon-')) {
                     self::assertNull($f, $ident);
                     continue;
                 }
