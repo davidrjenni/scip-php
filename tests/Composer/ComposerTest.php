@@ -75,64 +75,6 @@ final class ComposerTest extends TestCase
         self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[3]);
     }
 
-    public function testIsBuiltinConst(): void
-    {
-        foreach (self::BUILTIN['classes'] as $class) {
-            self::assertFalse($this->composer->isBuiltinConst($class), $class);
-        }
-        foreach (self::BUILTIN['consts'] as $const) {
-            self::assertTrue($this->composer->isBuiltinConst($const), $const);
-        }
-        foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertFalse($this->composer->isBuiltinConst($func), $func);
-        }
-
-        foreach (self::DEPS as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
-            }
-        }
-        foreach (self::PROJECT as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
-            }
-        }
-        foreach (self::UNKNOWN as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
-            }
-        }
-    }
-
-    public function testIsBuiltinFunc(): void
-    {
-        foreach (self::BUILTIN['classes'] as $class) {
-            self::assertFalse($this->composer->isBuiltinFunc($class), $class);
-        }
-        foreach (self::BUILTIN['consts'] as $const) {
-            self::assertFalse($this->composer->isBuiltinFunc($const), $const);
-        }
-        foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertTrue($this->composer->isBuiltinFunc($func), $func);
-        }
-
-        foreach (self::DEPS as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
-            }
-        }
-        foreach (self::PROJECT as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
-            }
-        }
-        foreach (self::UNKNOWN as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinFunc($ident), $ident);
-            }
-        }
-    }
-
     public function testIsDependency(): void
     {
         foreach (self::BUILTIN as $idents) {
@@ -157,7 +99,55 @@ final class ComposerTest extends TestCase
         }
     }
 
-    public function testIsClass(): void
+    public function testIsBuiltinConst(): void
+    {
+        foreach (self::BUILTIN as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'consts', $this->composer->isBuiltinConst($ident), $ident);
+            }
+        }
+        foreach (self::DEPS as $idents) {
+            foreach ($idents as $ident) {
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
+            }
+        }
+        foreach (self::PROJECT as $idents) {
+            foreach ($idents as $ident) {
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
+            }
+        }
+        foreach (self::UNKNOWN as $idents) {
+            foreach ($idents as $ident) {
+                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
+            }
+        }
+    }
+
+    public function testIsFunc(): void
+    {
+        foreach (self::BUILTIN as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+            }
+        }
+        foreach (self::DEPS as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+            }
+        }
+        foreach (self::PROJECT as $type => $idents) {
+            foreach ($idents as $ident) {
+                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+            }
+        }
+        foreach (self::UNKNOWN as $idents) {
+            foreach ($idents as $ident) {
+                self::assertFalse($this->composer->isFunc($ident), $ident);
+            }
+        }
+    }
+
+    public function testIsClassLike(): void
     {
         foreach (self::BUILTIN as $type => $idents) {
             foreach ($idents as $ident) {

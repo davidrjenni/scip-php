@@ -233,22 +233,16 @@ final class Composer
         return $this->projectFiles;
     }
 
-    /** @param  non-empty-string  $c */
-    public function isBuiltinConst(string $c): bool
-    {
-        return isset(PhpStormStubsMap::CONSTANTS[$c]);
-    }
-
-    /** @param  non-empty-string  $f */
-    public function isBuiltinFunc(string $f): bool
-    {
-        return isset(PhpStormStubsMap::FUNCTIONS[$f]);
-    }
-
     /** @param  non-empty-string  $ident */
     public function isDependency(string $ident): bool
     {
         return !$this->isFromProject($ident);
+    }
+
+    /** @param  non-empty-string  $c */
+    public function isBuiltinConst(string $c): bool
+    {
+        return isset(PhpStormStubsMap::CONSTANTS[$c]);
     }
 
     /** @param  non-empty-string  $c */
@@ -268,6 +262,12 @@ final class Composer
                     || class_exists($c) || interface_exists($c) || trait_exists($c) || enum_exists($c)
                 )
             );
+    }
+
+    /** @param  non-empty-string  $f */
+    public function isFunc(string $f): bool
+    {
+        return function_exists($f) || isset(PhpStormStubsMap::FUNCTIONS[$f]);
     }
 
     /**

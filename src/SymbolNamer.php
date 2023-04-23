@@ -26,7 +26,6 @@ use ScipPhp\Composer\Composer;
 
 use function count;
 use function explode;
-use function function_exists;
 use function is_string;
 use function rtrim;
 use function str_replace;
@@ -194,7 +193,7 @@ final class SymbolNamer
             if ($this->composer->isClassLike($name)) {
                 return $this->desc($desc, '#');
             }
-            if (function_exists($name) || $this->composer->isBuiltinFunc($name)) {
+            if ($this->composer->isFunc($name)) {
                 return $this->desc($desc, '().');
             }
             // TODO(drj): could be a constant
