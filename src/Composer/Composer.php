@@ -234,12 +234,6 @@ final class Composer
     }
 
     /** @param  non-empty-string  $c */
-    public function isBuiltinClass(string $c): bool
-    {
-        return isset(PhpStormStubsMap::CLASSES[$c]);
-    }
-
-    /** @param  non-empty-string  $c */
     public function isBuiltinConst(string $c): bool
     {
         return isset(PhpStormStubsMap::CONSTANTS[$c]);
@@ -260,7 +254,7 @@ final class Composer
     /** @param  non-empty-string  $c */
     public function isClassLike(string $c): bool
     {
-        return $this->isBuiltinClass($c)
+        return isset(PhpStormStubsMap::CLASSES[$c])
             || str_contains($c, 'anon-class-')
             || (str_starts_with($c, 'Composer\\Autoload\\') && class_exists($c))
             || (

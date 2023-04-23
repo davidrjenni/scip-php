@@ -75,35 +75,6 @@ final class ComposerTest extends TestCase
         self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[3]);
     }
 
-    public function testIsBuiltinClass(): void
-    {
-        foreach (self::BUILTIN['classes'] as $class) {
-            self::assertTrue($this->composer->isBuiltinClass($class), $class);
-        }
-        foreach (self::BUILTIN['consts'] as $const) {
-            self::assertFalse($this->composer->isBuiltinClass($const), $const);
-        }
-        foreach (self::BUILTIN['funcs'] as $func) {
-            self::assertFalse($this->composer->isBuiltinClass($func), $func);
-        }
-
-        foreach (self::DEPS as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
-            }
-        }
-        foreach (self::PROJECT as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
-            }
-        }
-        foreach (self::UNKNOWN as $idents) {
-            foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinClass($ident), $ident);
-            }
-        }
-    }
-
     public function testIsBuiltinConst(): void
     {
         foreach (self::BUILTIN['classes'] as $class) {
