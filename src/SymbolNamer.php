@@ -115,6 +115,9 @@ final class SymbolNamer
     {
         $ns = $this->namespaceName($n);
         $class = $this->classLikeName($n);
+        if ($class === null) {
+            return null;
+        }
         return $this->desc("{$ns}{$class}", '#');
     }
 
@@ -130,6 +133,9 @@ final class SymbolNamer
         if ($n instanceof Const_) {
             $ns = $this->namespaceName($n);
             $class = $this->classLikeName($n);
+            if ($class === null) {
+                return null;
+            }
             return $this->desc("{$ns}{$class}", "#{$n->name}.");
         }
 
@@ -145,12 +151,18 @@ final class SymbolNamer
         if ($n instanceof ClassMethod) {
             $ns = $this->namespaceName($n);
             $class = $this->classLikeName($n);
+            if ($class === null) {
+                return null;
+            }
             return $this->desc("{$ns}{$class}", "#{$n->name}().");
         }
 
         if ($n instanceof EnumCase) {
             $ns = $this->namespaceName($n);
             $class = $this->classLikeName($n);
+            if ($class === null) {
+                return null;
+            }
             return $this->desc("{$ns}{$class}", "#{$n->name}.");
         }
 
@@ -167,11 +179,17 @@ final class SymbolNamer
             if ($n->toString() === 'self' || $n->toString() ===  'static') {
                 $ns = $this->namespaceName($n);
                 $class = $this->classLikeName($n);
+                if ($class === null) {
+                    return null;
+                }
                 return $this->desc("{$ns}{$class}", '#');
             }
 
             if ($n->toString() === 'parent') {
                 $classLike = $this->classLike($n);
+                if ($classLike === null) {
+                    return null;
+                }
                 if ($classLike instanceof Class_) {
                     if ($classLike->extends === null) {
                         throw new LogicException('Reference to parent in class without parent class.');
@@ -211,6 +229,9 @@ final class SymbolNamer
         if ($n instanceof PropertyProperty) {
             $ns = $this->namespaceName($n);
             $class = $this->classLikeName($n);
+            if ($class === null) {
+                return null;
+            }
             return $this->desc("{$ns}{$class}", "#\${$n->name}.");
         }
 
@@ -234,10 +255,13 @@ final class SymbolNamer
         }
     }
 
-    /** @return non-empty-string */
-    private function classLikeName(Node $n): string
+    /** @return ?non-empty-string */
+    private function classLikeName(Node $n): ?string
     {
         $c = $this->classLike($n);
+        if ($c === null) {
+            return null;
+        }
         $name = $c->name?->toString();
         if ($name === null || $name === '') {
             return "anon-class-{$c->getStartTokenPos()}";
@@ -245,12 +269,12 @@ final class SymbolNamer
         return $name;
     }
 
-    private function classLike(Node $n): ClassLike
+    private function classLike(Node $n): ?ClassLike
     {
         while (true) {
             $n = $n->getAttribute('parent');
             if ($n === null) {
-                throw new LogicException('Cannot find ClassLike.');
+                return null;
             }
             if ($n instanceof ClassLike) {
                 return $n;
