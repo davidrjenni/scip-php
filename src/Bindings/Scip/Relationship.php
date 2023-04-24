@@ -29,9 +29,9 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *   ^^^^^ definition Animal#sound()
      * }
      * class Dog implements Animal {
-     *       ^^^ definition Dog#, implementation_symbols = Animal#
+     *       ^^^ definition Dog#, relationships = [{symbol: "Animal#", is_implementation: true}]
      *   public sound(): string { return "woof" }
-     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), implementation_symbols = Animal#sound()
+     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), relationships = [{symbol: "Animal#sound()", is_implementation:true, is_reference: true}]
      * }
      * const animal: Animal = new Dog()
      *               ^^^^^^ reference Animal#
@@ -47,14 +47,14 @@ class Relationship extends \Google\Protobuf\Internal\Message
      */
     protected $is_reference = false;
     /**
-     * Similar to `references_symbols` but for "Go to implementation".
-     * It's common for the `implementation_symbols` and `references_symbols` fields
-     * have the same values but that's not always the case.
-     * In the TypeScript example above, observe that `implementation_symbols` has
-     * the value `"Animal#"` for the "Dog#" symbol while `references_symbols` is
-     * empty. When requesting "Find references" on the "Animal#" symbol we don't
-     * want to include references to "Dog#" even if "Go to implementation" on the
-     * "Animal#" symbol should navigate to the "Dog#" symbol.
+     * Similar to `is_reference` but for "Find implementations".
+     * It's common for `is_implementation` and `is_reference` to both be true but
+     * it's not always the case.
+     * In the TypeScript example above, observe that `Dog#` has an
+     * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
+     * This is because "Find references" on the "Animal#" symbol should not return
+     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>
      */
@@ -103,9 +103,9 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *             ^^^^^ definition Animal#sound()
      *           }
      *           class Dog implements Animal {
-     *                 ^^^ definition Dog#, implementation_symbols = Animal#
+     *                 ^^^ definition Dog#, relationships = [{symbol: "Animal#", is_implementation: true}]
      *             public sound(): string { return "woof" }
-     *                    ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), implementation_symbols = Animal#sound()
+     *                    ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), relationships = [{symbol: "Animal#sound()", is_implementation:true, is_reference: true}]
      *           }
      *           const animal: Animal = new Dog()
      *                         ^^^^^^ reference Animal#
@@ -117,14 +117,14 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *           references" on the `Dog#sound()` method should include references to the
      *           `Animal#sound()` method as well.
      *     @type bool $is_implementation
-     *           Similar to `references_symbols` but for "Go to implementation".
-     *           It's common for the `implementation_symbols` and `references_symbols` fields
-     *           have the same values but that's not always the case.
-     *           In the TypeScript example above, observe that `implementation_symbols` has
-     *           the value `"Animal#"` for the "Dog#" symbol while `references_symbols` is
-     *           empty. When requesting "Find references" on the "Animal#" symbol we don't
-     *           want to include references to "Dog#" even if "Go to implementation" on the
-     *           "Animal#" symbol should navigate to the "Dog#" symbol.
+     *           Similar to `is_reference` but for "Find implementations".
+     *           It's common for `is_implementation` and `is_reference` to both be true but
+     *           it's not always the case.
+     *           In the TypeScript example above, observe that `Dog#` has an
+     *           `is_implementation` relationship with `"Animal#"` but not `is_reference`.
+     *           This is because "Find references" on the "Animal#" symbol should not return
+     *           "Dog#".  We only want "Dog#" to return as a result for "Find
+     *           implementations" on the "Animal#" symbol.
      *     @type bool $is_type_definition
      *           Similar to `references_symbols` but for "Go to type definition".
      *     @type bool $is_definition
@@ -182,9 +182,9 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *   ^^^^^ definition Animal#sound()
      * }
      * class Dog implements Animal {
-     *       ^^^ definition Dog#, implementation_symbols = Animal#
+     *       ^^^ definition Dog#, relationships = [{symbol: "Animal#", is_implementation: true}]
      *   public sound(): string { return "woof" }
-     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), implementation_symbols = Animal#sound()
+     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), relationships = [{symbol: "Animal#sound()", is_implementation:true, is_reference: true}]
      * }
      * const animal: Animal = new Dog()
      *               ^^^^^^ reference Animal#
@@ -216,9 +216,9 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *   ^^^^^ definition Animal#sound()
      * }
      * class Dog implements Animal {
-     *       ^^^ definition Dog#, implementation_symbols = Animal#
+     *       ^^^ definition Dog#, relationships = [{symbol: "Animal#", is_implementation: true}]
      *   public sound(): string { return "woof" }
-     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), implementation_symbols = Animal#sound()
+     *          ^^^^^ definition Dog#sound(), references_symbols = Animal#sound(), relationships = [{symbol: "Animal#sound()", is_implementation:true, is_reference: true}]
      * }
      * const animal: Animal = new Dog()
      *               ^^^^^^ reference Animal#
@@ -243,14 +243,14 @@ class Relationship extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Similar to `references_symbols` but for "Go to implementation".
-     * It's common for the `implementation_symbols` and `references_symbols` fields
-     * have the same values but that's not always the case.
-     * In the TypeScript example above, observe that `implementation_symbols` has
-     * the value `"Animal#"` for the "Dog#" symbol while `references_symbols` is
-     * empty. When requesting "Find references" on the "Animal#" symbol we don't
-     * want to include references to "Dog#" even if "Go to implementation" on the
-     * "Animal#" symbol should navigate to the "Dog#" symbol.
+     * Similar to `is_reference` but for "Find implementations".
+     * It's common for `is_implementation` and `is_reference` to both be true but
+     * it's not always the case.
+     * In the TypeScript example above, observe that `Dog#` has an
+     * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
+     * This is because "Find references" on the "Animal#" symbol should not return
+     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>
      * @return bool
@@ -261,14 +261,14 @@ class Relationship extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Similar to `references_symbols` but for "Go to implementation".
-     * It's common for the `implementation_symbols` and `references_symbols` fields
-     * have the same values but that's not always the case.
-     * In the TypeScript example above, observe that `implementation_symbols` has
-     * the value `"Animal#"` for the "Dog#" symbol while `references_symbols` is
-     * empty. When requesting "Find references" on the "Animal#" symbol we don't
-     * want to include references to "Dog#" even if "Go to implementation" on the
-     * "Animal#" symbol should navigate to the "Dog#" symbol.
+     * Similar to `is_reference` but for "Find implementations".
+     * It's common for `is_implementation` and `is_reference` to both be true but
+     * it's not always the case.
+     * In the TypeScript example above, observe that `Dog#` has an
+     * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
+     * This is because "Find references" on the "Animal#" symbol should not return
+     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>
      * @param bool $var
