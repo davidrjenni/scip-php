@@ -38,6 +38,10 @@ To use a private Sourcegraph instance, set the
 `SRC_ENDPOINT` and `SRC_ACCESS_TOKEN` [environment
 variables](https://docs.sourcegraph.com/cli/explanations/env) first.
 
+## Contributing
+
+See the [contributing guidelines](CONTRIBUTING.md).
+
 ## Development
 
 - Run `composer lint` to run all linters.
