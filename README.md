@@ -48,6 +48,17 @@ See the [contributing guidelines](CONTRIBUTING.md).
 - Run `composer test` to run the unit tests.
 - Run `composer cover` to generate a coverage report.
 
+### Inspecting the Output
+
+- Install the `scip` cli from
+  [github.com/sourcegraph/scip](https://github.com/sourcegraph/scip).
+- Run `bin/scip-php` to generate the SCIP index.
+- Run `scip snapshot` to generate snapshot files which can be used for
+  inspecting the output of the index.
+- See the
+  [documentation](https://github.com/sourcegraph/scip/blob/main/docs/CLI.md)
+  for further functionality.
+
 ### Bindings
 
 The directory [`src/Bindings`](src/Bindings) contains auto-generated
