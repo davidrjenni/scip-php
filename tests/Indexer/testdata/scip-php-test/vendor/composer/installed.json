@@ -1,0 +1,31 @@
+{
+    "packages": [
+        {
+            "name": "davidrjenni/scip-php-test-dep",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../scip-php-test-dep",
+                "reference": "3e11662443768bf3887b227b8510bc789ed151c6"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Test\\Dep\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A package that is a test dependency",
+            "transport-options": {
+                "relative": true
+            },
+            "install-path": "../davidrjenni/scip-php-test-dep"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

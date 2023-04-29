@@ -9,10 +9,22 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php: ['8.2', '8.3']
+        php: ['8.2']
+        go: ['1.19']
     steps:
       - name: Checkout
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - name: Install Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - name: Install scip
+        run: |
+          git clone https://github.com/sourcegraph/scip.git --depth=1
+          cd scip
+          go build -o scip ./cmd
+          mv scip /usr/local/bin/scip
       - name: Install PHP
         uses: shivammathur/setup-php@cb8f453143149404c7fd670b5f37c91d395b3054 # v2.25.1
         with:

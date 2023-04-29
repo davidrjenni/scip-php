@@ -1,4 +1,5 @@
 /.phpunit.result/
 /cachegrind.out.*
 /index.scip
+/tests/Indexer/testdata/actual/
 /vendor/

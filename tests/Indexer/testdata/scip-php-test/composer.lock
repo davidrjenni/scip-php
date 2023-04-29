@@ -1,0 +1,43 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "e07d77ec55110ea107a492ea5b2ad6bb",
+    "packages": [
+        {
+            "name": "davidrjenni/scip-php-test-dep",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../scip-php-test-dep",
+                "reference": "3e11662443768bf3887b227b8510bc789ed151c6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Test\\Dep\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A package that is a test dependency",
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^8.2"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}
