@@ -5,9 +5,6 @@ declare(strict_types=1);
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
-use Scip\Metadata;
-use Scip\TextEncoding;
-use Scip\ToolInfo;
 use ScipPhp\Indexer;
 
 $options = \getopt('h', ['help', 'memory-limit:']);
@@ -37,18 +34,10 @@ if (\ini_set('memory_limit', $memoryLimit) === false) {
 }
 
 $projectRoot = \getcwd();
-$metadata = new Metadata([
-    'version'                => 1,
-    'project_root'           => "file://{$projectRoot}",
-    'text_document_encoding' => TextEncoding::UTF8,
-    'tool_info'              => new ToolInfo([
-        'name'      => 'scip-php',
-        'version'   => '0.0.1',
-        'arguments' => \array_splice($argv, 1),
-    ]),
-]);
+$version = '0.0.1';
+$args = \array_splice($argv, 1);
 
-$indexer = new Indexer($projectRoot, $metadata);
+$indexer = new Indexer($projectRoot, $version, $args);
 $index = $indexer->index();
 
 \file_put_contents(

@@ -8,6 +8,8 @@ use Scip\Document;
 use Scip\Index;
 use Scip\Language;
 use Scip\Metadata;
+use Scip\TextEncoding;
+use Scip\ToolInfo;
 use ScipPhp\Composer\Composer;
 use ScipPhp\Parser\Parser;
 use ScipPhp\Types\Types;
@@ -17,6 +19,8 @@ use function str_replace;
 
 final class Indexer
 {
+    private readonly Metadata $metadata;
+
     private readonly Parser $parser;
 
     private readonly Composer $composer;
@@ -25,11 +29,27 @@ final class Indexer
 
     private readonly Types $types;
 
-    /** @param  non-empty-string  $projectRoot */
+    /**
+     * @param  non-empty-string              $projectRoot
+     * @param  non-empty-string              $version
+     * @param  array<int, non-empty-string>  $args
+     */
     public function __construct(
         private readonly string $projectRoot,
-        private readonly Metadata $metadata,
+        string $version,
+        array $args,
     ) {
+        $this->metadata = new Metadata([
+            'version'                => 1,
+            'project_root'           => "file://{$projectRoot}",
+            'text_document_encoding' => TextEncoding::UTF8,
+            'tool_info'              => new ToolInfo([
+                'name'      => 'scip-php',
+                'version'   => $version,
+                'arguments' => $args,
+            ]),
+        ]);
+
         $this->parser = new Parser();
         $this->composer = new Composer($this->projectRoot);
         $this->namer = new SymbolNamer($this->composer);
