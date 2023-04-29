@@ -18,7 +18,7 @@ final class ReaderTest extends TestCase
     {
         $contents = Reader::read(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'test-file.txt');
 
-        self::assertEquals("The quick brown fox jumps\nover the lazy dog", $contents);
+        self::assertSame("The quick brown fox jumps\nover the lazy dog", $contents);
     }
 
     public function testReadNonExistent(): void

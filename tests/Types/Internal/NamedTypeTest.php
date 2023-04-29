@@ -14,6 +14,6 @@ final class NamedTypeTest extends TestCase
         $name = 'scip-php composer php 8.2.4 Exception#';
         $t = new NamedType($name);
 
-        self::assertEquals([$name], $t->flatten());
+        self::assertSame([$name], $t->flatten());
     }
 }

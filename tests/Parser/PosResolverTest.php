@@ -33,19 +33,19 @@ final class PosResolverTest extends TestCase
             $this,
             function (PosResolver $pos, Node $n): void {
                 if ($n instanceof Variable && $n->name === 'x') {
-                    self::assertEquals([2, 0, 2, 2], $pos->pos($n));
+                    self::assertSame([2, 0, 2, 2], $pos->pos($n));
                 }
                 if ($n instanceof Variable && $n->name === 'yy') {
-                    self::assertEquals([3, 0, 3, 3], $pos->pos($n));
+                    self::assertSame([3, 0, 3, 3], $pos->pos($n));
                 }
                 if ($n instanceof New_) {
-                    self::assertEquals([4, 7, 6, 1], $pos->pos($n));
+                    self::assertSame([4, 7, 6, 1], $pos->pos($n));
                 }
                 if ($n instanceof PropertyProperty && $n->name->toString() === 'p') {
-                    self::assertEquals([5, 18, 5, 20], $pos->pos($n->name));
+                    self::assertSame([5, 18, 5, 20], $pos->pos($n->name));
                 }
                 if ($n instanceof PropertyFetch && $n->name instanceof Identifier && $n->name->toString() === 'p') {
-                    self::assertEquals([8, 11, 8, 12], $pos->pos($n->name));
+                    self::assertSame([8, 11, 8, 12], $pos->pos($n->name));
                 }
             },
         );

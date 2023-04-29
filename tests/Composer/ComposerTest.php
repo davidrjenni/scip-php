@@ -103,7 +103,7 @@ final class ComposerTest extends TestCase
     {
         foreach (self::BUILTIN as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'consts', $this->composer->isBuiltinConst($ident), $ident);
+                self::assertSame($type === 'consts', $this->composer->isBuiltinConst($ident), $ident);
             }
         }
         foreach (self::DEPS as $idents) {
@@ -127,17 +127,17 @@ final class ComposerTest extends TestCase
     {
         foreach (self::BUILTIN as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+                self::assertSame($type === 'funcs', $this->composer->isFunc($ident), $ident);
             }
         }
         foreach (self::DEPS as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+                self::assertSame($type === 'funcs', $this->composer->isFunc($ident), $ident);
             }
         }
         foreach (self::PROJECT as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'funcs', $this->composer->isFunc($ident), $ident);
+                self::assertSame($type === 'funcs', $this->composer->isFunc($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
@@ -151,17 +151,17 @@ final class ComposerTest extends TestCase
     {
         foreach (self::BUILTIN as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+                self::assertSame($type === 'classes', $this->composer->isClassLike($ident), $ident);
             }
         }
         foreach (self::DEPS as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+                self::assertSame($type === 'classes', $this->composer->isClassLike($ident), $ident);
             }
         }
         foreach (self::PROJECT as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals($type === 'classes', $this->composer->isClassLike($ident), $ident);
+                self::assertSame($type === 'classes', $this->composer->isClassLike($ident), $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
@@ -220,7 +220,7 @@ final class ComposerTest extends TestCase
     {
         foreach (self::BUILTIN as $idents) {
             foreach ($idents as $ident) {
-                self::assertEquals(
+                self::assertSame(
                     ['name' => 'php', 'version' => PHP_VERSION],
                     $this->composer->pkg($ident),
                     $ident,
@@ -232,17 +232,17 @@ final class ComposerTest extends TestCase
             $pkg = $this->composer->pkg($ident);
             self::assertNotNull($pkg, $ident);
             ['name' => $name, 'version' => $version] = $pkg;
-            self::assertEquals('myclabs/deep-copy', $name);
+            self::assertSame('myclabs/deep-copy', $name);
             self::assertMatchesRegularExpression('/^[a-f0-9]{40}$/', $version);
         }
 
         $pkg = $this->composer->pkg(self::DEPS['classes'][0]);
         self::assertNotNull($pkg);
         ['name' => $name, 'version' => $version] = $pkg;
-        self::assertEquals('myclabs/deep-copy', $name);
+        self::assertSame('myclabs/deep-copy', $name);
         self::assertMatchesRegularExpression('/^[a-f0-9]{40}$/', $version);
 
-        self::assertEquals(
+        self::assertSame(
             ['name' => 'composer', 'version' => 'dev'],
             $this->composer->pkg(self::DEPS['classes'][1]),
         );
@@ -251,7 +251,7 @@ final class ComposerTest extends TestCase
             foreach ($idents as $ident) {
                 $pkg = $this->composer->pkg($ident);
                 self::assertNotNull($pkg, $ident);
-                self::assertEquals('davidrjenni/scip-php-composer-test', $pkg['name'], $ident);
+                self::assertSame('davidrjenni/scip-php-composer-test', $pkg['name'], $ident);
             }
         }
         foreach (self::UNKNOWN as $idents) {
