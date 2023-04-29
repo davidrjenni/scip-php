@@ -225,6 +225,35 @@ final class Composer
         $composerPath = self::join($this->vendorDir, 'composer');
         $pkgsByPaths[$composerPath] = ['name' => 'composer', 'version' => 'dev'];
         $this->pkgsByPaths = $pkgsByPaths;
+
+
+        $lock = self::parseJson($projectRoot, 'composer.lock');
+        if (is_array($lock['packages'] ?? null)) {
+            foreach ($lock['packages'] as $pkg) {
+                if (
+                    !is_array($pkg)
+                    || !is_array($pkg['autoload'] ?? null)
+                    || !is_array($pkg['autoload']['files'] ?? null)
+                    || !is_string($pkg['name'] ?? null)
+                    || $pkg['name'] === ''
+                ) {
+                    continue;
+                }
+                foreach ($pkg['autoload']['files'] as $f) {
+                    if (!is_string($f) || $f === '') {
+                        continue;
+                    }
+                    $f = self::join($this->vendorDir, $pkg['name'], $f);
+                    $classes = PhpFileParser::findClasses($f);
+                    foreach ($classes as $c) {
+                        if ($this->loader->findFile($c) === false) {
+                            $additionalClasses[$c] = $f;
+                        }
+                    }
+                }
+            }
+        }
+        $this->loader->addClassMap($additionalClasses);
     }
 
     /** @return array<int, non-empty-string> */

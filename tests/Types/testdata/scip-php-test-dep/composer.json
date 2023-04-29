@@ -3,7 +3,7 @@
     "description": "A package that is a test dependency",
     "license": "MIT",
     "autoload": {
-        "files": ["src/func4.php"],
+        "files": ["src/func4.php", "src/ClassJ.php"],
         "psr-4": {
             "Test\\Dep\\": "src"
         }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TestData;
 
 use Test\Dep\ClassI;
+use Test\Dep2\ClassJ;
+use TestData5\ClassK;
 
 trait TraitE
 {
@@ -20,7 +22,7 @@ trait TraitE
     public function e2(): int
     {
         $v1 = ClassI::I1;
-        return $this->e2::I1 * $v1;
+        return $this->e2::I1 * $v1 * ClassJ::J1 * ClassK::K1;
     }
 
     public function e3(): int

@@ -7,11 +7,15 @@
             "dist": {
                 "type": "path",
                 "url": "../scip-php-test-dep",
-                "reference": "3e11662443768bf3887b227b8510bc789ed151c6"
+                "reference": "799e140c065841e44b29351a444c6f8579aa5349"
             },
             "type": "library",
             "installation-source": "dist",
             "autoload": {
+                "files": [
+                    "src/func4.php",
+                    "src/ClassJ.php"
+                ],
                 "psr-4": {
                     "Test\\Dep\\": "src"
                 }
