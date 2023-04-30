@@ -348,39 +348,41 @@ final class Types
 
     private function collectUppers(ClassLike $c): void
     {
+        $name = $this->namer->name($c);
+        if ($name === null) {
+            return;
+        }
+
         foreach ($c->getTraitUses() as $use) {
             foreach ($use->traits as $t) {
-                $this->addUpper($c, $t);
+                $this->addUpper($name, $t);
             }
         }
         if ($c instanceof Class_) {
             if ($c->extends !== null) {
-                $this->addUpper($c, $c->extends);
+                $this->addUpper($name, $c->extends);
             }
             foreach ($c->implements as $i) {
-                $this->addUpper($c, $i);
+                $this->addUpper($name, $i);
             }
         } elseif ($c instanceof Interface_) {
             foreach ($c->extends as $i) {
-                $this->addUpper($c, $i);
+                $this->addUpper($name, $i);
             }
         }
     }
 
-    private function addUpper(ClassLike $c, Name $upper): void
+    /** @param  non-empty-string  $c */
+    private function addUpper(string $c, Name $upper): void
     {
-        $n = $this->namer->name($c);
-        if ($n === null) {
-            return;
-        }
-        if (!isset($this->uppers[$n])) {
-            $this->uppers[$n] = [];
-        }
         $name = $this->namer->name($upper);
         if ($name === null) {
             return;
         }
-        $this->uppers[$n][] = $name;
+        if (!isset($this->uppers[$c])) {
+            $this->uppers[$c] = [];
+        }
+        $this->uppers[$c][] = $name;
         $this->defs[$name] = new NamedType($name);
     }
 }
