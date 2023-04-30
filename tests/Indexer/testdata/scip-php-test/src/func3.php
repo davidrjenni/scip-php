@@ -6,7 +6,8 @@ namespace TestData4;
 
 use TestData\ClassF;
 
-function fun2(): ClassF
+/** @return ClassF */
+function fun2()
 {
     return new ClassF();
 }

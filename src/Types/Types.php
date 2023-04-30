@@ -32,6 +32,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use ScipPhp\Composer\Composer;
+use ScipPhp\Parser\DocCommentParser;
 use ScipPhp\Parser\Parser;
 use ScipPhp\Parser\PosResolver;
 use ScipPhp\SymbolNamer;
@@ -51,6 +52,8 @@ final class Types
 
     private readonly TypeParser $typeParser;
 
+    private readonly DocCommentParser $docCommentParser;
+
     /** @var array<non-empty-string, array<int, non-empty-string>> */
     private array $uppers;
 
@@ -66,6 +69,7 @@ final class Types
     ) {
         $this->parser = new Parser();
         $this->typeParser = new TypeParser($namer);
+        $this->docCommentParser = new DocCommentParser();
         $this->uppers = [];
         $this->defs = [];
         $this->seenDepFiles = [];
@@ -323,6 +327,10 @@ final class Types
             $name = $this->namer->name($n);
             if ($name !== null) {
                 $type = $this->typeParser->parse($n->getReturnType());
+                if ($type === null) {
+                    $t = $this->docCommentParser->parseReturnType($n);
+                    $type = $this->typeParser->parseDoc($n, $t);
+                }
                 $this->defs[$name] = $type;
             }
         } elseif ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
