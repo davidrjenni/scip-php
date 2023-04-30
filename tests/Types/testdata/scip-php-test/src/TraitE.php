@@ -12,7 +12,8 @@ trait TraitE
 {
     public int $e1;
 
-    public ClassI $e2;
+    /** @var ClassI */
+    public $e2;
 
     protected function e1(): bool
     {

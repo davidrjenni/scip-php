@@ -30,19 +30,17 @@ final class Parser
         $this->nameResolver = new NameResolver();
         $this->parser = (new ParserFactory())->create(
             ParserFactory::ONLY_PHP7,
-            new Lexer(
-                [
-                    'usedAttributes' => [
-                        'comments',
-                        'startLine',
-                        'endLine',
-                        'startTokenPos',
-                        'endTokenPos',
-                        'startFilePos',
-                        'endFilePos',
-                    ],
+            new Lexer([
+                'usedAttributes' => [
+                    'comments',
+                    'startLine',
+                    'endLine',
+                    'startTokenPos',
+                    'endTokenPos',
+                    'startFilePos',
+                    'endFilePos',
                 ],
-            ),
+            ]),
         );
     }
 

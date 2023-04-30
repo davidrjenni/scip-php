@@ -30,6 +30,20 @@ final class DocCommentParser
         $this->lexer = new Lexer();
     }
 
+    public function parsePropertyType(Node $node): ?TypeNode
+    {
+        $doc = $node->getDocComment();
+        if ($doc === null) {
+            return null;
+        }
+        $n = $this->parse($doc);
+        $tags = $n->getVarTagValues();
+        if (count($tags) === 0) {
+            return null;
+        }
+        return $tags[0]->type;
+    }
+
     public function parseReturnType(Node $node): ?TypeNode
     {
         $doc = $node->getDocComment();
