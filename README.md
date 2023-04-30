@@ -17,6 +17,10 @@ SCIP Code Intelligence Protocol (SCIP) indexer for PHP
 This repository is indexed using itself and available on
 [Sourcegraph](https://sourcegraph.com/github.com/davidrjenni/scip-php).
 
+And here is a Sourcegraph notebook with a
+[demo](https://sourcegraph.com/notebooks/Tm90ZWJvb2s6MjI2NQ==) and
+additional explanations.
+
 ## Requirements
 
 - `scip-php` must be run in the root directory of the project you want
