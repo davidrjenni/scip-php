@@ -45,7 +45,7 @@ final class ComposerTest extends TestCase
             'CONST_2',
             'CONST_3',
         ],
-        'funcs' => ['anon-func-123', 'fun1'],
+        'funcs' => ['anon-func-123', 'fun1', 'TestData3\\fun1'],
     ];
 
     private const UNKNOWN = [
@@ -66,13 +66,14 @@ final class ComposerTest extends TestCase
     {
         $files = $this->composer->projectFiles();
 
-        self::assertCount(4, $files);
+        self::assertCount(5, $files);
 
         $root = self::join('tests', 'Composer', 'testdata');
         self::assertStringEndsWith(self::join($root, 'bin', 'main'), $files[0]);
-        self::assertStringEndsWith(self::join($root, 'src', 'file.php'), $files[1]);
-        self::assertStringEndsWith(self::join($root, 'src', 'ClassA.php'), $files[2]);
-        self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[3]);
+        self::assertStringEndsWith(self::join($root, 'src', 'file1.php'), $files[1]);
+        self::assertStringEndsWith(self::join($root, 'src', 'file2.php'), $files[2]);
+        self::assertStringEndsWith(self::join($root, 'src', 'ClassA.php'), $files[3]);
+        self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[4]);
     }
 
     public function testIsDependency(): void

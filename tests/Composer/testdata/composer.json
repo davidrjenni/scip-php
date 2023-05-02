@@ -9,7 +9,7 @@
     "autoload": {
         "exclude-from-classmap": ["ClassB"],
         "classmap": ["src"],
-        "files": ["src/file.php"]
+        "files": ["src/file1.php", "src/file2.php"]
     },
     "autoload-dev": {
         "psr-4": {
