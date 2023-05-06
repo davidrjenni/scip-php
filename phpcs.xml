@@ -121,4 +121,13 @@
 		</properties>
 	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
+
+	<!-- Strings -->
+	<rule ref="SlevomatCodingStandard.Strings.DisallowVariableParsing">
+		<properties>
+			<property name="disallowDollarCurlySyntax" value="true"/>
+			<property name="disallowCurlyDollarSyntax" value="false"/>
+			<property name="disallowSimpleSyntax" value="true"/>
+		</properties>
+	</rule>
 </ruleset>

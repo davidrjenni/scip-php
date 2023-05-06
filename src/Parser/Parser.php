@@ -52,12 +52,12 @@ final class Parser
     {
         $code = Reader::read($filename);
         if ($code === '') {
-            throw new RuntimeException("Cannot parse file: $filename.");
+            throw new RuntimeException("Cannot parse file: {$filename}.");
         }
 
         $stmts = $this->parser->parse($code);
         if ($stmts === null) {
-            throw new RuntimeException("Cannot parse file: $filename.");
+            throw new RuntimeException("Cannot parse file: {$filename}.");
         }
 
         $pos = new PosResolver($code);
