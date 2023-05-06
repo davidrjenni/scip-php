@@ -47,6 +47,7 @@ final class TypesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->parser = $this->createParser();
         $this->stmts = [];
 

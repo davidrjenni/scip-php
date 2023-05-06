@@ -62,6 +62,7 @@ final class ComposerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->composer = new Composer(__DIR__ . DIRECTORY_SEPARATOR . 'testdata');
     }
 
