@@ -137,6 +137,12 @@ final class TypesTest extends TestCase
         $this->assertMethCall('ClassA.php', 'f2', 43, 'TestData/ClassF#f2().');
         $this->assertMethCall('ClassA.php', 'a1', 44, 'TestData/ClassA#a1().');
 
+        $this->assertMethCall('ClassK.php', 'a1', 25, 'TestData/ClassA#a1().');
+        $this->assertMethCall('ClassK.php', 'b1', 26, 'TestData/ClassB#b1().');
+        $this->assertMethCall('ClassK.php', 'c1', 27, 'TestData/ClassC#c1().');
+        $this->assertMethCall('ClassK.php', 'f1', 27, 'TestData/ClassF#f1().');
+        $this->assertMethCall('ClassK.php', 'h1', 28, 'TestData/ClassH#h1().');
+
         $this->assertMethCall('ClassH.php', '__construct', 14, 'Exception#__construct().');
         $this->assertMethCall('ClassH.php', 'f2', 19, 'ClassF#f2().');
         $this->assertMethCall('ClassH.php', 'a2', 19, 'ClassA#a2().');
@@ -173,6 +179,8 @@ final class TypesTest extends TestCase
         $this->assertPropFetch('ClassB.php', 'b1', 17, 'TestData/ClassB#$b1.');
         $this->assertPropFetch('ClassB.php', 'c2', 17, 'TestData/ClassC#$c2.');
         $this->assertPropFetch('ClassB.php', 'd2', 17, 'TestData/ClassD#$d2.');
+
+        $this->assertPropFetch('ClassK.php', 'd1', 27, 'TestData/ClassD#$d1.');
 
         $this->assertPropFetch('TraitE.php', 'e2', 20, 'TestData/TraitE#$e2.');
         $this->assertPropFetch('TraitE.php', 'i1', 20, 'Test/Dep/ClassI#$i1.');

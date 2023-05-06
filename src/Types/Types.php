@@ -44,6 +44,7 @@ use ScipPhp\Types\Internal\TypeParser;
 use function array_key_exists;
 use function in_array;
 use function is_string;
+use function ltrim;
 use function strtolower;
 
 final class Types
@@ -381,6 +382,27 @@ final class Types
             foreach ($c->extends as $i) {
                 $this->addUpper($name, $i);
             }
+        }
+
+        $props = $this->docCommentParser->parseProperties($c);
+        foreach ($props as $p) {
+            $propName = ltrim($p->propertyName, '$');
+            if ($propName === '') {
+                continue;
+            }
+            $propName = $this->namer->nameProp($name, $propName);
+            $type = $this->typeParser->parseDoc($c, $p->type);
+            $this->defs[$propName] = $type;
+        }
+
+        $methods = $this->docCommentParser->parseMethods($c);
+        foreach ($methods as $m) {
+            if ($m->methodName === '') {
+                continue;
+            }
+            $methName = $this->namer->nameMeth($name, $m->methodName);
+            $type = $this->typeParser->parseDoc($c, $m->returnType);
+            $this->defs[$methName] = $type;
         }
     }
 

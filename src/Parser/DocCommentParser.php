@@ -6,7 +6,9 @@ namespace ScipPhp\Parser;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -56,6 +58,32 @@ final class DocCommentParser
             return null;
         }
         return $tags[0]->type;
+    }
+
+    /** @return array<string, PropertyTagValueNode> */
+    public function parseProperties(Node $node): array
+    {
+        $doc = $node->getDocComment();
+        if ($doc === null) {
+            return [];
+        }
+        $n = $this->parse($doc);
+        return [
+            ...$n->getPropertyTagValues(),
+            ...$n->getPropertyReadTagValues(),
+            ...$n->getPropertyWriteTagValues(),
+        ];
+    }
+
+    /** @return array<string, MethodTagValueNode> */
+    public function parseMethods(Node $node): array
+    {
+        $doc = $node->getDocComment();
+        if ($doc === null) {
+            return [];
+        }
+        $n = $this->parse($doc);
+        return $n->getMethodTagValues();
     }
 
     private function parse(Doc $doc): PhpDocNode
