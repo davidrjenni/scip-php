@@ -44,14 +44,17 @@ final class ComposerTest extends TestCase
             'CONST_1',
             'CONST_2',
             'CONST_3',
+            'TestData3\\Foo\\CONST_4',
+            'TestData3\\Foo\\CONST_5',
+            'CONST_6',
         ],
-        'funcs' => ['anon-func-123', 'fun1', 'TestData3\\fun1'],
+        'funcs' => ['anon-func-123', 'fun1', 'TestData3\\Foo\\fun1'],
     ];
 
     private const UNKNOWN = [
-        'classes' => ['Foo\\Foo'],
-        'consts' => ['Foo\\FOO'],
-        'funcs' => ['Foo\\foo'],
+        'classes' => ['Foo\\Foo', 'Foo'],
+        'consts' => ['Foo\\FOO', 'FOO'],
+        'funcs' => ['Foo\\foo', 'foo'],
     ];
 
     private Composer $composer;

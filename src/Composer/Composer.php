@@ -15,11 +15,13 @@ use ScipPhp\File\Reader;
 
 use function array_keys;
 use function array_merge;
+use function array_slice;
 use function array_unique;
 use function array_values;
 use function class_exists;
 use function count;
 use function enum_exists;
+use function explode;
 use function function_exists;
 use function get_defined_constants;
 use function get_included_files;
@@ -29,6 +31,7 @@ use function is_array;
 use function is_string;
 use function json_decode;
 use function preg_match;
+use function preg_quote;
 use function realpath;
 use function rtrim;
 use function str_contains;
@@ -419,16 +422,39 @@ final class Composer
             return null;
         }
 
+        $parts = explode('\\', $c);
+        $last = count($parts) - 1;
+        $hasNs = $last > 0;
+        $ns = implode('\\', array_slice($parts, 0, $last));
+        $const = $parts[$last];
+        $ns = preg_quote($ns);
+        $qualifiedConst = str_replace('\\', '\\\\', $c);
+        $qualifiedConst = preg_quote($qualifiedConst);
+
         // TODO(drj): replace with an AST visitor.
-        $pattern = "/^\s*(?:define\s*\(\s*|const\s+)(?:{$c}\s*=|['\"]{$c}['\"]\s*,)/m";
+        $defineConstPattern = "/^\s*define\s*\(\s*['\"]{$qualifiedConst}['\"]\s*,/m";
+        $assignConstPattern = "/^\s*const\s+{$const}\s*=/m";
+        $nsPattern = "/^\s*namespace\s+{$ns};/m";
+        $anyNsPattern = '/^\s*namespace\s+.+;/m';
+
         $files = get_included_files();
         foreach ($files as $f) {
-            if ($f === '') {
+            if ($f === '' || realpath($f) === false) {
                 continue;
             }
             $content = Reader::read($f);
-            if (preg_match($pattern, $content) === 1 && realpath($f) !== false) {
+
+            if (preg_match($defineConstPattern, $content) === 1) {
                 return realpath($f);
+            }
+
+            if (preg_match($assignConstPattern, $content) === 1) {
+                if ($hasNs && preg_match($nsPattern, $content) === 1) {
+                    return realpath($f);
+                }
+                if (!$hasNs && preg_match($anyNsPattern, $content) === 0) {
+                    return realpath($f);
+                }
             }
         }
         return null;
