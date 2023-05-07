@@ -122,6 +122,56 @@
 	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
 
+	<!-- Commenting -->
+	<rule ref="SlevomatCodingStandard.Commenting.AnnotationName"/>
+	<rule ref="SlevomatCodingStandard.Commenting.DeprecatedAnnotationDeclaration"/>
+	<rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+		<properties>
+			<property name="forbiddenAnnotations" type="array">
+				<element value="@access"/>
+				<element value="@api"/>
+				<element value="@author"/>
+				<element value="@category"/>
+				<element value="@copyright"/>
+				<element value="@created"/>
+				<element value="@license"/>
+				<element value="@link"/>
+				<element value="@package"/>
+				<element value="@see"/>
+				<element value="@since"/>
+				<element value="@subpackage"/>
+				<element value="@throws"/>
+				<element value="@version"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Commenting.ForbiddenComments">
+		<properties>
+			<property name="forbiddenCommentPatterns" type="array">
+				<element value="~^(?:(?!private|protected|static)\S+ )?(?:con|de)structor\.\z~i"/>
+				<element value="~^Created by .+\.\z~i"/>
+				<element value="~^(User|Date|Time): \S+\z~i"/>
+				<element value="~^\S+ [gs]etter\.\z~i"/>
+				<element value="~^Class \S+\z~i"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
+		<properties>
+			<property name="linesCountBeforeFirstContent" value="0"/>
+			<property name="linesCountBetweenDescriptionAndAnnotations" value="1"/>
+			<property name="linesCountBetweenDifferentAnnotationsTypes" value="0"/>
+			<property name="linesCountBetweenAnnotationsGroups" value="0"/>
+			<property name="linesCountAfterLastContent" value="0"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration"/>
+	<rule ref="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.RequireOneLineDocComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
+
 	<!-- Exceptions -->
 	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
 	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
