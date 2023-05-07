@@ -197,7 +197,7 @@ final class TypesTest extends TestCase
         $x = $this->findNode(
             $filename,
             $line,
-            fn(Node $n): bool => $n instanceof Name && str_ends_with($n->toString(), $name),
+            static fn(Node $n): bool => $n instanceof Name && str_ends_with($n->toString(), $name),
         );
 
         self::assertInstanceOf(Name::class, $x);
@@ -221,7 +221,7 @@ final class TypesTest extends TestCase
         $x = $this->findNode(
             $filename,
             $line,
-            fn(Node $n): bool => $n instanceof ClassConstFetch
+            static fn(Node $n): bool => $n instanceof ClassConstFetch
                 && $n->name instanceof Identifier
                 && $n->name->toString() === $name,
         );
@@ -245,7 +245,7 @@ final class TypesTest extends TestCase
         $x = $this->findNode(
             $filename,
             $line,
-            fn(Node $n): bool => in_array($n::class, $classes, true)
+            static fn(Node $n): bool => in_array($n::class, $classes, true)
                 && isset($n->name)
                 && $n->name instanceof Identifier
                 && $n->name->toString() === $name,
@@ -279,7 +279,7 @@ final class TypesTest extends TestCase
         $x = $this->findNode(
             $filename,
             $line,
-            fn(Node $n): bool => in_array($n::class, $classes, true)
+            static fn(Node $n): bool => in_array($n::class, $classes, true)
                 && isset($n->name)
                 && $n->name instanceof Identifier
                 && $n->name->toString() === $name,
@@ -316,7 +316,7 @@ final class TypesTest extends TestCase
             $this->stmts[$filename] = $stmts;
         }
 
-        $finder = new FindingVisitor(fn(Node $n): bool => $filter($n) && $n->getStartLine() === $line);
+        $finder = new FindingVisitor(static fn(Node $n): bool => $filter($n) && $n->getStartLine() === $line);
         $t = new NodeTraverser();
         $t->addVisitor(new NameResolver());
         $t->addVisitor(new ParentConnectingVisitor());

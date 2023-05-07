@@ -177,6 +177,52 @@
 	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
 	<rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
 
+	<!-- Functions -->
+	<rule ref="SlevomatCodingStandard.Functions.ArrowFunctionDeclaration">
+		<properties>
+			<property name="spacesCountAfterKeyword" value="0"/>
+			<property name="spacesCountBeforeArrow" value="1"/>
+			<property name="spacesCountAfterArrow" value="1"/>
+			<property name="allowMultiLine" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
+	<rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction"/>
+	<rule ref="SlevomatCodingStandard.Functions.RequireMultiLineCall">
+		<properties>
+			<property name="minLineLength" value="120"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.RequireSingleLineCall">
+		<properties>
+			<property name="maxLineLength" value="80"/>
+			<property name="ignoreWithComplexParameter" value="false"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInCall">
+		<properties>
+			<property name="onlySingleLine" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInClosureUse">
+		<properties>
+			<property name="onlySingleLine" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInClosureUse"/>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInDeclaration">
+		<properties>
+			<property name="onlySingleLine" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
+	<rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+	<rule ref="SlevomatCodingStandard.Functions.StrictCall"/>
+	<rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
+	<rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/>
+	<rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
+
 	<!-- Numbers -->
 	<rule ref="SlevomatCodingStandard.Numbers.RequireNumericLiteralSeparator">
 		<properties>

@@ -304,7 +304,7 @@ final class Types
         }
     }
 
-    private function collectDefs(PosResolver $pos, Node $n): void
+    private function collectDefs(PosResolver $pos, Node $n): void // phpcs:ignore
     {
         if ($n instanceof ClassConst) {
             foreach ($n->consts as $c) {

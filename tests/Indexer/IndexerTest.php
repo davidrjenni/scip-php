@@ -62,10 +62,7 @@ final class IndexerTest extends TestCase
         $indexer = new Indexer(self::TESTDATA_DIR . 'scip-php-test', 'test', []);
         $index = $indexer->index();
 
-        file_put_contents(
-            $this->indexFile,
-            $index->serializeToString(),
-        );
+        file_put_contents($this->indexFile, $index->serializeToString());
 
         $actualPath = self::TESTDATA_DIR . 'actual';
 

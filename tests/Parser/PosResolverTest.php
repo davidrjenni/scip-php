@@ -32,7 +32,7 @@ final class PosResolverTest extends TestCase
         $this->parser->traverse(
             __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'test.php',
             $this,
-            function (PosResolver $pos, Node $n): void {
+            function (PosResolver $pos, Node $n): void { // phpcs:ignore
                 if ($n instanceof Variable && $n->name === 'x') {
                     self::assertSame([2, 0, 2, 2], $pos->pos($n));
                 }

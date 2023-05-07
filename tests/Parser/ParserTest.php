@@ -30,7 +30,7 @@ final class ParserTest extends TestCase
         $this->parser->traverse(
             __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'empty.php',
             $this,
-            function (PosResolver $pos, Node $n): void {
+            static function (PosResolver $pos, Node $n): void { // phpcs:ignore
             },
         );
     }
