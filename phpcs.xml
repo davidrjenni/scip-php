@@ -122,6 +122,11 @@
 	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
 
+	<!-- Exceptions -->
+	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
+
 	<!-- Strings -->
 	<rule ref="SlevomatCodingStandard.Strings.DisallowVariableParsing">
 		<properties>
