@@ -347,14 +347,16 @@ final class Types
         } elseif ($n instanceof Property) {
             foreach ($n->props as $p) {
                 $name = $this->namer->name($p);
-                if ($name !== null) {
-                    $type = $this->typeParser->parse($n->type);
-                    if ($type === null) {
-                        $t = $this->docCommentParser->parsePropertyType($n);
-                        $type = $this->typeParser->parseDoc($n, $t);
-                    }
-                    $this->defs[$name] = $type;
+                if ($name === null) {
+                    continue;
                 }
+
+                $type = $this->typeParser->parse($n->type);
+                if ($type === null) {
+                    $t = $this->docCommentParser->parsePropertyType($n);
+                    $type = $this->typeParser->parseDoc($n, $t);
+                }
+                $this->defs[$name] = $type;
             }
         }
     }

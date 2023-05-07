@@ -172,6 +172,45 @@
 	<rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
 	<rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
 
+	<!-- Control structures -->
+	<rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
+	<!-- <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit"> -->
+	<!-- 	<properties> -->
+	<!-- 		<property name="ignoreStandaloneIfInScope" value="true"/> -->
+	<!-- 		<property name="ignoreOneLineTrailingIf" value="true"/> -->
+	<!-- 		<property name="ignoreTrailingIfWithOneInstruction" value="true"/> -->
+	<!-- 	</properties> -->
+	<!-- </rule> -->
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowTrailingMultiLineTernaryOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireMultiLineCondition">
+		<properties>
+			<property name="minLineLength" value="120"/>
+			<property name="booleanOperatorOnPreviousLine" value="false"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireMultiLineTernaryOperator">
+		<properties>
+			<property name="lineLengthLimit" value="120"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireNullSafeObjectOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireSingleLineCondition">
+		<properties>
+			<property name="maxLineLength" value="80"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireShortTernaryOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireTernaryOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessIfConditionWithReturn"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessTernaryOperator"/>
+
 	<!-- Exceptions -->
 	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
 	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>

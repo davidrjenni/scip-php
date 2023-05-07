@@ -447,14 +447,14 @@ final class Composer
             if (preg_match($defineConstPattern, $content) === 1) {
                 return realpath($f);
             }
-
-            if (preg_match($assignConstPattern, $content) === 1) {
-                if ($hasNs && preg_match($nsPattern, $content) === 1) {
-                    return realpath($f);
-                }
-                if (!$hasNs && preg_match($anyNsPattern, $content) === 0) {
-                    return realpath($f);
-                }
+            if (preg_match($assignConstPattern, $content) !== 1) {
+                continue;
+            }
+            if ($hasNs && preg_match($nsPattern, $content) === 1) {
+                return realpath($f);
+            }
+            if (!$hasNs && preg_match($anyNsPattern, $content) === 0) {
+                return realpath($f);
             }
         }
         return null;

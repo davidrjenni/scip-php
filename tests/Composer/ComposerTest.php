@@ -153,11 +153,13 @@ final class ComposerTest extends TestCase
                 self::assertStringContainsString(self::join('tests', 'Composer', 'testdata', 'vendor'), $f);
                 self::assertStringEndsWith('.php', $f);
 
-                if ($type === 'classes') {
-                    $parts = explode('\\', $ident);
-                    $class = $parts[count($parts) - 1];
-                    self::assertStringEndsWith("{$class}.php", $f);
+                if ($type !== 'classes') {
+                    continue;
                 }
+
+                $parts = explode('\\', $ident);
+                $class = $parts[count($parts) - 1];
+                self::assertStringEndsWith("{$class}.php", $f);
             }
         }
         foreach (self::PROJECT as $idents) {
