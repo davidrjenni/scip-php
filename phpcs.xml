@@ -177,6 +177,36 @@
 	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
 	<rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
 
+	<!-- PHP -->
+	<rule ref="SlevomatCodingStandard.PHP.DisallowDirectMagicInvokeCall"/>
+	<rule ref="SlevomatCodingStandard.PHP.DisallowReference"/>
+	<rule ref="SlevomatCodingStandard.PHP.ForbiddenClasses">
+		<properties>
+			<property name="forbiddenClasses" type="array">
+				<element key="\stdClass" value="null"/>
+			</property>
+			<property name="forbiddenExtends" type="array">
+				<element key="\stdClass" value="null"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.PHP.ReferenceSpacing">
+		<properties>
+			<property name="spacesCountAfterReference" value="0"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.PHP.RequireExplicitAssertion">
+		<properties>
+			<property name="enableIntegerRanges" value="true"/>
+			<property name="enableAdvancedStringTypes" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.PHP.OptimizedFunctionsWithoutUnpacking"/>
+	<rule ref="SlevomatCodingStandard.PHP.ShortList"/>
+	<rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
+	<rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
+	<rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
+
 	<!-- Strings -->
 	<rule ref="SlevomatCodingStandard.Strings.DisallowVariableParsing">
 		<properties>

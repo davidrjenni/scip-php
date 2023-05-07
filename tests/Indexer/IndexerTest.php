@@ -98,9 +98,8 @@ final class IndexerTest extends TestCase
         );
 
         $files = [];
-        /** @var SplFileInfo $f */
         foreach ($fileIterator as $f) {
-            if ($f->isFile() && $f->getExtension() === 'php') {
+            if ($f instanceof SplFileInfo && $f->isFile() && $f->getExtension() === 'php') {
                 $path = $f->getRealPath();
                 $relPath = substr($f->getPathname(), strlen($dir));
                 if ($path !== false && $path !== '' && $relPath !== '') {
