@@ -28,10 +28,12 @@ use function get_included_files;
 use function implode;
 use function interface_exists;
 use function is_array;
+use function is_file;
 use function is_string;
 use function json_decode;
 use function preg_match;
 use function preg_quote;
+use function preg_replace;
 use function realpath;
 use function rtrim;
 use function str_contains;
@@ -161,7 +163,7 @@ final class Composer
     }
 
     /** @param  non-empty-string  $projectRoot */
-    public function __construct(string $projectRoot)
+    public function __construct(private readonly string $projectRoot)
     {
         $json = self::parseJson($projectRoot, 'composer.json');
         $autoload = is_array($json['autoload'] ?? null) ? $json['autoload'] : [];
@@ -327,11 +329,25 @@ final class Composer
             $func = new ReflectionFunction($ident);
             $f = $func->getFileName();
             if ($f !== false && $f !== '') {
+                if (!str_contains($f, $this->scipPhpVendorDir)) {
+                    return $f;
+                }
                 // In case of a conflict between a function defined in a dependency of scip-php
                 // and a function defined in the analyzed project or its dependencies, the
                 // former is used here. Therefore, we patch the path, so that the latter is
                 // analyzed instead.
-                return str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
+                $vendorFile = str_replace($this->scipPhpVendorDir, $this->vendorDir, $f);
+                if (is_file($vendorFile)) {
+                    return $vendorFile;
+                }
+                // If the file is not found in the vendor directory, we probably analyze
+                // a project which is also a dependency of scip-php.
+                $f = str_replace($this->scipPhpVendorDir . DIRECTORY_SEPARATOR, '', $f);
+                $f = preg_replace('/^\w+\/\w+\//', '', $f, limit: 1);
+                if ($f === null || $f === '') {
+                    throw new RuntimeException("Invalid path to function file: {$func->getFileName()}.");
+                }
+                return self::join($this->projectRoot, $f);
             }
         }
 
@@ -442,8 +458,8 @@ final class Composer
             if ($f === '' || realpath($f) === false) {
                 continue;
             }
-            $content = Reader::read($f);
 
+            $content = Reader::read($f);
             if (preg_match($defineConstPattern, $content) === 1) {
                 return realpath($f);
             }
