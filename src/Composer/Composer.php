@@ -69,90 +69,6 @@ final class Composer
     private array $pkgsByPaths;
 
     /**
-     * @param  non-empty-string  $projectRoot
-     * @param  non-empty-string  $filename
-     * @return array<string, mixed>
-     */
-    private static function parseJson(string $projectRoot, string $filename): array
-    {
-        $content = Reader::read(self::join($projectRoot, $filename));
-        $json = json_decode($content, associative: true, flags: JSON_THROW_ON_ERROR);
-        if (!is_array($json)) {
-            throw new RuntimeException("Cannot parse {$filename}.");
-        }
-        return $json;
-    }
-
-    /**
-     * @param  non-empty-string  $projectRoot
-     * @param  array<string, mixed>  $autoload
-     * @return array<int, non-empty-string>
-     */
-    private static function loadProjectFiles(string $projectRoot, array $autoload): array
-    {
-        $generator = new ClassMapGenerator();
-        $exclusionRegex = null;
-        if (is_array($autoload['exclude-from-classmap'] ?? null) && count($autoload['exclude-from-classmap']) > 0) {
-            $exclusionRegex = '{(' . implode('|', $autoload['exclude-from-classmap']) . ')}';
-        }
-        if (is_array($autoload['classmap'] ?? null)) {
-            foreach ($autoload['classmap'] as $path) {
-                $p = self::join($projectRoot, $path);
-                $generator->scanPaths($p, $exclusionRegex);
-            }
-        }
-        foreach (['psr-4', 'psr-0'] as $t) {
-            if (!is_array($autoload[$t] ?? null)) {
-                continue;
-            }
-            foreach ($autoload[$t] as $ns => $paths) {
-                if (!is_string($ns) || $ns === '' || (!is_array($paths) && !is_string($paths))) {
-                    continue;
-                }
-                $paths = is_string($paths) ? [$paths] : $paths;
-                foreach ($paths as $path) {
-                    if (!is_string($path) || $path === '') {
-                        continue;
-                    }
-                    $p = self::join($projectRoot, $path);
-                    $p = rtrim($p, DIRECTORY_SEPARATOR);
-                    $generator->scanPaths($p, $exclusionRegex, $t, $ns);
-                }
-            }
-        }
-
-        $map = $generator->getClassMap();
-        $map->sort();
-        $classFiles = array_unique(array_values($map->getMap()));
-
-        if (!is_array($autoload['files'] ?? null)) {
-            return $classFiles;
-        }
-        $files = self::collectPaths($projectRoot, $autoload['files']);
-        return array_merge($files, $classFiles);
-    }
-
-    /**
-     * @param  non-empty-string  $projectRoot
-     * @param  array<int, string>  $paths
-     * @return array<int, non-empty-string>
-     */
-    private static function collectPaths(string $projectRoot, array $paths): array
-    {
-        $files = [];
-        foreach ($paths as $p) {
-            if (!is_string($p) || $p === '') {
-                continue;
-            }
-            $p = self::join($projectRoot, $p);
-            if (realpath($p) !== false) {
-                $files[] = realpath($p);
-            }
-        }
-        return $files;
-    }
-
-    /**
      * @param  non-empty-string  $elem
      * @param  non-empty-string  $elems
      * @return non-empty-string
@@ -165,7 +81,7 @@ final class Composer
     /** @param  non-empty-string  $projectRoot */
     public function __construct(private readonly string $projectRoot)
     {
-        $json = self::parseJson($projectRoot, 'composer.json');
+        $json = $this->parseJson('composer.json');
         $autoload = is_array($json['autoload'] ?? null) ? $json['autoload'] : [];
         $autoloadDev = is_array($json['autoload-dev'] ?? null) ? $json['autoload-dev'] : [];
 
@@ -177,12 +93,12 @@ final class Composer
 
         $bin = [];
         if (is_array($json['bin'] ?? null)) {
-            $bin = self::collectPaths($projectRoot, $json['bin']);
+            $bin = $this->collectPaths($json['bin']);
         }
         $this->projectFiles = array_merge(
             $bin,
-            self::loadProjectFiles($projectRoot, $autoload),
-            self::loadProjectFiles($projectRoot, $autoloadDev),
+            $this->loadProjectFiles($autoload),
+            $this->loadProjectFiles($autoloadDev),
         );
 
         $vendorDir = 'vendor';
@@ -232,7 +148,7 @@ final class Composer
         $this->pkgsByPaths = $pkgsByPaths;
 
 
-        $lock = self::parseJson($projectRoot, 'composer.lock');
+        $lock = $this->parseJson('composer.lock');
         if (is_array($lock['packages'] ?? null)) {
             foreach ($lock['packages'] as $pkg) {
                 if (
@@ -259,6 +175,87 @@ final class Composer
             }
         }
         $this->loader->addClassMap($additionalClasses);
+    }
+
+    /**
+     * @param  non-empty-string  $filename
+     * @return array<string, mixed>
+     */
+    private function parseJson(string $filename): array
+    {
+        $content = Reader::read(self::join($this->projectRoot, $filename));
+        $json = json_decode($content, associative: true, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($json)) {
+            throw new RuntimeException("Cannot parse {$filename}.");
+        }
+        return $json;
+    }
+
+    /**
+     * @param  array<string, mixed>  $autoload
+     * @return array<int, non-empty-string>
+     */
+    private function loadProjectFiles(array $autoload): array
+    {
+        $generator = new ClassMapGenerator();
+        $exclusionRegex = null;
+        if (is_array($autoload['exclude-from-classmap'] ?? null) && count($autoload['exclude-from-classmap']) > 0) {
+            $exclusionRegex = '{(' . implode('|', $autoload['exclude-from-classmap']) . ')}';
+        }
+        if (is_array($autoload['classmap'] ?? null)) {
+            foreach ($autoload['classmap'] as $path) {
+                $p = self::join($this->projectRoot, $path);
+                $generator->scanPaths($p, $exclusionRegex);
+            }
+        }
+        foreach (['psr-4', 'psr-0'] as $t) {
+            if (!is_array($autoload[$t] ?? null)) {
+                continue;
+            }
+            foreach ($autoload[$t] as $ns => $paths) {
+                if (!is_string($ns) || $ns === '' || (!is_array($paths) && !is_string($paths))) {
+                    continue;
+                }
+                $paths = is_string($paths) ? [$paths] : $paths;
+                foreach ($paths as $path) {
+                    if (!is_string($path) || $path === '') {
+                        continue;
+                    }
+                    $p = self::join($this->projectRoot, $path);
+                    $p = rtrim($p, DIRECTORY_SEPARATOR);
+                    $generator->scanPaths($p, $exclusionRegex, $t, $ns);
+                }
+            }
+        }
+
+        $map = $generator->getClassMap();
+        $map->sort();
+        $classFiles = array_unique(array_values($map->getMap()));
+
+        if (!is_array($autoload['files'] ?? null)) {
+            return $classFiles;
+        }
+        $files = $this->collectPaths($autoload['files']);
+        return array_merge($files, $classFiles);
+    }
+
+    /**
+     * @param  array<int, string>  $paths
+     * @return array<int, non-empty-string>
+     */
+    private function collectPaths(array $paths): array
+    {
+        $files = [];
+        foreach ($paths as $p) {
+            if (!is_string($p) || $p === '') {
+                continue;
+            }
+            $p = self::join($this->projectRoot, $p);
+            if (realpath($p) !== false) {
+                $files[] = realpath($p);
+            }
+        }
+        return $files;
     }
 
     /** @return array<int, non-empty-string> */
