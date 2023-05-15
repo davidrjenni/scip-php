@@ -12,6 +12,7 @@
 	<rule ref="PSR12"/>
 
 	<!-- Arrays -->
+	<rule ref="SlevomatCodingStandard.Arrays.ArrayAccess"/>
 	<rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
 	<rule ref="SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed"/>
 	<rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
