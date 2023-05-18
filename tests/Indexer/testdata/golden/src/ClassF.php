@@ -5,7 +5,7 @@
   namespace TestData;
   
   use function strlen;
-//             ^^^^^^ reference scip-php composer php 8.2.4 strlen().
+//             ^^^^^^ reference scip-php composer php 8.2.6 strlen().
   
   final class ClassF
 //            ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#
@@ -31,7 +31,7 @@
       {
           return $this->f1 + 42 + strlen('ABC');
 //                      ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#$f1.
-//                                ^^^^^^ reference scip-php composer php 8.2.4 strlen().
+//                                ^^^^^^ reference scip-php composer php 8.2.6 strlen().
       }
   
       public static function f2(): ClassA
