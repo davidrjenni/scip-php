@@ -18,8 +18,10 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use ScipPhp\SymbolNamer;
 
 use function in_array;
@@ -117,6 +119,14 @@ final class TypeParser
                 return null;
             }
             return new NamedType($n);
+        }
+
+        if ($type instanceof IntersectionTypeNode || $type instanceof UnionTypeNode) {
+            $types = [];
+            foreach ($type->types as $t) {
+                $types[] = $this->parseDoc($node, $t);
+            }
+            return new CompositeType(...$types);
         }
 
         if ($type instanceof NullableTypeNode) {
