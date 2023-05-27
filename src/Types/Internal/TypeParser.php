@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use ScipPhp\SymbolNamer;
 
@@ -116,6 +117,10 @@ final class TypeParser
                 return null;
             }
             return new NamedType($n);
+        }
+
+        if ($type instanceof NullableTypeNode) {
+            return $this->parseDoc($node, $type->type);
         }
 
         return null;

@@ -11,7 +11,7 @@ use TestData\ClassH;
 
 /**
  * @property       ClassA $k1
- * @property-read  ClassB $k2
+ * @property-read  ?ClassB $k2
  * @property-write ClassC $k3
  *
  * @method ClassH k1()
