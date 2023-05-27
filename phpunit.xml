@@ -4,6 +4,7 @@
         cacheDirectory=".phpunit.result"
         colors="true"
         executionOrder="random"
+        failOnDeprecation="true"
         failOnEmptyTestSuite="true"
         failOnIncomplete="true"
         failOnRisky="true"
