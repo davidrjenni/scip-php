@@ -241,7 +241,7 @@ final class DocIndexer
             if ($this->composer->isDependency($ident)) {
                 $this->extSymbols[$symbol] = new SymbolInformation([
                     'symbol'        => $symbol,
-                    'documentation' => [$symbol], // TODO(drj): build hover content
+                    'documentation' => [], // TODO(drj): build hover content
                 ]);
             }
         }
