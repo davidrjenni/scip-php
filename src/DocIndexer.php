@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ScipPhp;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -30,15 +31,19 @@ use Scip\SymbolInformation;
 use Scip\SymbolRole;
 use Scip\SyntaxKind;
 use ScipPhp\Composer\Composer;
+use ScipPhp\Parser\DocCommentParser;
 use ScipPhp\Parser\PosResolver;
 use ScipPhp\Types\Types;
 
 use function is_string;
+use function ltrim;
 use function str_starts_with;
 
 final class DocIndexer
 {
     private readonly DocGenerator $docGenerator;
+
+    private readonly DocCommentParser $docCommentParser;
 
     /** @var array<non-empty-string, SymbolInformation> */
     public array $symbols;
@@ -55,6 +60,7 @@ final class DocIndexer
         private readonly Types $types,
     ) {
         $this->docGenerator = new DocGenerator();
+        $this->docCommentParser = new DocCommentParser();
         $this->symbols = [];
         $this->extSymbols = [];
         $this->occurrences = [];
@@ -72,6 +78,19 @@ final class DocIndexer
         }
         if ($n instanceof ClassLike && $n->name !== null) {
             $this->def($pos, $n, $n->name, SyntaxKind::IdentifierType);
+            $name = $this->namer->name($n);
+            if ($name === null) {
+                return;
+            }
+            $props = $this->docCommentParser->parseProperties($n);
+            foreach ($props as $p) {
+                $propName = ltrim($p->propertyName, '$');
+                if ($p->propertyName === '' || $propName === '') {
+                    continue;
+                }
+                $symbol = $this->namer->nameProp($name, $propName);
+                $this->docDef($n->getDocComment(), '@property', $p->propertyName, $symbol);
+            }
             return;
         }
         if ($n instanceof ClassMethod) {
@@ -169,6 +188,30 @@ final class DocIndexer
         ]);
         $this->occurrences[] = new Occurrence([
             'range'        => $pos->pos($posNode),
+            'symbol'       => $symbol,
+            'symbol_roles' => SymbolRole::Definition,
+            'syntax_kind'  => $kind,
+        ]);
+    }
+
+    /**
+     * @param  non-empty-string  $tagName
+     * @param  non-empty-string  $name
+     * @param  non-empty-string  $symbol
+     */
+    private function docDef(
+        ?Doc $doc,
+        string $tagName,
+        string $name,
+        string $symbol,
+        int $kind = SyntaxKind::Identifier,
+    ): void {
+        if ($doc === null) {
+            return;
+        }
+
+        $this->occurrences[] = new Occurrence([
+            'range'        => PosResolver::posInDoc($doc, $tagName, $name),
             'symbol'       => $symbol,
             'symbol_roles' => SymbolRole::Definition,
             'syntax_kind'  => $kind,

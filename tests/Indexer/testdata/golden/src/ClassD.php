@@ -4,9 +4,17 @@
   
   namespace TestData;
   
+  /**
+   * @property              $d3
+   * @property-read  ClassB $d4
+//                          ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#$d4.
+   * @property-write ClassA $d5
+//                          ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#$d5.
+   */
   final class ClassD extends ClassA
 //            ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#
 //            documentation ```php
+//            documentation @property              $d3<br>@property-read  ClassB $d4<br>@property-write ClassA $d5<br>
 //                           ^^^^^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#
   {
   
