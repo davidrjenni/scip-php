@@ -13,6 +13,7 @@ use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -22,6 +23,7 @@ use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use ScipPhp\SymbolNamer;
@@ -141,6 +143,18 @@ final class TypeParser
             return $this->parseDoc($node, $type->type);
         }
 
+        if ($type instanceof ThisTypeNode) {
+            $classLike = self::nearestClassLike($node);
+            if ($classLike === null) {
+                return null;
+            }
+            $name = $this->namer->name($classLike);
+            if ($name === null) {
+                return null;
+            }
+            return new NamedType($name);
+        }
+
         return null;
     }
 
@@ -174,7 +188,20 @@ final class TypeParser
         return $nameCtx->getResolvedName($name, Use_::TYPE_NORMAL);
     }
 
-    public static function nearestNamespace(Node $n): ?Namespace_
+    private static function nearestClassLike(Node $n): ?ClassLike
+    {
+        while (true) {
+            if ($n instanceof ClassLike) {
+                return $n;
+            }
+            $n = $n->getAttribute('parent');
+            if ($n === null) {
+                return null;
+            }
+        }
+    }
+
+    private static function nearestNamespace(Node $n): ?Namespace_
     {
         while (true) {
             $n = $n->getAttribute('parent');

@@ -63,12 +63,19 @@ namespace
             return new ClassB();
         }
 
-        public function j3(): void
+        /** @return $this */
+        public function j3()
         {
             $this->j1(1)->a1();
             $this->j1(-1)->b2();
             $this->j2(1)->a1();
             $this->j2('foo')->b2();
+            return $this;
+        }
+
+        public function j4(): void
+        {
+            $this->j3()->j1(-1)->b2();
         }
     }
 }

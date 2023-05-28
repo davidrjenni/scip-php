@@ -154,10 +154,13 @@ final class TypesTest extends TestCase
         $this->assertMethCall('ClassH.php', 'getCode', 20, 'Exception#getCode().');
         $this->assertMethCall('ClassH.php', 'a2', 20, 'ClassA#a2().');
 
-        $this->assertMethCall('ClassH.php', 'a1', 68, 'ClassA#a1().');
-        $this->assertMethCall('ClassH.php', 'b2', 69, 'ClassB#b2().');
-        $this->assertMethCall('ClassH.php', 'a1', 70, 'ClassA#a1().');
-        $this->assertMethCall('ClassH.php', 'b2', 71, 'ClassB#b2().');
+        $this->assertMethCall('ClassH.php', 'a1', 69, 'ClassA#a1().');
+        $this->assertMethCall('ClassH.php', 'b2', 70, 'ClassB#b2().');
+        $this->assertMethCall('ClassH.php', 'a1', 71, 'ClassA#a1().');
+        $this->assertMethCall('ClassH.php', 'b2', 72, 'ClassB#b2().');
+        $this->assertMethCall('ClassH.php', 'j3', 78, 'ClassJ#j3().');
+        $this->assertMethCall('ClassH.php', 'j1', 78, 'ClassJ#j1().');
+        $this->assertMethCall('ClassH.php', 'b2', 78, 'ClassB#b2().');
     }
 
     public function testPropDefs(): void
