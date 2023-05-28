@@ -7,9 +7,12 @@
   use function strlen;
 //             ^^^^^^ reference scip-php composer php 8.2.6 strlen().
   
+  /** @method ClassA m1(int $p1, $p2, bool $p3) */
+//                   ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#m1().
   final class ClassF
 //            ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#
 //            documentation ```php
+//            documentation @method ClassA m1(int $p1, $p2, bool $p3)
   {
       public readonly int $f1;
 //                        ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#$f1.

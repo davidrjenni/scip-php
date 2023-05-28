@@ -82,6 +82,7 @@ final class DocIndexer
             if ($name === null) {
                 return;
             }
+
             $props = $this->docCommentParser->parseProperties($n);
             foreach ($props as $p) {
                 $propName = ltrim($p->propertyName, '$');
@@ -90,6 +91,15 @@ final class DocIndexer
                 }
                 $symbol = $this->namer->nameProp($name, $propName);
                 $this->docDef($n->getDocComment(), '@property', $p->propertyName, $symbol);
+            }
+
+            $methods = $this->docCommentParser->parseMethods($n);
+            foreach ($methods as $m) {
+                if ($m->methodName === '') {
+                    continue;
+                }
+                $symbol = $this->namer->nameMeth($name, $m->methodName);
+                $this->docDef($n->getDocComment(), '@method', $m->methodName, $symbol);
             }
             return;
         }

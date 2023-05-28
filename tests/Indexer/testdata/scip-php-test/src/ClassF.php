@@ -6,6 +6,7 @@ namespace TestData;
 
 use function strlen;
 
+/** @method ClassA m1(int $p1, $p2, bool $p3) */
 final class ClassF
 {
     public readonly int $f1;
