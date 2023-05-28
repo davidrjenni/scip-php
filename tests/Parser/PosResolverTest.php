@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Parser;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -50,5 +51,88 @@ final class PosResolverTest extends TestCase
                 }
             },
         );
+    }
+
+    /**
+     * @dataProvider providePosInDoc
+     * @param  non-empty-string           $docText
+     * @param  non-empty-string           $tagName
+     * @param  non-empty-string           $name
+     * @param  array{int, int, int, int}  $pos
+     */
+    public function testPosInDoc(string $docText, string $tagName, string $name, array $pos): void
+    {
+        $doc = new Doc($docText, 1, 1, 1);
+        $actual = PosResolver::posInDoc($doc, $tagName, $name);
+
+        self::assertSame($pos, $actual);
+    }
+
+    /**
+     * @return array<non-empty-string, array{
+     *     non-empty-string,
+     *     non-empty-string,
+     *     non-empty-string,
+     *     array{int, int, int, int},
+     * }>
+     */
+    public static function providePosInDoc(): array
+    {
+        $multiline = '/** @property int $p1
+  *  @property-read   ?Foo    $p2
+* @property-write Foo&Bar $p3
+ * @method Foo m1()
+ * @method Foo m2(int $p1, bool $p2, string $p3) */';
+
+        return [
+            'property-on-one-line' => [
+                '/** @property int $foo */',
+                '@property',
+                '$foo',
+                [0, 18, 0, 22],
+            ],
+            'property-on-one-line-no-type' => [
+                '/** @property $foo */',
+                '@property',
+                '$foo',
+                [0, 14, 0, 18],
+            ],
+            'method-on-one-line' => [
+                '/** @method void foo() */',
+                '@method',
+                'foo',
+                [0, 17, 0, 20],
+            ],
+            'property-multiline-first' => [
+                $multiline,
+                '@property',
+                '$p1',
+                [0, 18, 0, 21],
+            ],
+            'property-read-multiline' => [
+                $multiline,
+                '@property',
+                '$p2',
+                [1, 30, 1, 33],
+            ],
+            'property-write-multiline' => [
+                $multiline,
+                '@property',
+                '$p3',
+                [2, 26, 2, 29],
+            ],
+            'method--multiline' => [
+                $multiline,
+                '@method',
+                'm1',
+                [3, 15, 3, 17],
+            ],
+            'method-multiline-last' => [
+                $multiline,
+                '@method',
+                'm2',
+                [4, 15, 4, 17],
+            ],
+        ];
     }
 }
