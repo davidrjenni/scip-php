@@ -6,6 +6,7 @@ namespace ScipPhp\Types;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Clone_;
@@ -37,6 +38,7 @@ use ScipPhp\Parser\Parser;
 use ScipPhp\Parser\PosResolver;
 use ScipPhp\SymbolNamer;
 use ScipPhp\Types\Internal\CompositeType;
+use ScipPhp\Types\Internal\IterableType;
 use ScipPhp\Types\Internal\NamedType;
 use ScipPhp\Types\Internal\Type;
 use ScipPhp\Types\Internal\TypeParser;
@@ -142,6 +144,13 @@ final class Types
 
     private function type(Expr|Name $x): ?Type
     {
+        if ($x instanceof ArrayDimFetch) {
+            $iterType = $this->type($x->var);
+            if ($iterType instanceof IterableType) {
+                return $iterType->valueType(null);
+            }
+        }
+
         if ($x instanceof Assign) {
             return $this->type($x->expr);
         }

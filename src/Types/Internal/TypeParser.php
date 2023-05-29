@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeForParameterNode;
 use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -96,6 +97,13 @@ final class TypeParser
 
     public function parseDoc(Node $node, ?TypeNode $type): ?Type
     {
+        if ($type instanceof ArrayTypeNode) {
+            $t = $this->parseDoc($node, $type->type);
+            if ($t !== null) {
+                return new UniformIterableType($t);
+            }
+        }
+
         if ($type instanceof ConditionalTypeNode || $type instanceof ConditionalTypeForParameterNode) {
             $ifType = $this->parseDoc($node, $type->if);
             $elseType = $this->parseDoc($node, $type->else);

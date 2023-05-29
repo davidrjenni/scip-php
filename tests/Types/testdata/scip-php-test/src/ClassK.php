@@ -32,5 +32,19 @@ final class ClassK
         $this->k4->b2();
         $this->k5->a1();
         $this->k5->e1();
+        $this->k3()[0]->a1();
+        $this->k4()[0][0]->a1();
+    }
+
+    /** @return ClassA[] */
+    public function k3(): array
+    {
+        return [new ClassA()];
+    }
+
+    /** @return ClassA[][] */
+    public function k4(): array
+    {
+        return [[new ClassA()]];
     }
 }

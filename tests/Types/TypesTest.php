@@ -147,6 +147,8 @@ final class TypesTest extends TestCase
         $this->assertMethCall('ClassK.php', 'b2', 32, 'TestData/ClassB#b2().');
         $this->assertMethCall('ClassK.php', 'a1', 33, 'TestData/ClassA#a1().');
         $this->assertMethCall('ClassK.php', 'e1', 34, 'TestData/TraitE#e1().');
+        $this->assertMethCall('ClassK.php', 'a1', 35, 'TestData/ClassA#a1().');
+        $this->assertMethCall('ClassK.php', 'a1', 36, 'TestData/ClassA#a1().');
 
         $this->assertMethCall('ClassH.php', '__construct', 14, 'Exception#__construct().');
         $this->assertMethCall('ClassH.php', 'f2', 19, 'ClassF#f2().');
