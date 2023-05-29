@@ -34,6 +34,11 @@ final class ClassK
         $this->k5->e1();
         $this->k3()[0]->a1();
         $this->k4()[0][0]->a1();
+        $this->k5()['a']->a1();
+        $this->k5()['b']['c'][0]->b2();
+        $this->k6()[0]->a1();
+        $this->k6()[2][0]->b2();
+        $this->k6()[2][1]->a1();
     }
 
     /** @return ClassA[] */
@@ -46,5 +51,20 @@ final class ClassK
     public function k4(): array
     {
         return [[new ClassA()]];
+    }
+
+    /** @return array{a: ?ClassA, 'b': array{"c"?: ClassB[]}} */
+    public function k5(): array
+    {
+        return [
+            'a' => new ClassA(),
+            'b' => ['c' => [new ClassB()]],
+        ];
+    }
+
+    /** @return array{0: ClassA, 1: int, 2: array{ClassB, ClassA}} */
+    public function k6(): array
+    {
+        return [new ClassA(), 1, [new ClassB(), new ClassA()]];
     }
 }

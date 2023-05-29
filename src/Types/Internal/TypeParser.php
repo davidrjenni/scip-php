@@ -18,6 +18,9 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
+use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
+use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprStringNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeForParameterNode;
 use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
@@ -29,6 +32,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use ScipPhp\SymbolNamer;
 
+use function count;
 use function in_array;
 use function ltrim;
 use function str_starts_with;
@@ -97,6 +101,26 @@ final class TypeParser
 
     public function parseDoc(Node $node, ?TypeNode $type): ?Type
     {
+        if ($type instanceof ArrayShapeNode) {
+            $types = [];
+            foreach ($type->items as $i => $item) {
+                $t = $this->parseDoc($node, $item->valueType);
+                if ($t === null) {
+                    continue;
+                }
+                $key = $i;
+                if ($item->keyName instanceof ConstExprIntegerNode || $item->keyName instanceof ConstExprStringNode) {
+                    $key = $item->keyName->value;
+                } elseif ($item->keyName instanceof IdentifierTypeNode) {
+                    $key = $item->keyName->name;
+                }
+                $types[$key] = $t;
+            }
+            if (count($types) > 0) {
+                return new MixedIterableType($types);
+            }
+        }
+
         if ($type instanceof ArrayTypeNode) {
             $t = $this->parseDoc($node, $type->type);
             if ($t !== null) {

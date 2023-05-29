@@ -25,6 +25,8 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
@@ -147,7 +149,11 @@ final class Types
         if ($x instanceof ArrayDimFetch) {
             $iterType = $this->type($x->var);
             if ($iterType instanceof IterableType) {
-                return $iterType->valueType(null);
+                $key = null;
+                if ($x->dim instanceof String_ || $x->dim instanceof LNumber) {
+                    $key = $x->dim->value;
+                }
+                return $iterType->valueType($key);
             }
         }
 
