@@ -52,7 +52,7 @@ final class PosResolver
     {
         $startLine = $doc->getStartLine() - 1;
         $quotedName = preg_quote($name);
-        $pattern = "/^\s*(\/)?\*+\s*{$tagName}.*\s+{$quotedName}($|\(|\s+\*\/)/m";
+        $pattern = "/^\s*(\/)?\*+\s*{$tagName}.*\s+{$quotedName}($|\(|\s+)/m";
         $lines = explode("\n", $doc->getText());
         foreach ($lines as $line) {
             if (preg_match($pattern, $line) === 1) {

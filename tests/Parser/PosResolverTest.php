@@ -80,13 +80,19 @@ final class PosResolverTest extends TestCase
     {
         $multiline = '/** @property int $p1
   *  @property-read   ?Foo    $p2
-* @property-write Foo&Bar $p3
- * @method Foo m1()
+* @property-write Foo&Bar $p3 additional documentation
+ * @method Foo m1() additionl documentation
  * @method Foo m2(int $p1, bool $p2, string $p3) */';
 
         return [
             'property-on-one-line' => [
                 '/** @property int $foo */',
+                '@property',
+                '$foo',
+                [0, 18, 0, 22],
+            ],
+            'property-on-one-line-additional-documentation' => [
+                '/** @property int $foo additional documentation */',
                 '@property',
                 '$foo',
                 [0, 18, 0, 22],
@@ -99,6 +105,12 @@ final class PosResolverTest extends TestCase
             ],
             'method-on-one-line' => [
                 '/** @method void foo() */',
+                '@method',
+                'foo',
+                [0, 17, 0, 20],
+            ],
+            'method-on-one-line-additional-documentation' => [
+                '/** @method void foo() additional documentation */',
                 '@method',
                 'foo',
                 [0, 17, 0, 20],
