@@ -27,6 +27,7 @@ use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ObjectShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
@@ -101,7 +102,7 @@ final class TypeParser
 
     public function parseDoc(Node $node, ?TypeNode $type): ?Type
     {
-        if ($type instanceof ArrayShapeNode) {
+        if ($type instanceof ArrayShapeNode || $type instanceof ObjectShapeNode) {
             $types = [];
             foreach ($type->items as $i => $item) {
                 $t = $this->parseDoc($node, $item->valueType);
