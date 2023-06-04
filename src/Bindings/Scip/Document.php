@@ -52,6 +52,18 @@ class Document extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated .scip.SymbolInformation symbols = 3;</code>
      */
     private $symbols;
+    /**
+     * (optional) Text contents of the this document. Indexers are not expected to
+     * include the text by default. It's preferrable that clients read the text
+     * contents from the file system by resolving the absolute path from joining
+     * `Index.metadata.project_root` and `Document.relative_path`. This field was
+     * introduced to support `SymbolInformation.signature_documentation`, but it
+     * can be used for other purposes as well, for example testing or when working
+     * with virtual/in-memory documents.
+     *
+     * Generated from protobuf field <code>string text = 5;</code>
+     */
+    protected $text = '';
 
     /**
      * Constructor.
@@ -80,6 +92,14 @@ class Document extends \Google\Protobuf\Internal\Message
      *           This should include symbols which technically do not have any definition,
      *           but have a reference and are defined by some other symbol (see
      *           Relationship.is_definition).
+     *     @type string $text
+     *           (optional) Text contents of the this document. Indexers are not expected to
+     *           include the text by default. It's preferrable that clients read the text
+     *           contents from the file system by resolving the absolute path from joining
+     *           `Index.metadata.project_root` and `Document.relative_path`. This field was
+     *           introduced to support `SymbolInformation.signature_documentation`, but it
+     *           can be used for other purposes as well, for example testing or when working
+     *           with virtual/in-memory documents.
      * }
      */
     public function __construct($data = NULL) {
@@ -213,6 +233,44 @@ class Document extends \Google\Protobuf\Internal\Message
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Scip\SymbolInformation::class);
         $this->symbols = $arr;
+
+        return $this;
+    }
+
+    /**
+     * (optional) Text contents of the this document. Indexers are not expected to
+     * include the text by default. It's preferrable that clients read the text
+     * contents from the file system by resolving the absolute path from joining
+     * `Index.metadata.project_root` and `Document.relative_path`. This field was
+     * introduced to support `SymbolInformation.signature_documentation`, but it
+     * can be used for other purposes as well, for example testing or when working
+     * with virtual/in-memory documents.
+     *
+     * Generated from protobuf field <code>string text = 5;</code>
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * (optional) Text contents of the this document. Indexers are not expected to
+     * include the text by default. It's preferrable that clients read the text
+     * contents from the file system by resolving the absolute path from joining
+     * `Index.metadata.project_root` and `Document.relative_path`. This field was
+     * introduced to support `SymbolInformation.signature_documentation`, but it
+     * can be used for other purposes as well, for example testing or when working
+     * with virtual/in-memory documents.
+     *
+     * Generated from protobuf field <code>string text = 5;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setText($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->text = $var;
 
         return $this;
     }

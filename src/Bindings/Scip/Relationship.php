@@ -53,7 +53,7 @@ class Relationship extends \Google\Protobuf\Internal\Message
      * In the TypeScript example above, observe that `Dog#` has an
      * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
      * This is because "Find references" on the "Animal#" symbol should not return
-     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * "Dog#". We only want "Dog#" to return as a result for "Find
      * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>
@@ -123,7 +123,7 @@ class Relationship extends \Google\Protobuf\Internal\Message
      *           In the TypeScript example above, observe that `Dog#` has an
      *           `is_implementation` relationship with `"Animal#"` but not `is_reference`.
      *           This is because "Find references" on the "Animal#" symbol should not return
-     *           "Dog#".  We only want "Dog#" to return as a result for "Find
+     *           "Dog#". We only want "Dog#" to return as a result for "Find
      *           implementations" on the "Animal#" symbol.
      *     @type bool $is_type_definition
      *           Similar to `references_symbols` but for "Go to type definition".
@@ -249,7 +249,7 @@ class Relationship extends \Google\Protobuf\Internal\Message
      * In the TypeScript example above, observe that `Dog#` has an
      * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
      * This is because "Find references" on the "Animal#" symbol should not return
-     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * "Dog#". We only want "Dog#" to return as a result for "Find
      * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>
@@ -267,7 +267,7 @@ class Relationship extends \Google\Protobuf\Internal\Message
      * In the TypeScript example above, observe that `Dog#` has an
      * `is_implementation` relationship with `"Animal#"` but not `is_reference`.
      * This is because "Find references" on the "Animal#" symbol should not return
-     * "Dog#".  We only want "Dog#" to return as a result for "Find
+     * "Dog#". We only want "Dog#" to return as a result for "Find
      * implementations" on the "Animal#" symbol.
      *
      * Generated from protobuf field <code>bool is_implementation = 3;</code>

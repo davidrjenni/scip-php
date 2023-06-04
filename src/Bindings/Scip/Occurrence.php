@@ -31,7 +31,7 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      * type with `start` and `end` fields of type `Position`, mirroring LSP.
      * Benchmarks revealed that this encoding was inefficient and that we could
      * reduce the total payload size of an index by 50% by using `repeated int32`
-     * instead.  The `repeated int32` encoding is admittedly more embarrassing to
+     * instead. The `repeated int32` encoding is admittedly more embarrassing to
      * work with in some programming languages but we hope the performance
      * improvements make up for it.
      *
@@ -76,6 +76,47 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated .scip.Diagnostic diagnostics = 6;</code>
      */
     private $diagnostics;
+    /**
+     * (optional) Using the same encoding as the sibling `range` field, source
+     * position of the nearest non-trivial enclosing AST node. This range must
+     * enclose the `range` field. Example applications that make use of the
+     * enclosing_range field:
+     * - Call hierarchies: to determine what symbols are references from the body
+     *   of a function
+     * - Symbol outline: to display breadcrumbs from the cursor position to the
+     *   root of the file
+     * - Expand selection: to select the nearest enclosing AST node.
+     * - Highlight range: to indicate the AST expression that is associated with a
+     *   hover popover
+     * For definition occurrences, the enclosing range should indicate the
+     * start/end bounds of the entire definition AST node, including
+     * documentation.
+     * ```
+     * const n = 3
+     *       ^ range
+     * ^^^^^^^^^^^ enclosing_range
+     * /&#42;* Parses the string into something *&#47;
+     * ^ enclosing_range start --------------------------------------|
+     * function parse(input string): string {                        |
+     *          ^^^^^ range                                          |
+     *     return input.slice(n)                                     |
+     * }                                                             |
+     * ^ enclosing_range end <---------------------------------------|
+     * ```
+     * For reference occurrences, the enclosing range should indicate the start/end
+     * bounds of the parent expression.
+     * ```
+     * const a = a.b
+     *             ^ range
+     *           ^^^ enclosing_range
+     * const b = a.b(41).f(42).g(43)
+     *                   ^ range
+     *           ^^^^^^^^^^^^^ enclosing_range
+     * ```
+     *
+     * Generated from protobuf field <code>repeated int32 enclosing_range = 7;</code>
+     */
+    private $enclosing_range;
 
     /**
      * Constructor.
@@ -96,7 +137,7 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      *           type with `start` and `end` fields of type `Position`, mirroring LSP.
      *           Benchmarks revealed that this encoding was inefficient and that we could
      *           reduce the total payload size of an index by 50% by using `repeated int32`
-     *           instead.  The `repeated int32` encoding is admittedly more embarrassing to
+     *           instead. The `repeated int32` encoding is admittedly more embarrassing to
      *           work with in some programming languages but we hope the performance
      *           improvements make up for it.
      *     @type string $symbol
@@ -117,6 +158,43 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      *           (optional) What syntax highlighting class should be used for this range?
      *     @type array<\Scip\Diagnostic>|\Google\Protobuf\Internal\RepeatedField $diagnostics
      *           (optional) Diagnostics that have been reported for this specific range.
+     *     @type array<int>|\Google\Protobuf\Internal\RepeatedField $enclosing_range
+     *           (optional) Using the same encoding as the sibling `range` field, source
+     *           position of the nearest non-trivial enclosing AST node. This range must
+     *           enclose the `range` field. Example applications that make use of the
+     *           enclosing_range field:
+     *           - Call hierarchies: to determine what symbols are references from the body
+     *             of a function
+     *           - Symbol outline: to display breadcrumbs from the cursor position to the
+     *             root of the file
+     *           - Expand selection: to select the nearest enclosing AST node.
+     *           - Highlight range: to indicate the AST expression that is associated with a
+     *             hover popover
+     *           For definition occurrences, the enclosing range should indicate the
+     *           start/end bounds of the entire definition AST node, including
+     *           documentation.
+     *           ```
+     *           const n = 3
+     *                 ^ range
+     *           ^^^^^^^^^^^ enclosing_range
+     *           /&#42;* Parses the string into something *&#47;
+     *           ^ enclosing_range start --------------------------------------|
+     *           function parse(input string): string {                        |
+     *                    ^^^^^ range                                          |
+     *               return input.slice(n)                                     |
+     *           }                                                             |
+     *           ^ enclosing_range end <---------------------------------------|
+     *           ```
+     *           For reference occurrences, the enclosing range should indicate the start/end
+     *           bounds of the parent expression.
+     *           ```
+     *           const a = a.b
+     *                       ^ range
+     *                     ^^^ enclosing_range
+     *           const b = a.b(41).f(42).g(43)
+     *                             ^ range
+     *                     ^^^^^^^^^^^^^ enclosing_range
+     *           ```
      * }
      */
     public function __construct($data = NULL) {
@@ -137,7 +215,7 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      * type with `start` and `end` fields of type `Position`, mirroring LSP.
      * Benchmarks revealed that this encoding was inefficient and that we could
      * reduce the total payload size of an index by 50% by using `repeated int32`
-     * instead.  The `repeated int32` encoding is admittedly more embarrassing to
+     * instead. The `repeated int32` encoding is admittedly more embarrassing to
      * work with in some programming languages but we hope the performance
      * improvements make up for it.
      *
@@ -162,7 +240,7 @@ class Occurrence extends \Google\Protobuf\Internal\Message
      * type with `start` and `end` fields of type `Position`, mirroring LSP.
      * Benchmarks revealed that this encoding was inefficient and that we could
      * reduce the total payload size of an index by 50% by using `repeated int32`
-     * instead.  The `repeated int32` encoding is admittedly more embarrassing to
+     * instead. The `repeated int32` encoding is admittedly more embarrassing to
      * work with in some programming languages but we hope the performance
      * improvements make up for it.
      *
@@ -320,6 +398,102 @@ class Occurrence extends \Google\Protobuf\Internal\Message
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Scip\Diagnostic::class);
         $this->diagnostics = $arr;
+
+        return $this;
+    }
+
+    /**
+     * (optional) Using the same encoding as the sibling `range` field, source
+     * position of the nearest non-trivial enclosing AST node. This range must
+     * enclose the `range` field. Example applications that make use of the
+     * enclosing_range field:
+     * - Call hierarchies: to determine what symbols are references from the body
+     *   of a function
+     * - Symbol outline: to display breadcrumbs from the cursor position to the
+     *   root of the file
+     * - Expand selection: to select the nearest enclosing AST node.
+     * - Highlight range: to indicate the AST expression that is associated with a
+     *   hover popover
+     * For definition occurrences, the enclosing range should indicate the
+     * start/end bounds of the entire definition AST node, including
+     * documentation.
+     * ```
+     * const n = 3
+     *       ^ range
+     * ^^^^^^^^^^^ enclosing_range
+     * /&#42;* Parses the string into something *&#47;
+     * ^ enclosing_range start --------------------------------------|
+     * function parse(input string): string {                        |
+     *          ^^^^^ range                                          |
+     *     return input.slice(n)                                     |
+     * }                                                             |
+     * ^ enclosing_range end <---------------------------------------|
+     * ```
+     * For reference occurrences, the enclosing range should indicate the start/end
+     * bounds of the parent expression.
+     * ```
+     * const a = a.b
+     *             ^ range
+     *           ^^^ enclosing_range
+     * const b = a.b(41).f(42).g(43)
+     *                   ^ range
+     *           ^^^^^^^^^^^^^ enclosing_range
+     * ```
+     *
+     * Generated from protobuf field <code>repeated int32 enclosing_range = 7;</code>
+     * @return \Google\Protobuf\Internal\RepeatedField
+     */
+    public function getEnclosingRange()
+    {
+        return $this->enclosing_range;
+    }
+
+    /**
+     * (optional) Using the same encoding as the sibling `range` field, source
+     * position of the nearest non-trivial enclosing AST node. This range must
+     * enclose the `range` field. Example applications that make use of the
+     * enclosing_range field:
+     * - Call hierarchies: to determine what symbols are references from the body
+     *   of a function
+     * - Symbol outline: to display breadcrumbs from the cursor position to the
+     *   root of the file
+     * - Expand selection: to select the nearest enclosing AST node.
+     * - Highlight range: to indicate the AST expression that is associated with a
+     *   hover popover
+     * For definition occurrences, the enclosing range should indicate the
+     * start/end bounds of the entire definition AST node, including
+     * documentation.
+     * ```
+     * const n = 3
+     *       ^ range
+     * ^^^^^^^^^^^ enclosing_range
+     * /&#42;* Parses the string into something *&#47;
+     * ^ enclosing_range start --------------------------------------|
+     * function parse(input string): string {                        |
+     *          ^^^^^ range                                          |
+     *     return input.slice(n)                                     |
+     * }                                                             |
+     * ^ enclosing_range end <---------------------------------------|
+     * ```
+     * For reference occurrences, the enclosing range should indicate the start/end
+     * bounds of the parent expression.
+     * ```
+     * const a = a.b
+     *             ^ range
+     *           ^^^ enclosing_range
+     * const b = a.b(41).f(42).g(43)
+     *                   ^ range
+     *           ^^^^^^^^^^^^^ enclosing_range
+     * ```
+     *
+     * Generated from protobuf field <code>repeated int32 enclosing_range = 7;</code>
+     * @param array<int>|\Google\Protobuf\Internal\RepeatedField $var
+     * @return $this
+     */
+    public function setEnclosingRange($var)
+    {
+        $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::INT32);
+        $this->enclosing_range = $arr;
 
         return $this;
     }

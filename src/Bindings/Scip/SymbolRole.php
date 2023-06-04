@@ -7,7 +7,7 @@ namespace Scip;
 use UnexpectedValueException;
 
 /**
- * SymbolRole declares what "role" a symbol has in an occurrence.  A role is
+ * SymbolRole declares what "role" a symbol has in an occurrence. A role is
  * encoded as a bitset where each bit represents a different role. For example,
  * to determine if the `Import` role is set, test whether the second bit of the
  * enum value is defined. In pseudocode, this can be implemented with the

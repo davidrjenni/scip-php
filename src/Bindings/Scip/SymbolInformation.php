@@ -25,9 +25,11 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
     protected $symbol = '';
     /**
      * (optional, but strongly recommended) The markdown-formatted documentation
-     * for this symbol. This field is repeated to allow different kinds of
-     * documentation.  For example, it's nice to include both the signature of a
-     * method (parameters and return type) along with the accompanying docstring.
+     * for this symbol. Use `SymbolInformation.signature_documentation` to
+     * document the method/class/type signature of this symbol.
+     * Due to historical reasons, indexers may include signature documentation in
+     * this field by rendering markdown code blocks. New indexers should only
+     * include non-code documentation in this field, for example docstrings.
      *
      * Generated from protobuf field <code>repeated string documentation = 3;</code>
      */
@@ -38,6 +40,38 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated .scip.Relationship relationships = 4;</code>
      */
     private $relationships;
+    /**
+     * The kind of this symbol. Use this field instead of
+     * `SymbolDescriptor.Suffix` to determine whether something is, for example, a
+     * class or a method.
+     *
+     * Generated from protobuf field <code>.scip.SymbolInformation.Kind kind = 5;</code>
+     */
+    protected $kind = 0;
+    /**
+     * (optional) The name of this symbol as it should be displayed to the user.
+     * For example, the symbol "com/example/MyClass#myMethod(+1)." should have the
+     * display name "myMethod". The `symbol` field is not a reliable source of
+     * the display name for several reasons:
+     * - Local symbols don't encode the name.
+     * - Some languages have case-insensitive names, so the symbol is all-lowercase.
+     * - The symbol may encode names with special characters that should not be
+     *   displayed to the user.
+     *
+     * Generated from protobuf field <code>string display_name = 6;</code>
+     */
+    protected $display_name = '';
+    /**
+     * (optional) The signature of this symbol as it's displayed in API
+     * documentation or in hover tooltips. For example, a Java method that adds
+     * two numbers this would have `Document.language = "java"` and `Document.text
+     * = "void add(int a, int b)". The `language` and `text` fields are required
+     * while other fields such as `Documentation.occurrences` can be optionally
+     * included to support hyperlinking referenced symbols in the signature.
+     *
+     * Generated from protobuf field <code>.scip.Document signature_documentation = 7;</code>
+     */
+    protected $signature_documentation = null;
 
     /**
      * Constructor.
@@ -50,11 +84,33 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
      *           The string must be formatted according to the grammar in `Symbol`.
      *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $documentation
      *           (optional, but strongly recommended) The markdown-formatted documentation
-     *           for this symbol. This field is repeated to allow different kinds of
-     *           documentation.  For example, it's nice to include both the signature of a
-     *           method (parameters and return type) along with the accompanying docstring.
+     *           for this symbol. Use `SymbolInformation.signature_documentation` to
+     *           document the method/class/type signature of this symbol.
+     *           Due to historical reasons, indexers may include signature documentation in
+     *           this field by rendering markdown code blocks. New indexers should only
+     *           include non-code documentation in this field, for example docstrings.
      *     @type array<\Scip\Relationship>|\Google\Protobuf\Internal\RepeatedField $relationships
      *           (optional) Relationships to other symbols (e.g., implements, type definition).
+     *     @type int $kind
+     *           The kind of this symbol. Use this field instead of
+     *           `SymbolDescriptor.Suffix` to determine whether something is, for example, a
+     *           class or a method.
+     *     @type string $display_name
+     *           (optional) The name of this symbol as it should be displayed to the user.
+     *           For example, the symbol "com/example/MyClass#myMethod(+1)." should have the
+     *           display name "myMethod". The `symbol` field is not a reliable source of
+     *           the display name for several reasons:
+     *           - Local symbols don't encode the name.
+     *           - Some languages have case-insensitive names, so the symbol is all-lowercase.
+     *           - The symbol may encode names with special characters that should not be
+     *             displayed to the user.
+     *     @type \Scip\Document $signature_documentation
+     *           (optional) The signature of this symbol as it's displayed in API
+     *           documentation or in hover tooltips. For example, a Java method that adds
+     *           two numbers this would have `Document.language = "java"` and `Document.text
+     *           = "void add(int a, int b)". The `language` and `text` fields are required
+     *           while other fields such as `Documentation.occurrences` can be optionally
+     *           included to support hyperlinking referenced symbols in the signature.
      * }
      */
     public function __construct($data = NULL) {
@@ -92,9 +148,11 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
 
     /**
      * (optional, but strongly recommended) The markdown-formatted documentation
-     * for this symbol. This field is repeated to allow different kinds of
-     * documentation.  For example, it's nice to include both the signature of a
-     * method (parameters and return type) along with the accompanying docstring.
+     * for this symbol. Use `SymbolInformation.signature_documentation` to
+     * document the method/class/type signature of this symbol.
+     * Due to historical reasons, indexers may include signature documentation in
+     * this field by rendering markdown code blocks. New indexers should only
+     * include non-code documentation in this field, for example docstrings.
      *
      * Generated from protobuf field <code>repeated string documentation = 3;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
@@ -106,9 +164,11 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
 
     /**
      * (optional, but strongly recommended) The markdown-formatted documentation
-     * for this symbol. This field is repeated to allow different kinds of
-     * documentation.  For example, it's nice to include both the signature of a
-     * method (parameters and return type) along with the accompanying docstring.
+     * for this symbol. Use `SymbolInformation.signature_documentation` to
+     * document the method/class/type signature of this symbol.
+     * Due to historical reasons, indexers may include signature documentation in
+     * this field by rendering markdown code blocks. New indexers should only
+     * include non-code documentation in this field, for example docstrings.
      *
      * Generated from protobuf field <code>repeated string documentation = 3;</code>
      * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
@@ -144,6 +204,122 @@ class SymbolInformation extends \Google\Protobuf\Internal\Message
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Scip\Relationship::class);
         $this->relationships = $arr;
+
+        return $this;
+    }
+
+    /**
+     * The kind of this symbol. Use this field instead of
+     * `SymbolDescriptor.Suffix` to determine whether something is, for example, a
+     * class or a method.
+     *
+     * Generated from protobuf field <code>.scip.SymbolInformation.Kind kind = 5;</code>
+     * @return int
+     */
+    public function getKind()
+    {
+        return $this->kind;
+    }
+
+    /**
+     * The kind of this symbol. Use this field instead of
+     * `SymbolDescriptor.Suffix` to determine whether something is, for example, a
+     * class or a method.
+     *
+     * Generated from protobuf field <code>.scip.SymbolInformation.Kind kind = 5;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setKind($var)
+    {
+        GPBUtil::checkEnum($var, \Scip\SymbolInformation\Kind::class);
+        $this->kind = $var;
+
+        return $this;
+    }
+
+    /**
+     * (optional) The name of this symbol as it should be displayed to the user.
+     * For example, the symbol "com/example/MyClass#myMethod(+1)." should have the
+     * display name "myMethod". The `symbol` field is not a reliable source of
+     * the display name for several reasons:
+     * - Local symbols don't encode the name.
+     * - Some languages have case-insensitive names, so the symbol is all-lowercase.
+     * - The symbol may encode names with special characters that should not be
+     *   displayed to the user.
+     *
+     * Generated from protobuf field <code>string display_name = 6;</code>
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->display_name;
+    }
+
+    /**
+     * (optional) The name of this symbol as it should be displayed to the user.
+     * For example, the symbol "com/example/MyClass#myMethod(+1)." should have the
+     * display name "myMethod". The `symbol` field is not a reliable source of
+     * the display name for several reasons:
+     * - Local symbols don't encode the name.
+     * - Some languages have case-insensitive names, so the symbol is all-lowercase.
+     * - The symbol may encode names with special characters that should not be
+     *   displayed to the user.
+     *
+     * Generated from protobuf field <code>string display_name = 6;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setDisplayName($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->display_name = $var;
+
+        return $this;
+    }
+
+    /**
+     * (optional) The signature of this symbol as it's displayed in API
+     * documentation or in hover tooltips. For example, a Java method that adds
+     * two numbers this would have `Document.language = "java"` and `Document.text
+     * = "void add(int a, int b)". The `language` and `text` fields are required
+     * while other fields such as `Documentation.occurrences` can be optionally
+     * included to support hyperlinking referenced symbols in the signature.
+     *
+     * Generated from protobuf field <code>.scip.Document signature_documentation = 7;</code>
+     * @return \Scip\Document|null
+     */
+    public function getSignatureDocumentation()
+    {
+        return $this->signature_documentation;
+    }
+
+    public function hasSignatureDocumentation()
+    {
+        return isset($this->signature_documentation);
+    }
+
+    public function clearSignatureDocumentation()
+    {
+        unset($this->signature_documentation);
+    }
+
+    /**
+     * (optional) The signature of this symbol as it's displayed in API
+     * documentation or in hover tooltips. For example, a Java method that adds
+     * two numbers this would have `Document.language = "java"` and `Document.text
+     * = "void add(int a, int b)". The `language` and `text` fields are required
+     * while other fields such as `Documentation.occurrences` can be optionally
+     * included to support hyperlinking referenced symbols in the signature.
+     *
+     * Generated from protobuf field <code>.scip.Document signature_documentation = 7;</code>
+     * @param \Scip\Document $var
+     * @return $this
+     */
+    public function setSignatureDocumentation($var)
+    {
+        GPBUtil::checkMessage($var, \Scip\Document::class);
+        $this->signature_documentation = $var;
 
         return $this;
     }
