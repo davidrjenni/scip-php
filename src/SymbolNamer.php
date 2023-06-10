@@ -8,7 +8,7 @@ use LogicException;
 use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure as ClosureNode;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
@@ -124,7 +124,7 @@ final class SymbolNamer
     /** @return ?non-empty-string */
     public function name(Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty $n): ?string
     {
-        if ($n instanceof ArrowFunction || $n instanceof ClosureNode) {
+        if ($n instanceof ArrowFunction || $n instanceof Closure) {
             $ns = $this->namespaceName($n);
             $func = "anon-func-{$n->getStartTokenPos()}";
             return $this->desc("{$ns}{$func}", '().');
