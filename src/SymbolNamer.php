@@ -192,7 +192,8 @@ final class SymbolNamer
                 }
                 if ($classLike instanceof Class_) {
                     if ($classLike->extends === null) {
-                        throw new LogicException('Reference to parent in class without parent class.');
+                        // Reference to parent in class without parent class.
+                        return null;
                     }
                     return $this->name($classLike->extends);
                 }

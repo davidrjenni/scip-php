@@ -138,6 +138,8 @@ final class TypesTest extends TestCase
         $this->assertMethCall('ClassA.php', 'f2', 43, 'TestData/ClassF#f2().');
         $this->assertMethCall('ClassA.php', 'a1', 44, 'TestData/ClassA#a1().');
 
+        $this->assertMethCall('ClassB.php', 'b2', 26, null);
+
         $this->assertMethCall('ClassK.php', 'a1', 27, 'TestData/ClassA#a1().');
         $this->assertMethCall('ClassK.php', 'b1', 28, 'TestData/ClassB#b1().');
         $this->assertMethCall('ClassK.php', 'c1', 29, 'TestData/ClassC#c1().');
@@ -256,11 +258,11 @@ final class TypesTest extends TestCase
     }
 
     /**
-     * @param  non-empty-string  $filename
-     * @param  non-empty-string  $name
-     * @param  non-empty-string  $def
+     * @param  non-empty-string   $filename
+     * @param  non-empty-string   $name
+     * @param  ?non-empty-string  $def
      */
-    private function assertMethCall(string $filename, string $name, int $line, string $def): void
+    private function assertMethCall(string $filename, string $name, int $line, ?string $def): void
     {
         $classes = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
         $x = $this->findNode(
@@ -285,8 +287,12 @@ final class TypesTest extends TestCase
             self::fail("Unexpected class: {$class}.");
         }
 
-        self::assertNotNull($d);
-        self::assertStringEndsWith($def, $d);
+        if ($def !== null) {
+            self::assertNotNull($d);
+            self::assertStringEndsWith($def, $d);
+        } else {
+            self::assertNull($d);
+        }
     }
 
     /**

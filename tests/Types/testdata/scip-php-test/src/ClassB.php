@@ -23,5 +23,6 @@ final class ClassB
         \TestData3\ClassJ::J1;
         \TestData2\ClassJ::J2;
         \ClassJ::J3;
+        parent::b2();
     }
 }
