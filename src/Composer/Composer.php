@@ -68,6 +68,9 @@ final class Composer
     /** @var array<non-empty-string, array{name: non-empty-string, version: non-empty-string}> */
     private array $pkgsByPaths;
 
+    /** @var array<non-empty-string, scalar> */
+    private readonly array $userConsts;
+
     /**
      * @param  non-empty-string  $elem
      * @param  non-empty-string  $elems
@@ -175,6 +178,8 @@ final class Composer
             }
         }
         $this->loader->addClassMap($additionalClasses);
+
+        $this->userConsts = get_defined_constants(categorize: true)['user'] ?? [];
     }
 
     /**
@@ -271,9 +276,9 @@ final class Composer
     }
 
     /** @param  non-empty-string  $c */
-    public function isBuiltinConst(string $c): bool
+    public function isConst(string $c): bool
     {
-        return isset(PhpStormStubsMap::CONSTANTS[$c]);
+        return isset(PhpStormStubsMap::CONSTANTS[$c]) || isset($this->userConsts[$c]);
     }
 
     /** @param  non-empty-string  $c */
@@ -430,8 +435,7 @@ final class Composer
      */
     private function findConstFile(string $c): ?string
     {
-        $consts = get_defined_constants(categorize: true);
-        if (!isset($consts['user'][$c])) {
+        if (!isset($this->userConsts[$c])) {
             return null;
         }
 

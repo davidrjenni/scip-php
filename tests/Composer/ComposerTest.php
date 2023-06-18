@@ -94,16 +94,16 @@ final class ComposerTest extends TestCase
         }
     }
 
-    public function testIsBuiltinConst(): void
+    public function testIsConst(): void
     {
-        foreach (self::BUILTIN as $type => $idents) {
+        foreach ([...self::BUILTIN, ...self::DEPS, ...self::PROJECT] as $type => $idents) {
             foreach ($idents as $ident) {
-                self::assertSame($type === 'consts', $this->composer->isBuiltinConst($ident), $ident);
+                self::assertSame($type === 'consts', $this->composer->isConst($ident), $ident);
             }
         }
-        foreach ([...self::DEPS, ...self::PROJECT, ...self::UNKNOWN] as $idents) {
+        foreach (self::UNKNOWN as $idents) {
             foreach ($idents as $ident) {
-                self::assertFalse($this->composer->isBuiltinConst($ident), $ident);
+                self::assertFalse($this->composer->isConst($ident), $ident);
             }
         }
     }

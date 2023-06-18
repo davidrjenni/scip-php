@@ -206,7 +206,7 @@ final class SymbolNamer
             $name = $n->toString();
             $desc = str_replace('\\', '/', $name);
 
-            if ($this->composer->isBuiltinConst($name)) {
+            if ($this->composer->isConst($name)) {
                 return $this->desc($desc, '.');
             }
             if ($this->composer->isClassLike($name)) {
