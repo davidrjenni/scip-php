@@ -6,7 +6,7 @@ RUN composer install --no-dev --no-progress --no-interaction
 
 FROM sourcegraph/src-cli:5.1.0@sha256:c7e4865c65623aba97fd031d3f6dc6ac15478e88fd8a6092029bb13d77117f47 AS src-cli
 
-FROM php:8.2-cli-alpine3.17@sha256:2af057cd287e0ac4421d8cd5f078846a95f2f2666b29b5ab448b42479ef09bd5
+FROM php:8.2-cli-alpine3.17@sha256:a5f33900d8e9bf1594061971d06dfebfbcc6fa9d54e45e9a9648761ba0b6d075
 
 RUN echo 'memory_limit=2G' >> /usr/local/etc/php/conf.d/docker-php-memory-limit.ini;
 
