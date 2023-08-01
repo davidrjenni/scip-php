@@ -23,7 +23,7 @@ jobs:
         run: |
           git clone https://github.com/sourcegraph/scip.git --depth=1
           cd scip
-          go build -o scip ./cmd
+          go build -o scip ./cmd/scip
           mv scip /usr/local/bin/scip
       - name: Install PHP
         uses: shivammathur/setup-php@4bd44f22a98a19e0950cbad5f31095157cc9621b # v2.25.4
