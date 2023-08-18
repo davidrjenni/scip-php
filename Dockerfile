@@ -1,4 +1,4 @@
-FROM composer:2.5.8@sha256:055403f56728a08e82d4f32d006c66e153450bd66cc59b415027a7fc36ac778d AS builder
+FROM composer:2.5.8@sha256:7c03aa544494973299998db9e51f3c4ca880f2d51475b78a4bca4214a8a4fe82 AS builder
 
 COPY composer.json /app/
 COPY composer.lock /app/
