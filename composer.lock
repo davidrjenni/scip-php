@@ -152,16 +152,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v3.24.0",
+            "version": "v3.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "bfa8d627de8464634e6e3b5943f6354baa9cedd2"
+                "reference": "5c3a6828e1aa64fdbb1748ed60b9f0366d897a92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/bfa8d627de8464634e6e3b5943f6354baa9cedd2",
-                "reference": "bfa8d627de8464634e6e3b5943f6354baa9cedd2",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/5c3a6828e1aa64fdbb1748ed60b9f0366d897a92",
+                "reference": "5c3a6828e1aa64fdbb1748ed60b9f0366d897a92",
                 "shasum": ""
             },
             "require": {
@@ -190,9 +190,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.24.0"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.24.1"
             },
-            "time": "2023-08-08T21:14:02+00:00"
+            "time": "2023-08-18T19:38:44+00:00"
         },
         {
             "name": "jetbrains/phpstorm-stubs",
