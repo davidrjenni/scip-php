@@ -5,12 +5,12 @@
   namespace TestData
   {
       use Exception;
-//        ^^^^^^^^^ reference scip-php composer php 8.2.9 Exception#
+//        ^^^^^^^^^ reference scip-php composer php 8.2.10 Exception#
   
       final class ClassH extends Exception
 //                ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassH#
 //                documentation ```php
-//                               ^^^^^^^^^ reference scip-php composer php 8.2.9 Exception#
+//                               ^^^^^^^^^ reference scip-php composer php 8.2.10 Exception#
       {
   
           public function __construct()
@@ -18,8 +18,8 @@
 //                        documentation ```php
           {
               parent::__construct();
-//            ^^^^^^ reference scip-php composer php 8.2.9 Exception#
-//                    ^^^^^^^^^^^ reference scip-php composer php 8.2.9 Exception#__construct().
+//            ^^^^^^ reference scip-php composer php 8.2.10 Exception#
+//                    ^^^^^^^^^^^ reference scip-php composer php 8.2.10 Exception#__construct().
           }
   
           public function h1(): int
@@ -31,7 +31,7 @@
 //                                    ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassF#f2().
 //                                          ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a2().
               return $this->getCode() + fun2()->a2() * $x;
-//                          ^^^^^^^ reference scip-php composer php 8.2.9 Exception#getCode().
+//                          ^^^^^^^ reference scip-php composer php 8.2.10 Exception#getCode().
 //                                      ^^^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 fun2().
 //                                              ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a2().
           }
