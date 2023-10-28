@@ -113,7 +113,11 @@ final class Composer
             $vendorDir = trim($json['config']['vendor-dir'], '/');
         }
         $this->vendorDir = self::join($projectRoot, $vendorDir);
-        $this->loader = require self::join($this->vendorDir, 'autoload.php');
+
+        $projectAutoload = Reader::read(self::join($this->vendorDir, 'autoload.php'));
+        $scipPhpAutoload = Reader::read(self::join($this->scipPhpVendorDir, 'autoload.php'));
+        $autoloadDir = $projectAutoload === $scipPhpAutoload ? $this->scipPhpVendorDir : $this->vendorDir;
+        $this->loader = require self::join($autoloadDir, 'autoload.php');
 
         $installed = require self::join($this->vendorDir, 'composer', 'installed.php');
         $this->pkgName = $installed['root']['name'];
