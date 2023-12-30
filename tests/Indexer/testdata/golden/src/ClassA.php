@@ -6,20 +6,32 @@
   
   class ClassA
 //      ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#
-//      documentation ```php
+//      documentation
+//      > ```php
+//      > class ClassA
+//      > ```
   {
       private ClassB $a1;
 //            ^^^^^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassB#
 //                   ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
-//                   documentation ```php
+//                   documentation
+//                   > ```php
+//                   > private \TestData\ClassB $a1
+//                   > ```
   
       protected int $a2;
 //                  ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a2.
-//                  documentation ```php
+//                  documentation
+//                  > ```php
+//                  > protected int $a2
+//                  > ```
   
       public function a1(): ?int
 //                    ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a1().
-//                    documentation ```php
+//                    documentation
+//                    > ```php
+//                    > public function a1(): ?int
+//                    > ```
       {
           $v1 = $this->a1::$b1->c2->b2;
 //                     ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
@@ -45,7 +57,10 @@
   
       public function a2(): int
 //                    ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a2().
-//                    documentation ```php
+//                    documentation
+//                    > ```php
+//                    > public function a2(): int
+//                    > ```
       {
           $v1 = $this->a1();
 //                     ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a1().
@@ -82,7 +97,10 @@
   
       public function a3(): void
 //                    ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a3().
-//                    documentation ```php
+//                    documentation
+//                    > ```php
+//                    > public function a3(): void
+//                    > ```
       {
           $v1 = ($v3 = $this->a1->b1)?->c1()->d1->f2::G1;
 //                            ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
@@ -98,7 +116,10 @@
   
       public function a4(): int
 //                    ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a4().
-//                    documentation ```php
+//                    documentation
+//                    > ```php
+//                    > public function a4(): int
+//                    > ```
       {
           $v1 = $this->a1();
 //                     ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#a1().
@@ -125,12 +146,21 @@
           $v4 = (new class($v3) {
               public int $z1;
 //                       ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/anon-class-447#$z1.
-//                       documentation ```php
+//                       documentation
+//                       > ```php
+//                       > public int $z1
+//                       > ```
               public function __construct(?int $p) { $this->z1 = $p; }
 //                            ^^^^^^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/anon-class-447#__construct().
-//                            documentation ```php
+//                            documentation
+//                            > ```php
+//                            > public function __construct(?int $p)
+//                            > ```
 //                                             ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/anon-class-447#__construct().($p)
-//                                             documentation ```php
+//                                             documentation
+//                                             > ```php
+//                                             > ?int $p
+//                                             > ```
 //                                                          ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/anon-class-447#$z1.
           })->z1;
 //            ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/anon-class-447#$z1.
@@ -163,7 +193,7 @@
               1 => $this->a1,
 //                        ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
               PHP_MAJOR_VERSION => $this->a1?->b1,
-//            ^^^^^^^^^^^^^^^^^ reference scip-php composer php 8.2.13 PHP_MAJOR_VERSION.
+//            ^^^^^^^^^^^^^^^^^ reference scip-php composer php 8.2.14 PHP_MAJOR_VERSION.
 //                                        ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
 //                                             ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassB#$b1.
           })->b2;
