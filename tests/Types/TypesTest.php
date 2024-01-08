@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Types;
 
-use PhpParser\Lexer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -48,7 +47,7 @@ final class TypesTest extends TestCase
     {
         parent::setUp();
 
-        $this->parser = $this->createParser();
+        $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
         $this->stmts = [];
 
         $composer = new Composer(self::TESTDATA_DIR);
@@ -344,34 +343,15 @@ final class TypesTest extends TestCase
         }
 
         $finder = new FindingVisitor(static fn(Node $n): bool => $filter($n) && $n->getStartLine() === $line);
-        $t = new NodeTraverser();
-        $t->addVisitor(new NameResolver());
-        $t->addVisitor(new ParentConnectingVisitor());
-        $t->addVisitor($finder);
+        $t = new NodeTraverser(
+            new NameResolver(),
+            new ParentConnectingVisitor(),
+            $finder,
+        );
         $t->traverse($this->stmts[$filename]);
         $n = $finder->getFoundNodes()[0] ?? null;
 
         self::assertNotNull($n);
         return $n;
-    }
-
-    private function createParser(): Parser
-    {
-        return (new ParserFactory())->create(
-            ParserFactory::ONLY_PHP7,
-            new Lexer(
-                [
-                    'usedAttributes' => [
-                        'comments',
-                        'startLine',
-                        'endLine',
-                        'startTokenPos',
-                        'endTokenPos',
-                        'startFilePos',
-                        'endFilePos',
-                    ],
-                ],
-            ),
-        );
     }
 }
