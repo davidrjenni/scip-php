@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PHPUnit\Framework\TestCase;
 use ScipPhp\Parser\Parser;
 use ScipPhp\Parser\PosResolver;
@@ -43,7 +43,7 @@ final class PosResolverTest extends TestCase
                 if ($n instanceof New_) {
                     self::assertSame([4, 7, 6, 1], $pos->pos($n));
                 }
-                if ($n instanceof PropertyProperty && $n->name->toString() === 'p') {
+                if ($n instanceof PropertyItem && $n->name->toString() === 'p') {
                     self::assertSame([5, 18, 5, 20], $pos->pos($n->name));
                 }
                 if ($n instanceof PropertyFetch && $n->name instanceof Identifier && $n->name->toString() === 'p') {

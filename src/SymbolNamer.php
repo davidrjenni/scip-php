@@ -13,13 +13,13 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Trait_;
 use RuntimeException;
 use ScipPhp\Composer\Composer;
@@ -122,7 +122,7 @@ final class SymbolNamer
     }
 
     /** @return ?non-empty-string */
-    public function name(Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyProperty $n): ?string
+    public function name(Const_|ClassLike|EnumCase|FunctionLike|Name|Param|PropertyItem $n): ?string
     {
         if ($n instanceof ArrowFunction || $n instanceof Closure) {
             $ns = $this->namespaceName($n);
@@ -227,7 +227,7 @@ final class SymbolNamer
             return $this->nameParam($name, $n->var->name);
         }
 
-        if ($n instanceof PropertyProperty) {
+        if ($n instanceof PropertyItem) {
             $ns = $this->namespaceName($n);
             $class = $this->classLikeName($n);
             if ($class === null) {

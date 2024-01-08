@@ -25,7 +25,8 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\PropertyItem;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -33,7 +34,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use ScipPhp\Composer\Composer;
 use ScipPhp\Parser\DocCommentParser;
 use ScipPhp\Parser\Parser;
@@ -150,7 +150,7 @@ final class Types
             $iterType = $this->type($x->var);
             if ($iterType instanceof IterableType) {
                 $key = null;
-                if ($x->dim instanceof String_ || $x->dim instanceof LNumber) {
+                if ($x->dim instanceof String_ || $x->dim instanceof Int_) {
                     $key = $x->dim->value;
                 }
                 return $iterType->valueType($key);
@@ -352,7 +352,7 @@ final class Types
         } elseif ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
             // Constructor property promotion.
             if ($n->flags !== 0) {
-                $p = new PropertyProperty($n->var->name, $n->default, $n->getAttributes());
+                $p = new PropertyItem($n->var->name, $n->default, $n->getAttributes());
                 $name = $this->namer->name($p);
                 if ($name !== null) {
                     $type = $this->typeParser->parse($n->type);

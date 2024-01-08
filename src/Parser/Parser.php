@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ScipPhp\Parser;
 
 use Closure;
-use PhpParser\Lexer;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
@@ -28,20 +27,7 @@ final class Parser
     {
         $this->parentConnectingVisitor = new ParentConnectingVisitor();
         $this->nameResolver = new NameResolver();
-        $this->parser = (new ParserFactory())->create(
-            ParserFactory::ONLY_PHP7,
-            new Lexer([
-                'usedAttributes' => [
-                    'comments',
-                    'startLine',
-                    'endLine',
-                    'startTokenPos',
-                    'endTokenPos',
-                    'startFilePos',
-                    'endFilePos',
-                ],
-            ]),
-        );
+        $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
     }
 
     /**
@@ -62,10 +48,9 @@ final class Parser
 
         $pos = new PosResolver($code);
 
-        $t = new NodeTraverser();
-        $t->addVisitor($this->nameResolver);
-        $t->addVisitor($this->parentConnectingVisitor);
-        $t->addVisitor(
+        $t = new NodeTraverser(
+            $this->nameResolver,
+            $this->parentConnectingVisitor,
             new class ($pos, $newThis, $visitor) extends NodeVisitorAbstract
             {
                 public function __construct(

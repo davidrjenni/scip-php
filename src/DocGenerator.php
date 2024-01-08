@@ -7,6 +7,7 @@ namespace ScipPhp;
 use LogicException;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Param;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
@@ -16,7 +17,6 @@ use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeAbstract;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
@@ -35,7 +35,7 @@ final class DocGenerator
     }
 
     /** @return non-empty-array<int, non-empty-string> */
-    public function create(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n): array
+    public function create(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyItem $n): array
     {
         ['sign' => $s, 'doc' => $doc] = $this->signature($n);
         $s = "```php\n{$s}\n```";
@@ -46,7 +46,7 @@ final class DocGenerator
     }
 
     /** @return array{sign: non-empty-string, doc: string} */
-    private function signature(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n): array
+    private function signature(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyItem $n): array
     {
         if ($n instanceof Const_) {
             return $this->constSign($n);
@@ -89,7 +89,7 @@ final class DocGenerator
             $doc = $this->docComment($n);
             return ['sign' => $sign, 'doc' => $doc];
         }
-        if ($n instanceof PropertyProperty) {
+        if ($n instanceof PropertyItem) {
             return $this->propertySign($n);
         }
 
@@ -147,7 +147,7 @@ final class DocGenerator
     }
 
     /** @return array{sign: non-empty-string, doc: string} */
-    private function propertySign(PropertyProperty $p): array
+    private function propertySign(PropertyItem $p): array
     {
         $classProperty = $p->getAttribute('parent');
         if (!$classProperty instanceof Property) {

@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -25,7 +26,6 @@ use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use Scip\Occurrence;
 use Scip\SymbolInformation;
 use Scip\SymbolRole;
@@ -118,7 +118,7 @@ final class DocIndexer
         if ($n instanceof Param && $n->var instanceof Variable && is_string($n->var->name)) {
             // Constructor property promotion.
             if ($n->flags !== 0) {
-                $p = new PropertyProperty($n->var->name, $n->default, $n->getAttributes());
+                $p = new PropertyItem($n->var->name, $n->default, $n->getAttributes());
                 $prop = new Property($n->flags, [$p], $n->getAttributes(), $n->type, $n->attrGroups);
                 $p->setAttribute('parent', $prop);
                 $this->def($pos, $p, $n->var, SyntaxKind::IdentifierParameter);
@@ -183,7 +183,7 @@ final class DocIndexer
 
     private function def(
         PosResolver $pos,
-        Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyProperty $n,
+        Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyItem $n,
         Node $posNode,
         int $kind = SyntaxKind::Identifier,
     ): void {
