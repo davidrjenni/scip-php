@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\PropertyItem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ScipPhp\Parser\Parser;
 use ScipPhp\Parser\PosResolver;
@@ -54,12 +55,12 @@ final class PosResolverTest extends TestCase
     }
 
     /**
-     * @dataProvider providePosInDoc
      * @param  non-empty-string           $docText
      * @param  non-empty-string           $tagName
      * @param  non-empty-string           $name
      * @param  array{int, int, int, int}  $pos
      */
+    #[DataProvider('providePosInDoc')]
     public function testPosInDoc(string $docText, string $tagName, string $name, array $pos): void
     {
         $doc = new Doc($docText, 1, 1, 1);

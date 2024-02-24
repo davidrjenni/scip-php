@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Indexer;
 
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -56,7 +57,7 @@ final class IndexerTest extends TestCase
         }
     }
 
-    /** @runInSeparateProcess */
+    #[RunInSeparateProcess]
     public function testIndexer(): void
     {
         $indexer = new Indexer(self::TESTDATA_DIR . 'scip-php-test', 'test', []);
