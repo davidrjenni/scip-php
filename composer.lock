@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9dea6ece06be25219547eef472b648e1",
+    "content-hash": "503dc06710bed0a69bea917770db5ec5",
     "packages": [
         {
             "name": "composer/class-map-generator",
@@ -152,16 +152,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v3.25.3",
+            "version": "v4.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "983a87f4f8798a90ca3a25b0f300b8fda38df643"
+                "reference": "353a34a6a1b482391a8d2deabb6ce5877f97726a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/983a87f4f8798a90ca3a25b0f300b8fda38df643",
-                "reference": "983a87f4f8798a90ca3a25b0f300b8fda38df643",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/353a34a6a1b482391a8d2deabb6ce5877f97726a",
+                "reference": "353a34a6a1b482391a8d2deabb6ce5877f97726a",
                 "shasum": ""
             },
             "require": {
@@ -190,9 +190,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.25.3"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.26.0"
             },
-            "time": "2024-02-15T21:11:49+00:00"
+            "time": "2024-03-12T20:11:51+00:00"
         },
         {
             "name": "jetbrains/phpstorm-stubs",
