@@ -193,7 +193,7 @@
               1 => $this->a1,
 //                        ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
               PHP_MAJOR_VERSION => $this->a1?->b1,
-//            ^^^^^^^^^^^^^^^^^ reference scip-php composer php 8.2.15 PHP_MAJOR_VERSION.
+//            ^^^^^^^^^^^^^^^^^ reference scip-php composer php 8.2.17 PHP_MAJOR_VERSION.
 //                                        ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#$a1.
 //                                             ^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassB#$b1.
           })->b2;
