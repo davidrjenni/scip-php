@@ -26,7 +26,7 @@ jobs:
           go build -o scip ./cmd/scip
           mv scip /usr/local/bin/scip
       - name: Install PHP
-        uses: shivammathur/setup-php@c665c7a15b5295c2488ac8a87af9cb806cd72198 # v2.30.4
+        uses: shivammathur/setup-php@fc14643b0a99ee9db10a3c025a33d76544fa3761 # v2.30.5
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install PHP
-        uses: shivammathur/setup-php@c665c7a15b5295c2488ac8a87af9cb806cd72198 # v2.30.4
+        uses: shivammathur/setup-php@fc14643b0a99ee9db10a3c025a33d76544fa3761 # v2.30.5
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install PHP
-        uses: shivammathur/setup-php@c665c7a15b5295c2488ac8a87af9cb806cd72198 # v2.30.4
+        uses: shivammathur/setup-php@fc14643b0a99ee9db10a3c025a33d76544fa3761 # v2.30.5
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -96,7 +96,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install PHP
-        uses: shivammathur/setup-php@c665c7a15b5295c2488ac8a87af9cb806cd72198 # v2.30.4
+        uses: shivammathur/setup-php@fc14643b0a99ee9db10a3c025a33d76544fa3761 # v2.30.5
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -114,7 +114,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install PHP
-        uses: shivammathur/setup-php@c665c7a15b5295c2488ac8a87af9cb806cd72198 # v2.30.4
+        uses: shivammathur/setup-php@fc14643b0a99ee9db10a3c025a33d76544fa3761 # v2.30.5
       - name: Install dependencies
         run: composer install --no-interaction --no-progress
       - name: Generate SCIP data
