@@ -38,7 +38,7 @@ final class IndexerTest extends TestCase
 
         $tempDir = sys_get_temp_dir();
         $indexFile = tempnam($tempDir, 'scip-php-index-');
-        if ($indexFile === false || $indexFile === '' || !is_file($indexFile)) {
+        if ($indexFile === false || !is_file($indexFile)) {
             self::fail('Cannot create temporary file.');
         }
         if (!rename($indexFile, "{$indexFile}.scip")) {
