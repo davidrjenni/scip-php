@@ -121,11 +121,11 @@ jobs:
         uses: davidrjenni/scip-php@main
         with:
           entrypoint: /usr/bin/scip-php
-      - name: Upload SCIP index
-        uses: davidrjenni/scip-php@main
-        with:
-          entrypoint: /usr/bin/src
-          args: code-intel upload -repo=github.com/${{ github.repository }} -commit=${{ github.sha }} -root=${{ github.workspace }} -github-token=${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload SCIP index
+      #   uses: davidrjenni/scip-php@main
+      #   with:
+      #     entrypoint: /usr/bin/src
+      #     args: code-intel upload -repo=github.com/${{ github.repository }} -commit=${{ github.sha }} -root=${{ github.workspace }} -github-token=${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     name: Build and push image
