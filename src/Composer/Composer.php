@@ -183,7 +183,7 @@ final class Composer
         }
         $this->loader->addClassMap($additionalClasses);
 
-        $this->userConsts = get_defined_constants(categorize: true)['user'] ?? [];
+        $this->userConsts = get_defined_constants(categorize: true)['user'] ?? []; // @phpstan-ignore-line
     }
 
     /**
