@@ -18,11 +18,11 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 
 use function count;
 
-final class DocCommentParser
+final readonly class DocCommentParser
 {
-    private readonly PhpDocParser $parser;
+    private PhpDocParser $parser;
 
-    private readonly Lexer $lexer;
+    private Lexer $lexer;
 
     public function __construct()
     {

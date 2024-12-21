@@ -8,7 +8,7 @@ use RuntimeException;
 
 use function file_get_contents;
 
-final class Reader
+final readonly class Reader
 {
     /** @param  non-empty-string  $filename */
     public static function read(string $filename): string

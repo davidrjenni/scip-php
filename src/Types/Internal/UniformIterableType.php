@@ -6,9 +6,9 @@ namespace ScipPhp\Types\Internal;
 
 use Override;
 
-final class UniformIterableType implements IterableType
+final readonly class UniformIterableType implements IterableType
 {
-    public function __construct(private readonly Type $type)
+    public function __construct(private Type $type)
     {
     }
 
