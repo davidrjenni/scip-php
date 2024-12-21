@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ScipPhp\Types\Internal;
 
+use Override;
+
 use function array_keys;
 
 final class CompositeType implements Type
@@ -26,6 +28,7 @@ final class CompositeType implements Type
     }
 
     /** @inheritDoc */
+    #[Override]
     public function flatten(): array
     {
         return $this->types;

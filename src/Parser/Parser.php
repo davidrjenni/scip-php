@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ScipPhp\Parser;
 
 use Closure;
+use Override;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
@@ -60,6 +61,7 @@ final class Parser
                 ) {
                 }
 
+                #[Override]
                 public function leaveNode(Node $n): ?Node
                 {
                     $this->visitor->call($this->newThis, $this->pos, $n);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Composer;
 
+use Override;
 use PHPUnit\Framework\TestCase;
 use ScipPhp\Composer\Composer;
 
@@ -59,6 +60,7 @@ final class ComposerTest extends TestCase
 
     private Composer $composer;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

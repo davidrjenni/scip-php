@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Indexer;
 
+use Override;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
@@ -32,6 +33,7 @@ final class IndexerTest extends TestCase
     /** @var non-empty-string */
     private string $indexFile;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -48,6 +50,7 @@ final class IndexerTest extends TestCase
         $this->indexFile = "{$indexFile}.scip";
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         parent::tearDown();
