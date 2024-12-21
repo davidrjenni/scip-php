@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Parser;
 
+use Override;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
@@ -22,6 +23,7 @@ final class PosResolverTest extends TestCase
 {
     private Parser $parser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

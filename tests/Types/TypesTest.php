@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Types;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -45,6 +46,7 @@ final class TypesTest extends TestCase
 
     private Types $types;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

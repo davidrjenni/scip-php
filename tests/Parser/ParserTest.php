@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Parser;
 
+use Override;
 use PhpParser\Node;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -16,6 +17,7 @@ final class ParserTest extends TestCase
 {
     private Parser $parser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
