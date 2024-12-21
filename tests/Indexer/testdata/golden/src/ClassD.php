@@ -45,12 +45,12 @@
       }
   }
   
-  final class ClassJ
-//            ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassJ#
-//            documentation
-//            > ```php
-//            > final class ClassJ
-//            > ```
+  final readonly class ClassJ
+//                     ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassJ#
+//                     documentation
+//                     > ```php
+//                     > final readonly class ClassJ
+//                     > ```
   {
       public const J0 = 42;
 //                 ^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassJ#J0.
