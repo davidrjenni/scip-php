@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Test",
+    "command": "composer",
+    "args": ["test"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Lint",
+    "command": "composer",
+    "args": ["lint"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus",
+    "hide": "on_success",
+    "shell": "system"
+  }
+]
