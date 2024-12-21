@@ -8,6 +8,7 @@ use Scip\Document;
 use Scip\Index;
 use Scip\Language;
 use Scip\Metadata;
+use Scip\PositionEncoding;
 use Scip\TextEncoding;
 use Scip\ToolInfo;
 use ScipPhp\Composer\Composer;
@@ -67,10 +68,11 @@ final class Indexer
             $indexer = new DocIndexer($this->composer, $this->namer, $this->types);
             $this->parser->traverse($filename, $indexer, $indexer->index(...));
             $documents[] = new Document([
-                'language'      => Language::PHP,
-                'relative_path' => str_replace($this->projectRoot . '/', '', $filename),
-                'occurrences'   => $indexer->occurrences,
-                'symbols'       => array_values($indexer->symbols),
+                'language'          => Language::PHP,
+                'relative_path'     => str_replace($this->projectRoot . '/', '', $filename),
+                'occurrences'       => $indexer->occurrences,
+                'symbols'           => array_values($indexer->symbols),
+                'position_encoding' => PositionEncoding::UTF8CodeUnitOffsetFromLineStart,
             ]);
             foreach ($indexer->extSymbols as $symbol => $info) {
                 $extSymbols[$symbol] = $info;
