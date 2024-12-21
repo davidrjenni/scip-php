@@ -19,7 +19,7 @@ final class ClassD extends ClassA
     }
 }
 
-final class ClassJ
+final readonly class ClassJ
 {
     public const J0 = 42;
 }

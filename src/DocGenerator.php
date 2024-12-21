@@ -100,6 +100,9 @@ final readonly class DocGenerator
     private function classSign(Class_ $c): array
     {
         $sign = "class {$c->name}";
+        if ($c->isReadonly()) {
+            $sign = "readonly {$sign}";
+        }
         if ($c->isAbstract()) {
             $sign = "abstract {$sign}";
         } elseif ($c->isFinal()) {
