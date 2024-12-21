@@ -27,7 +27,7 @@ use const DIRECTORY_SEPARATOR;
 
 final class IndexerTest extends TestCase
 {
-    private const TESTDATA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR;
+    private const string TESTDATA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR;
 
     /** @var non-empty-string */
     private string $indexFile;

@@ -34,9 +34,9 @@ use function substr;
 
 final class SymbolNamer
 {
-    private const SCHEME = 'scip-php';
+    private const string SCHEME = 'scip-php';
 
-    private const MANAGER = 'composer';
+    private const string MANAGER = 'composer';
 
     public function __construct(private readonly Composer $composer)
     {
