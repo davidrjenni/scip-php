@@ -31,6 +31,8 @@ message Index {
   // external package won't get indexed for some reason then you can use this
   // field to provide hover documentation for those external symbols.
   repeated SymbolInformation external_symbols = 3;
+  // IMPORTANT: When adding a new field to `Index` here, add a matching
+  // function in `IndexVisitor` and update `ParseStreaming`.
 }
 
 message Metadata {
@@ -43,7 +45,8 @@ message Metadata {
   // directory.
   string project_root = 3;
   // Text encoding of the source files on disk that are referenced from
-  // `Document.relative_path`.
+  // `Document.relative_path`. This value is unrelated to the `Document.text`
+  // field, which is a Protobuf string and hence must be UTF-8 encoded.
   TextEncoding text_document_encoding = 4;
 }
 
@@ -70,7 +73,7 @@ message ToolInfo {
 message Document {
   // The string ID for the programming language this file is written in.
   // The `Language` enum contains the names of most common programming languages.
-  // This field is typed as a string to permit any programming langauge, including
+  // This field is typed as a string to permit any programming language, including
   // ones that are not specified by the `Language` enum.
   string language = 4;
   // (Required) Unique path to the text document.
@@ -100,8 +103,46 @@ message Document {
   // can be used for other purposes as well, for example testing or when working
   // with virtual/in-memory documents.
   string text = 5;
+
+  // Specifies the encoding used for source ranges in this Document.
+  //
+  // Usually, this will match the type used to index the string type
+  // in the indexer's implementation language in O(1) time.
+  // - For an indexer implemented in JVM/.NET language or JavaScript/TypeScript,
+  //   use UTF16CodeUnitOffsetFromLineStart.
+  // - For an indexer implemented in Python,
+  //   use UTF32CodeUnitOffsetFromLineStart.
+  // - For an indexer implemented in Go, Rust or C++,
+  //   use UTF8ByteOffsetFromLineStart.
+  PositionEncoding position_encoding = 6;
 }
 
+// Encoding used to interpret the 'character' value in source ranges.
+enum PositionEncoding {
+  // Default value. This value should not be used by new SCIP indexers
+  // so that a consumer can process the SCIP index without ambiguity.
+  UnspecifiedPositionEncoding = 0;
+  // The 'character' value is interpreted as an offset in terms
+  // of UTF-8 code units (i.e. bytes).
+  //
+  // Example: For the string "🚀 Woo" in UTF-8, the bytes are
+  // [240, 159, 154, 128, 32, 87, 111, 111], so the offset for 'W'
+  // would be 5.
+  UTF8CodeUnitOffsetFromLineStart = 1;
+  // The 'character' value is interpreted as an offset in terms
+  // of UTF-16 code units (each is 2 bytes).
+  //
+  // Example: For the string "🚀 Woo", the UTF-16 code units are
+  // ['\ud83d', '\ude80', ' ', 'W', 'o', 'o'], so the offset for 'W'
+  // would be 3.
+  UTF16CodeUnitOffsetFromLineStart = 2;
+  // The 'character' value is interpreted as an offset in terms
+  // of UTF-32 code units (each is 4 bytes).
+  //
+  // Example: For the string "🚀 Woo", the UTF-32 code units are
+  // ['🚀', ' ', 'W', 'o', 'o'], so the offset for 'W' would be 2.
+  UTF32CodeUnitOffsetFromLineStart = 3;
+}
 
 // Symbol is similar to a URI, it identifies a class, method, or a local
 // variable. `SymbolInformation` contains rich metadata about symbols such as
@@ -111,10 +152,11 @@ message Document {
 // interchangeably with `Symbol`. The syntax for Symbol is the following:
 // ```
 // # (<x>)+ stands for one or more repetitions of <x>
+// # (<x>)? stands for zero or one occurrence of <x>
 // <symbol>               ::= <scheme> ' ' <package> ' ' (<descriptor>)+ | 'local ' <local-id>
 // <package>              ::= <manager> ' ' <package-name> ' ' <version>
-// <scheme>               ::= any UTF-8, escape spaces with double space.
-// <manager>              ::= same as above, use the placeholder '.' to indicate an empty value
+// <scheme>               ::= any UTF-8, escape spaces with double space. Must not be empty nor start with 'local'
+// <manager>              ::= any UTF-8, escape spaces with double space. Use the placeholder '.' to indicate an empty value
 // <package-name>         ::= same as above
 // <version>              ::= same as above
 // <descriptor>           ::= <namespace> | <type> | <term> | <method> | <type-parameter> | <parameter> | <meta> | <macro>
@@ -123,7 +165,7 @@ message Document {
 // <term>                 ::= <name> '.'
 // <meta>                 ::= <name> ':'
 // <macro>                ::= <name> '!'
-// <method>               ::= <name> '(' <method-disambiguator> ').'
+// <method>               ::= <name> '(' (<method-disambiguator>)? ').'
 // <type-parameter>       ::= '[' <name> ']'
 // <parameter>            ::= '(' <name> ')'
 // <name>                 ::= <identifier>
@@ -131,8 +173,9 @@ message Document {
 // <identifier>           ::= <simple-identifier> | <escaped-identifier>
 // <simple-identifier>    ::= (<identifier-character>)+
 // <identifier-character> ::= '_' | '+' | '-' | '$' | ASCII letter or digit
-// <escaped-identifier>   ::= '`' (<escaped-character>)+ '`'
-// <escaped-characters>   ::= any UTF-8 character, escape backticks with double backtick.
+// <escaped-identifier>   ::= '`' (<escaped-character>)+ '`', must contain at least one non-<identifier-character>
+// <escaped-characters>   ::= any UTF-8, escape backticks with double backtick.
+// <local-id>             ::= <simple-identifier>
 // ```
 //
 // The list of descriptors for a symbol should together form a fully
@@ -140,6 +183,9 @@ message Document {
 // identifier across the package. Typically, it will include one descriptor
 // for every node in the AST (along the ancestry path) between the root of
 // the file and the node corresponding to the symbol.
+//
+// Local symbols MUST only be used for entities which are local to a Document,
+// and cannot be accessed from outside the Document.
 message Symbol {
   string scheme = 1;
   Package package = 2;
@@ -178,6 +224,8 @@ message Descriptor {
   string name = 1;
   string disambiguator = 2;
   Suffix suffix = 3;
+  // NOTE: If you add new fields here, make sure to update the prepareSlot()
+  // function responsible for parsing symbols.
 }
 
 // SymbolInformation defines metadata about a symbol, such as the symbol's
@@ -215,6 +263,10 @@ message SymbolInformation {
   // - If two symbols have different Suffixes, they should have different Kinds.
   enum Kind {
       UnspecifiedKind = 0;
+      // A method which may or may not have a body. For Java, Kotlin etc.
+      AbstractMethod = 66;
+      // For Ruby's attr_accessor
+      Accessor = 72;
       Array = 1;
       // For Alloy
       Assertion = 2;
@@ -227,17 +279,24 @@ message SymbolInformation {
       Class = 7;
       Constant = 8;
       Constructor = 9;
+      // For Solidity
+      Contract = 62;
       // For Haskell
       DataFamily = 10;
+      // For C# and F#
+      Delegate = 73;
       Enum = 11;
       EnumMember = 12;
+      Error = 63;
       Event = 13;
+      // For Dart
+      Extension = 84;
       // For Alloy
       Fact = 14;
       Field = 15;
       File = 16;
       Function = 17;
-      // For 'get' in Swift
+      // For 'get' in Swift, 'attr_reader' in Ruby
       Getter = 18;
       // For Raku
       Grammar = 19;
@@ -249,13 +308,23 @@ message SymbolInformation {
       Lang = 23;
       // For Lean
       Lemma = 24;
+      // For solidity
+      Library = 64;
       Macro = 25;
       Method = 26;
+      // For Ruby
+      MethodAlias = 74;
       // Analogous to 'ThisParameter' and 'SelfParameter', but for languages
       // like Go where the receiver doesn't have a conventional name.
       MethodReceiver = 27;
+      // Analogous to 'AbstractMethod', for Go.
+      MethodSpecification = 67;
       // For Protobuf
       Message = 28;
+      // For Dart
+      Mixin = 85;
+      // For Solidity
+      Modifier = 65;
       Module = 29;
       Namespace = 30;
       Null = 31;
@@ -273,18 +342,38 @@ message SymbolInformation {
       Property = 41;
       // Analogous to 'Trait' and 'TypeClass', for Swift and Objective-C
       Protocol = 42;
+      // Analogous to 'AbstractMethod', for Swift and Objective-C.
+      ProtocolMethod = 68;
+      // Analogous to 'AbstractMethod', for C++.
+      PureVirtualMethod = 69;
       // For Haskell
       Quasiquoter = 43;
       // 'self' in Python, Rust, Swift etc.
       SelfParameter = 44;
-      // For 'set' in Swift
+      // For 'set' in Swift, 'attr_writer' in Ruby
       Setter = 45;
       // For Alloy, analogous to 'Struct'.
       Signature = 46;
-      // For Swift
-      Subscript = 47;
+      // For Ruby
+      SingletonClass = 75;
+      // Analogous to 'StaticMethod', for Ruby.
+      SingletonMethod = 76;
+      // Analogous to 'StaticField', for C++
+      StaticDataMember = 77;
+      // For C#
+      StaticEvent = 78;
+      // For C#
+      StaticField = 79;
+      // For Java, C#, C++ etc.
+      StaticMethod = 80;
+      // For C#, TypeScript etc.
+      StaticProperty = 81;
+      // For C, C++
+      StaticVariable = 82;
       String = 48;
       Struct = 49;
+      // For Swift
+      Subscript = 47;
       // For Lean
       Tactic = 50;
       // For Lean
@@ -292,14 +381,18 @@ message SymbolInformation {
       // Method receiver for languages
       // 'this' in JavaScript, C++, Java etc.
       ThisParameter = 52;
-      // Analogous to 'Protocol' and 'TypeClass', for Rust.
+      // Analogous to 'Protocol' and 'TypeClass', for Rust, Scala etc.
       Trait = 53;
+      // Analogous to 'AbstractMethod', for Rust, Scala etc.
+      TraitMethod = 70;
       // Data type definition for languages like OCaml which use `type`
       // rather than separate keywords like `struct` and `enum`.
       Type = 54;
       TypeAlias = 55;
       // Analogous to 'Trait' and 'Protocol', for Haskell, Purescript etc.
       TypeClass = 56;
+      // Analogous to 'AbstractMethod', for Haskell, Purescript etc.
+      TypeClassMethod = 71;
       // For Haskell
       TypeFamily = 57;
       TypeParameter = 58;
@@ -307,7 +400,7 @@ message SymbolInformation {
       Union = 59;
       Value = 60;
       Variable = 61;
-      // Next = 62;
+      // Next = 86;
       // Feel free to open a PR proposing new language-specific kinds.
   }
   // (optional) The name of this symbol as it should be displayed to the user.
@@ -427,6 +520,12 @@ enum SymbolRole {
   Generated = 0x10;
   // Is the symbol in test code?
   Test = 0x20;
+  // Is this a signature for a symbol that is defined elsewhere?
+  //
+  // Applies to forward declarations for languages like C, C++
+  // and Objective-C, as well as `val` declarations in interface
+  // files in languages like SML and OCaml.
+  ForwardDefinition = 0x40;
 }
 
 enum SyntaxKind {
@@ -530,16 +629,21 @@ enum SyntaxKind {
 // If possible, indexers should try to bundle logically related information
 // across occurrences into a single occurrence to reduce payload sizes.
 message Occurrence {
-  // Source position of this occurrence. Must be exactly three or four
+  // Half-open [start, end) range of this occurrence. Must be exactly three or four
   // elements:
   //
   // - Four elements: `[startLine, startCharacter, endLine, endCharacter]`
   // - Three elements: `[startLine, startCharacter, endCharacter]`. The end line
   //   is inferred to have the same value as the start line.
   //
+  // It is allowed for the range to be empty (i.e. start==end).
+  //
   // Line numbers and characters are always 0-based. Make sure to increment the
   // line/character values before displaying them in an editor-like UI because
   // editors conventionally use 1-based numbers.
+  //
+  // The 'character' value is interpreted based on the PositionEncoding for
+  // the Document.
   //
   // Historical note: the original draft of this schema had a `Range` message
   // type with `start` and `end` fields of type `Position`, mirroring LSP.
@@ -568,8 +672,8 @@ message Occurrence {
   SyntaxKind syntax_kind = 5;
   // (optional) Diagnostics that have been reported for this specific range.
   repeated Diagnostic diagnostics = 6;
-  // (optional) Using the same encoding as the sibling `range` field, source
-  // position of the nearest non-trivial enclosing AST node. This range must
+  // (optional) Using the same encoding as the sibling `range` field, half-open
+  // source range of the nearest non-trivial enclosing AST node. This range must
   // enclose the `range` field. Example applications that make use of the
   // enclosing_range field:
   //
@@ -597,6 +701,19 @@ message Occurrence {
   // }                                                             |
   // ^ enclosing_range end <---------------------------------------|
   // ```
+  //
+  // Any attributes/decorators/attached macros should also be part of the
+  // enclosing range.
+  //
+  // ```python
+  // @cache
+  // ^ enclosing_range start---------------------|
+  // def factorial(n):                           |
+  //     return n * factorial(n-1) if n else 1   |
+  // < enclosing_range end-----------------------|
+  //
+  // ```
+  //
   // For reference occurrences, the enclosing range should indicate the start/end
   // bounds of the parent expression.
   // ```
@@ -643,11 +760,12 @@ enum DiagnosticTag {
 // for the `Document.language` field. The primary purpose of this enum is to
 // prevent a situation where we have a single programming language ends up with
 // multiple string representations. For example, the C++ language uses the name
-// "CPlusPlus" in this enum and other names such as "cpp" are incompatible.
+// "CPP" in this enum and other names such as "cpp" are incompatible.
 // Feel free to send a pull-request to add missing programming languages.
 enum Language {
   UnspecifiedLanguage = 0;
   ABAP = 60;
+  Apex = 96;
   APL = 49;
   Ada = 39;
   Agda = 45;
@@ -665,6 +783,7 @@ enum Language {
   Coffeescript = 21;
   CommonLisp = 9;
   Coq = 47;
+  CUDA = 97;
   Dart = 3;
   Delphi = 57;
   Diff = 88;
@@ -680,6 +799,7 @@ enum Language {
   Git_Config = 89;
   Git_Rebase = 92;
   Go = 33;
+  GraphQL = 98;
   Groovy = 7;
   HTML = 30;
   Hack = 20;
@@ -694,28 +814,34 @@ enum Language {
   JavaScriptReact = 93;
   Jsonnet = 76;
   Julia =  55;
+  Justfile = 109;
   Kotlin = 4;
   LaTeX = 83;
   Lean = 48;
   Less = 27;
   Lua = 12;
+  Luau = 108;
   Makefile = 79;
   Markdown = 84;
   Matlab = 52;
+  Nickel = 110; // https://nickel-lang.org/
   Nix = 77;
   OCaml = 41;
   Objective_C = 36;
   Objective_CPP = 37;
+  Pascal = 99;
   PHP = 19;
   PLSQL = 70;
   Perl = 13;
   PowerShell = 67;
   Prolog = 71;
+  Protobuf = 100;
   Python = 15;
   R = 54;
   Racket = 11;
   Raku = 14;
   Razor = 62;
+  Repro = 102; // Internal language for testing SCIP
   ReST = 85;
   Ruby = 16;
   Rust = 40;
@@ -728,11 +854,18 @@ enum Language {
   Scheme = 10;
   ShellScript = 64; // Bash
   Skylark = 78;
+  Slang = 107;
+  Solidity = 95;
+  Svelte = 106;
   Swift = 2;
+  Tcl = 101;
   TOML = 73;
   TeX = 82;
+  Thrift = 103;
   TypeScript = 23;
   TypeScriptReact = 94;
+  Verilog = 104;
+  VHDL = 105;
   VisualBasic = 63;
   Vue = 25;
   Wolfram = 53;
@@ -740,7 +873,7 @@ enum Language {
   XSL = 32;
   YAML = 74;
   Zig = 38;
-  // NextLanguage = 95;
+  // NextLanguage = 111;
   // Steps add a new language:
   // 1. Copy-paste the "NextLanguage = N" line above
   // 2. Increment "NextLanguage = N" to "NextLanguage = N+1"
