@@ -25,9 +25,9 @@ use function count;
 use function preg_replace;
 use function str_replace;
 
-final class DocGenerator
+final readonly class DocGenerator
 {
-    private readonly PrettyPrinter $printer;
+    private PrettyPrinter $printer;
 
     public function __construct()
     {

@@ -32,13 +32,13 @@ use function str_replace;
 use function strpos;
 use function substr;
 
-final class SymbolNamer
+final readonly class SymbolNamer
 {
     private const string SCHEME = 'scip-php';
 
     private const string MANAGER = 'composer';
 
-    public function __construct(private readonly Composer $composer)
+    public function __construct(private Composer $composer)
     {
     }
 

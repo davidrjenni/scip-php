@@ -38,7 +38,7 @@ use function in_array;
 use function ltrim;
 use function str_starts_with;
 
-final class TypeParser
+final readonly class TypeParser
 {
     private const array BUILTIN_TYPES = [
         'void',
@@ -74,7 +74,7 @@ final class TypeParser
         'resource',
     ];
 
-    public function __construct(private readonly SymbolNamer $namer)
+    public function __construct(private SymbolNamer $namer)
     {
     }
 

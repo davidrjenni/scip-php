@@ -6,10 +6,10 @@ namespace ScipPhp\Types\Internal;
 
 use Override;
 
-final class MixedIterableType implements IterableType
+final readonly class MixedIterableType implements IterableType
 {
     /** @param  non-empty-array<int|string, Type>  $types */
-    public function __construct(private readonly array $types)
+    public function __construct(private array $types)
     {
     }
 

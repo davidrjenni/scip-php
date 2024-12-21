@@ -8,10 +8,10 @@ use Override;
 
 use function array_keys;
 
-final class CompositeType implements Type
+final readonly class CompositeType implements Type
 {
     /** @var array<int, non-empty-string> */
-    private readonly array $types;
+    private array $types;
 
     public function __construct(?Type ...$types)
     {

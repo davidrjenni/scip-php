@@ -18,17 +18,17 @@ use ScipPhp\Types\Types;
 use function array_values;
 use function str_replace;
 
-final class Indexer
+final readonly class Indexer
 {
-    private readonly Metadata $metadata;
+    private Metadata $metadata;
 
-    private readonly Parser $parser;
+    private Parser $parser;
 
-    private readonly Composer $composer;
+    private Composer $composer;
 
-    private readonly SymbolNamer $namer;
+    private SymbolNamer $namer;
 
-    private readonly Types $types;
+    private Types $types;
 
     /**
      * @param  non-empty-string              $projectRoot
@@ -36,7 +36,7 @@ final class Indexer
      * @param  array<int, non-empty-string>  $args
      */
     public function __construct(
-        private readonly string $projectRoot,
+        private string $projectRoot,
         string $version,
         array $args,
     ) {
