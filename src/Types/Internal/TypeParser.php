@@ -40,7 +40,7 @@ use function str_starts_with;
 
 final class TypeParser
 {
-    private const BUILTIN_TYPES = [
+    private const array BUILTIN_TYPES = [
         'void',
         'null',
         'true',

@@ -34,7 +34,9 @@ use const DIRECTORY_SEPARATOR;
 
 final class TypesTest extends TestCase
 {
-    private const TESTDATA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'scip-php-test';
+    private const string TESTDATA_DIR = __DIR__
+        . DIRECTORY_SEPARATOR . 'testdata'
+        . DIRECTORY_SEPARATOR . 'scip-php-test';
 
     private Parser $parser;
 

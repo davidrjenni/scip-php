@@ -17,19 +17,19 @@ use const PHP_VERSION;
 
 final class ComposerTest extends TestCase
 {
-    private const BUILTIN = [
+    private const array BUILTIN = [
         'classes' => ['Exception'],
         'consts' => ['DIRECTORY_SEPARATOR'],
         'funcs' => ['strlen'],
     ];
 
-    private const DEPS = [
+    private const array DEPS = [
         'classes' => ['DeepCopy\\DeepCopy', 'Composer\\Autoload\\ClassLoader'],
         // TODO(drj): 'consts' => [],
         'funcs' => ['DeepCopy\\deep_copy'],
     ];
 
-    private const PROJECT = [
+    private const array PROJECT = [
         'classes' => [
             'anon-class-123',
             'TestData1\\ClassA',
@@ -51,7 +51,7 @@ final class ComposerTest extends TestCase
         'funcs' => ['anon-func-123', 'fun1', 'TestData3\\Foo\\fun1'],
     ];
 
-    private const UNKNOWN = [
+    private const array UNKNOWN = [
         'classes' => ['Foo\\Foo', 'Foo'],
         'consts' => ['Foo\\FOO', 'FOO'],
         'funcs' => ['Foo\\foo', 'foo'],
