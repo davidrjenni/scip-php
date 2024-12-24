@@ -6,7 +6,6 @@ namespace ScipPhp\Parser;
 
 use InvalidArgumentException;
 use PhpParser\Comment;
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use RuntimeException;
 
@@ -16,6 +15,7 @@ use function preg_quote;
 use function strlen;
 use function strpos;
 use function strrpos;
+use function substr_count;
 
 final readonly class PosResolver
 {
@@ -49,25 +49,30 @@ final readonly class PosResolver
      * @param  non-empty-string  $name
      * @return array{int, int, int, int}
      */
-    public static function posInDoc(Doc $doc, string $tagName, string $name): array
+    public static function posInDoc(string $doc, int $startLine, string $tagName, string $name): array
     {
-        $startLine = $doc->getStartLine() - 1;
         $quotedName = preg_quote($name);
-        $pattern = "/^\s*(\/)?\*+\s*{$tagName}.*\s+{$quotedName}($|\(|\s+)/m";
-        $lines = explode("\n", $doc->getText());
-        foreach ($lines as $line) {
-            if (preg_match($pattern, $line) === 1) {
-                $startColumn = strpos($line, $name);
-                if ($startColumn === false) {
-                    throw new RuntimeException("Cannot find {$tagName} {$name} in doc comment: {$line}.");
-                }
-                $endColumn = $startColumn + strlen($name);
-                return [$startLine, $startColumn, $startLine, $endColumn];
-            }
-            $startLine++;
+        $pattern = "/^\s*(\/)?\*+\s*{$tagName}(.|\s)*{$quotedName}($|\(|\s+)/m";
+        if (preg_match($pattern, $doc) !== 1) {
+            throw new RuntimeException("Cannot find {$tagName} {$name} in doc comment: {$doc}.");
         }
 
-        throw new RuntimeException("Cannot find {$tagName} {$name} in doc comment: {$doc->getText()}.");
+        $index = strpos($doc, $name);
+        if ($index === false) {
+            throw new RuntimeException("Cannot find {$tagName} {$name} in doc comment: {$doc}.");
+        }
+
+        $line = substr_count($doc, "\n", 0, $index);
+        $lines = explode("\n", $doc);
+
+        $startColumn = strpos($lines[$line] ?? '', $name);
+        if ($startColumn === false) {
+            throw new RuntimeException("Cannot find {$tagName} {$name} on line {$line} in doc comment: {$doc}.");
+        }
+        $endColumn = $startColumn + strlen($name);
+        $startLine += $line;
+
+        return [$startLine, $startColumn, $startLine, $endColumn];
     }
 
     private function toColumn(int $filePos): int

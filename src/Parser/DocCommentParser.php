@@ -26,9 +26,10 @@ final readonly class DocCommentParser
 
     public function __construct()
     {
-        $constExprParser = new ConstExprParser();
-        $typeParser = new TypeParser($constExprParser);
-        $this->parser = new PhpDocParser($typeParser, $constExprParser);
+        $usedAttributes = ['lines' => true, 'indexes' => true];
+        $constExprParser = new ConstExprParser(usedAttributes: $usedAttributes);
+        $typeParser = new TypeParser($constExprParser, usedAttributes: $usedAttributes);
+        $this->parser = new PhpDocParser($typeParser, $constExprParser, usedAttributes: $usedAttributes);
         $this->lexer = new Lexer();
     }
 

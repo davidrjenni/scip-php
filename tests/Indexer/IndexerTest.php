@@ -79,7 +79,7 @@ final class IndexerTest extends TestCase
         $goldenFiles = self::files(self::TESTDATA_DIR . 'golden');
         $actualFiles = self::files($actualPath);
 
-        self::assertSame(array_keys($goldenFiles), array_keys($actualFiles));
+        self::assertEqualsCanonicalizing(array_keys($goldenFiles), array_keys($actualFiles));
 
         foreach ($goldenFiles as $name => $goldenPath) {
             $actualPath = $actualFiles[$name];
