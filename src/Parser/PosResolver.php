@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ScipPhp\Parser;
 
 use InvalidArgumentException;
+use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use RuntimeException;
@@ -33,7 +34,7 @@ final readonly class PosResolver
      *
      * @return array{int, int, int, int}
      */
-    public function pos(Node $n): array
+    public function pos(Node|Comment $n): array
     {
         return [
             $n->getStartLine() - 1,
