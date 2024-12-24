@@ -26,6 +26,8 @@ use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Attribute;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Scip\Occurrence;
 use Scip\SymbolInformation;
 use Scip\SymbolRole;
@@ -35,6 +37,10 @@ use ScipPhp\Parser\DocCommentParser;
 use ScipPhp\Parser\PosResolver;
 use ScipPhp\Types\Types;
 
+use function array_slice;
+use function explode;
+use function implode;
+use function is_int;
 use function is_string;
 use function ltrim;
 use function str_starts_with;
@@ -90,7 +96,7 @@ final class DocIndexer
                     continue;
                 }
                 $symbol = $this->namer->nameProp($name, $propName);
-                $this->docDef($n->getDocComment(), '@property', $p->propertyName, $symbol);
+                $this->docDef($n->getDocComment(), '@property', $p, $p->propertyName, $symbol);
             }
 
             $methods = $this->docCommentParser->parseMethods($n);
@@ -99,7 +105,7 @@ final class DocIndexer
                     continue;
                 }
                 $symbol = $this->namer->nameMeth($name, $m->methodName);
-                $this->docDef($n->getDocComment(), '@method', $m->methodName, $symbol);
+                $this->docDef($n->getDocComment(), '@method', $m, $m->methodName, $symbol);
             }
             return;
         }
@@ -212,6 +218,7 @@ final class DocIndexer
     private function docDef(
         ?Doc $doc,
         string $tagName,
+        PhpDocTagValueNode $node,
         string $name,
         string $symbol,
         int $kind = SyntaxKind::Identifier,
@@ -220,8 +227,24 @@ final class DocIndexer
             return;
         }
 
+        $startLine = $node->getAttribute(Attribute::START_LINE);
+        if (!is_int($startLine)) {
+            return;
+        }
+
+        $endLine = $node->getAttribute(Attribute::END_LINE);
+        if (!is_int($endLine)) {
+            return;
+        }
+
+        $lines = explode("\n", $doc->getText());
+        $relevantLines = array_slice($lines, $startLine - 1, $endLine - $startLine + 1);
+        $text = implode("\n", $relevantLines);
+
+        $pos = PosResolver::posInDoc($text, $doc->getStartLine() + $startLine - 2, $tagName, $name);
+
         $this->occurrences[] = new Occurrence([
-            'range'        => PosResolver::posInDoc($doc, $tagName, $name),
+            'range'        => $pos,
             'symbol'       => $symbol,
             'symbol_roles' => SymbolRole::Definition,
             'syntax_kind'  => $kind,

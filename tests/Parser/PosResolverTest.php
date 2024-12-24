@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Parser;
 
 use Override;
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -16,6 +15,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ScipPhp\Parser\Parser;
 use ScipPhp\Parser\PosResolver;
+
+use function array_slice;
+use function implode;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -58,15 +60,15 @@ final class PosResolverTest extends TestCase
 
     /**
      * @param  non-empty-string           $docText
+     * @param  non-negative-int           $startLine
      * @param  non-empty-string           $tagName
      * @param  non-empty-string           $name
      * @param  array{int, int, int, int}  $pos
      */
     #[DataProvider('providePosInDoc')]
-    public function testPosInDoc(string $docText, string $tagName, string $name, array $pos): void
+    public function testPosInDoc(string $docText, int $startLine, string $tagName, string $name, array $pos): void
     {
-        $doc = new Doc($docText, 1, 1, 1);
-        $actual = PosResolver::posInDoc($doc, $tagName, $name);
+        $actual = PosResolver::posInDoc($docText, $startLine, $tagName, $name);
 
         self::assertSame($pos, $actual);
     }
@@ -74,6 +76,7 @@ final class PosResolverTest extends TestCase
     /**
      * @return array<non-empty-string, array{
      *     non-empty-string,
+     *     non-negative-int,
      *     non-empty-string,
      *     non-empty-string,
      *     array{int, int, int, int},
@@ -81,72 +84,96 @@ final class PosResolverTest extends TestCase
      */
     public static function providePosInDoc(): array
     {
-        $multiline = '/** @property int $p1
-  *  @property-read   ?Foo    $p2
-* @property-write Foo&Bar $p3 additional documentation
- * @method Foo m1() additionl documentation
- * @method Foo m2(int $p1, bool $p2, string $p3) */';
+        $multiline = [
+            '/** @property int $p1',
+            '  *  @property-read   ?Foo    $p2',
+            '* @property-write Foo&Bar $p3 additional documentation',
+            ' * @method Foo m1() additionl documentation',
+            ' * @method Foo m2(int $p1, bool $p2, string $p3)',
+            '* @property array<int, array{',
+            '* id: int,',
+            '* name: string,',
+            '* }> $p3',
+            ' */',
+        ];
 
         return [
-            'property-on-one-line' => [
+            '@property-on-one-line' => [
                 '/** @property int $foo */',
+                0,
                 '@property',
                 '$foo',
                 [0, 18, 0, 22],
             ],
-            'property-on-one-line-additional-documentation' => [
+            '@property-on-one-line-with-additional-documentation' => [
                 '/** @property int $foo additional documentation */',
+                0,
                 '@property',
                 '$foo',
                 [0, 18, 0, 22],
             ],
-            'property-on-one-line-no-type' => [
+            '@property-on-one-line-without-type' => [
                 '/** @property $foo */',
+                0,
                 '@property',
                 '$foo',
                 [0, 14, 0, 18],
             ],
-            'method-on-one-line' => [
+            '@method-on-one-line' => [
                 '/** @method void foo() */',
+                0,
                 '@method',
                 'foo',
                 [0, 17, 0, 20],
             ],
-            'method-on-one-line-additional-documentation' => [
+            '@method-on-one-line-with-additional-documentation' => [
                 '/** @method void foo() additional documentation */',
+                0,
                 '@method',
                 'foo',
                 [0, 17, 0, 20],
             ],
-            'property-multiline-first' => [
-                $multiline,
+            '@property-inside-multiline-doc-comment' => [
+                $multiline[0],
+                0,
                 '@property',
                 '$p1',
                 [0, 18, 0, 21],
             ],
-            'property-read-multiline' => [
-                $multiline,
+            '@property-read-inside-multiline-doc-comment' => [
+                $multiline[1],
+                1,
                 '@property',
                 '$p2',
                 [1, 30, 1, 33],
             ],
-            'property-write-multiline' => [
-                $multiline,
+            '@property-write-inside-multiline-doc-comment' => [
+                $multiline[2],
+                2,
                 '@property',
                 '$p3',
                 [2, 26, 2, 29],
             ],
-            'method--multiline' => [
-                $multiline,
+            '@method-inside-multiline-doc-comment-1' => [
+                $multiline[3],
+                3,
                 '@method',
                 'm1',
                 [3, 15, 3, 17],
             ],
-            'method-multiline-last' => [
-                $multiline,
+            '@method-inside-multiline-doc-comment-2' => [
+                $multiline[4],
+                4,
                 '@method',
                 'm2',
                 [4, 15, 4, 17],
+            ],
+            'multiline-@property-inside-multiline-doc-comment' => [
+                implode("\n", array_slice($multiline, 5)),
+                5,
+                '@property',
+                '$p3',
+                [8, 5, 8, 8],
             ],
         ];
     }
