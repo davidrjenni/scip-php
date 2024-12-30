@@ -270,7 +270,7 @@ final class Types
     }
 
     /**
-     * @param  array<int, non-empty-string>  $types
+     * @param  list<non-empty-string>                        $types
      * @param  callable(non-empty-string): non-empty-string  $name
      * @return ?non-empty-string
      */

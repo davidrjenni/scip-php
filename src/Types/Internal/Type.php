@@ -6,6 +6,6 @@ namespace ScipPhp\Types\Internal;
 
 interface Type
 {
-    /** @return array<int, non-empty-string> */
+    /** @return list<non-empty-string> */
     public function flatten(): array;
 }

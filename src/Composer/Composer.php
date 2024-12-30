@@ -60,7 +60,7 @@ final class Composer
     /** @var non-empty-string */
     private readonly string $scipPhpVendorDir;
 
-    /** @var array<int, non-empty-string> */
+    /** @var list<non-empty-string> */
     private readonly array $projectFiles;
 
     private readonly ClassLoader $loader;
@@ -202,7 +202,7 @@ final class Composer
 
     /**
      * @param  array<string, mixed>  $autoload
-     * @return array<int, non-empty-string>
+     * @return list<non-empty-string>
      */
     private function loadProjectFiles(array $autoload): array
     {
@@ -249,8 +249,8 @@ final class Composer
     }
 
     /**
-     * @param  array<int, string>  $paths
-     * @return array<int, non-empty-string>
+     * @param  list<string>  $paths
+     * @return list<non-empty-string>
      */
     private function collectPaths(array $paths): array
     {
@@ -267,7 +267,7 @@ final class Composer
         return $files;
     }
 
-    /** @return array<int, non-empty-string> */
+    /** @return list<non-empty-string> */
     public function projectFiles(): array
     {
         return $this->projectFiles;

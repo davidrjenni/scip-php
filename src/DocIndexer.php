@@ -57,7 +57,7 @@ final class DocIndexer
     /** @var array<non-empty-string, SymbolInformation> */
     public array $extSymbols;
 
-    /** @var array<int, Occurrence> */
+    /** @var list<Occurrence> */
     public array $occurrences;
 
     public function __construct(
