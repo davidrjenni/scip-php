@@ -52,7 +52,7 @@ final readonly class PosResolver
     public static function posInDoc(string $doc, int $startLine, string $tagName, string $name): array
     {
         $quotedName = preg_quote($name);
-        $pattern = "/^\s*(\/)?\*+\s*{$tagName}(.|\s)*{$quotedName}($|\(|\s+)/m";
+        $pattern = "/^\s*(\/)?\*+\s*{$tagName}[\s\S]*{$quotedName}($|\(|\s+)/m";
         if (preg_match($pattern, $doc) !== 1) {
             throw new RuntimeException("Cannot find {$tagName} {$name} in doc comment: {$doc}.");
         }
