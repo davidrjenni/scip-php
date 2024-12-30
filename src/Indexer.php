@@ -31,9 +31,9 @@ final readonly class Indexer
     private Types $types;
 
     /**
-     * @param  non-empty-string              $projectRoot
-     * @param  non-empty-string              $version
-     * @param  array<int, non-empty-string>  $args
+     * @param  non-empty-string        $projectRoot
+     * @param  non-empty-string        $version
+     * @param  list<non-empty-string>  $args
      */
     public function __construct(
         private string $projectRoot,

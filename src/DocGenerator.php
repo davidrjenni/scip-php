@@ -34,7 +34,7 @@ final readonly class DocGenerator
         $this->printer = new PrettyPrinter();
     }
 
-    /** @return non-empty-array<int, non-empty-string> */
+    /** @return non-empty-list<non-empty-string> */
     public function create(Const_|ClassLike|ClassMethod|EnumCase|Function_|Param|PropertyItem $n): array
     {
         ['sign' => $s, 'doc' => $doc] = $this->signature($n);

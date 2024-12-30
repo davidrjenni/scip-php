@@ -10,7 +10,7 @@ use function array_keys;
 
 final readonly class CompositeType implements Type
 {
-    /** @var array<int, non-empty-string> */
+    /** @var list<non-empty-string> */
     private array $types;
 
     public function __construct(?Type ...$types)

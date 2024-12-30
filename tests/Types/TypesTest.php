@@ -41,7 +41,7 @@ final class TypesTest extends TestCase
 
     private Parser $parser;
 
-    /** @var array<non-empty-string, array<int, Stmt>> */
+    /** @var array<non-empty-string, list<Stmt>> */
     private array $stmts;
 
     private Types $types;
