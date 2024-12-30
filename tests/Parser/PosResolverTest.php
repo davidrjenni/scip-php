@@ -94,6 +94,8 @@ final class PosResolverTest extends TestCase
             '* id: int,',
             '* name: string,',
             '* }> $p3',
+            '* @property int $p4 additional documentation line 1',
+            '*                   additional documentation line 2',
             ' */',
         ];
 
@@ -168,12 +170,19 @@ final class PosResolverTest extends TestCase
                 'm2',
                 [4, 15, 4, 17],
             ],
-            'multiline-@property-inside-multiline-doc-comment' => [
-                implode("\n", array_slice($multiline, 5)),
+            'multiline-@property-inside-multiline-doc-comment-1' => [
+                implode("\n", array_slice($multiline, 5, 4)),
                 5,
                 '@property',
                 '$p3',
                 [8, 5, 8, 8],
+            ],
+            'multiline-@property-inside-multiline-doc-comment-2' => [
+                implode("\n", array_slice($multiline, 9, 2)),
+                9,
+                '@property',
+                '$p4',
+                [9, 16, 9, 19],
             ],
         ];
     }
