@@ -10,6 +10,11 @@
 //                          ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#$d4.
    * @property-write ClassA $d5
 //                          ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#$d5.
+   * @property       array<int, array{
+   *     ClassA,
+   *     ClassB,
+   * }>                     $d6
+//                          ^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#$d6.
    */
   final class ClassD extends ClassA
 //            ^^^^^^ definition scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassD#
@@ -18,7 +23,7 @@
 //            > final class ClassD extends TestData\ClassA
 //            > ```
 //            documentation
-//            > @property              $d3<br>@property-read  ClassB $d4<br>@property-write ClassA $d5<br>
+//            > @property              $d3<br>@property-read  ClassB $d4<br>@property-write ClassA $d5<br>@property       array<int, array{<br>    ClassA,<br>    ClassB,<br>}>                     $d6<br>
 //                           ^^^^^^ reference scip-php composer davidrjenni/scip-php-test 2879a47ba00225b1d0cf31ebe8b9fc7f6cd28be5 TestData/ClassA#
   {
   
