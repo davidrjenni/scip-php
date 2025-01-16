@@ -121,7 +121,7 @@ final class Composer
 
         $installed = require self::join($this->vendorDir, 'composer', 'installed.php');
         $this->pkgName = $installed['root']['name'];
-        $this->pkgVersion = $installed['root']['reference'];
+        $this->pkgVersion = $installed['root']['reference'] ?? $installed['root']['version'];
 
         $additionalClasses = [];
         foreach ($this->projectFiles as $f) {
