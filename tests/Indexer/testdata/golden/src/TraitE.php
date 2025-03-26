@@ -67,7 +67,7 @@
       {
           if (true) {
               return 23 - count([0]);
-//                        ^^^^^ reference scip-php composer php 8.3.17 count().
+//                        ^^^^^ reference scip-php composer php 8.3.19 count().
           }
           if (false) {
               return 42;
