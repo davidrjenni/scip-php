@@ -9,8 +9,6 @@ updates:
       include: "scope"
     assignees:
       - "davidrjenni"
-    reviewers:
-      - "davidrjenni"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -20,8 +18,6 @@ updates:
       include: "scope"
     assignees:
       - "davidrjenni"
-    reviewers:
-      - "davidrjenni"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -30,6 +26,4 @@ updates:
       prefix: ".github/workflows"
       include: "scope"
     assignees:
-      - "davidrjenni"
-    reviewers:
       - "davidrjenni"
