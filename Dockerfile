@@ -4,7 +4,7 @@ COPY composer.json /app/
 COPY composer.lock /app/
 RUN composer install --no-dev --no-progress --no-interaction
 
-FROM sourcegraph/src-cli:6.5.0@sha256:cc3bd284fd0b60f345922cd162901e31ede3832b873d02c94cd660ba105e81a6 AS src-cli
+FROM sourcegraph/src-cli:6.6.0@sha256:adb8b5ac0bc927a801cf865663018eb59c271d2527cb3e1cf740014881dc43c2 AS src-cli
 
 FROM php:8.3-cli-alpine3.17@sha256:af0809570027627bd16e89dea01fefcec427a1220dcaa494ee9d7afdfcfc2fcc
 
