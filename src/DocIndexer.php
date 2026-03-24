@@ -203,10 +203,11 @@ final class DocIndexer
             'documentation' => $doc,
         ]);
         $this->occurrences[] = new Occurrence([
-            'range'        => $pos->pos($posNode),
-            'symbol'       => $symbol,
-            'symbol_roles' => SymbolRole::Definition,
-            'syntax_kind'  => $kind,
+            'range'           => $pos->pos($posNode),
+            'symbol'          => $symbol,
+            'symbol_roles'    => SymbolRole::Definition,
+            'syntax_kind'     => $kind,
+            'enclosing_range' => $pos->enclosingRange($n),
         ]);
     }
 
