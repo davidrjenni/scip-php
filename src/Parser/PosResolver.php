@@ -7,6 +7,8 @@ namespace ScipPhp\Parser;
 use InvalidArgumentException;
 use PhpParser\Comment;
 use PhpParser\Node;
+use PhpParser\Node\Const_;
+use PhpParser\Node\PropertyItem;
 use RuntimeException;
 
 use function explode;
@@ -42,6 +44,34 @@ final readonly class PosResolver
             $n->getEndLine() - 1,
             $this->toColumn($n->getEndFilePos()),
         ];
+    }
+
+    /**
+     * Resolves the enclosing range of a definition node, including
+     * any leading doc comment.
+     *
+     * @return array{int, int, int, int}
+     */
+    public function enclosingRange(Node $n): array
+    {
+        // For Const_ and PropertyItem, the doc comment and full statement
+        // range live on the parent node (ClassConst / Property).
+        $node = $n;
+        if (($n instanceof Const_ || $n instanceof PropertyItem) && $n->getAttribute('parent') instanceof Node) {
+            $node = $n->getAttribute('parent');
+        }
+
+        $doc = $node->getDocComment();
+        if ($doc !== null) {
+            return [
+                $doc->getStartLine() - 1,
+                $this->toColumn($doc->getStartFilePos()) - 1,
+                $node->getEndLine() - 1,
+                $this->toColumn($node->getEndFilePos()),
+            ];
+        }
+
+        return $this->pos($node);
     }
 
     /**
