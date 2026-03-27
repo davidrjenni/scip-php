@@ -51,7 +51,7 @@ If you want to contribute to `scip-php`, please follow these guidelines:
 
 The coding style is based on [PSR-12](https://www.php-fig.org/psr/psr-12).
 It is defined in the `phpcs.xml` file and enforced with the
-[PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) linter.
+[PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) linter.
 
 ## Contact
 
