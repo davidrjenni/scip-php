@@ -19,6 +19,7 @@ use function substr_count;
 
 final readonly class PosResolver
 {
+    /** @var non-negative-int */
     private int $codeLen;
 
     /** @param  non-empty-string  $code */
