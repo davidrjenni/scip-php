@@ -25,6 +25,7 @@ use function explode;
 use function function_exists;
 use function get_defined_constants;
 use function get_included_files;
+use function getcwd;
 use function implode;
 use function interface_exists;
 use function is_array;
@@ -90,7 +91,16 @@ final class Composer
 
         $scipPhpVendorDir = self::join(__DIR__, '..', '..', 'vendor');
         if (realpath($scipPhpVendorDir) === false) {
-            throw new RuntimeException("Invalid scip-php vendor directory: {$scipPhpVendorDir}.");
+            // If the vendor directory relative to this file is not found, scip-php probably runs as a
+            // dev dependency of the project that it analyses and shares the vendor directory with it.
+            $cwd = getcwd();
+            if ($cwd === false) {
+                throw new RuntimeException("Cannot get the current working directory.");
+            }
+            $scipPhpVendorDir = self::join($cwd, 'vendor');
+            if (realpath($scipPhpVendorDir) === false) {
+                throw new RuntimeException("Invalid scip-php vendor directory: {$scipPhpVendorDir}.");
+            }
         }
         $this->scipPhpVendorDir = realpath($scipPhpVendorDir);
 
