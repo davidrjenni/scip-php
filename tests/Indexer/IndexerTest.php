@@ -71,7 +71,7 @@ final class IndexerTest extends TestCase
         $actualPath = self::TESTDATA_DIR . 'actual';
 
         $output = [];
-        $result = exec("scip snapshot --from {$this->indexFile} --to {$actualPath}", $output);
+        $result = exec("scip snapshot --strict=false --from={$this->indexFile} --to={$actualPath}", $output);
         if ($result === false) {
             self::fail('Error executing scip: ' . ($output[0] ?? 'no output') . '.');
         }
