@@ -20,7 +20,7 @@ final readonly class UniformIterableType implements IterableType
     }
 
     #[Override]
-    public function valueType(int|string|null $key): ?Type // phpcs:ignore
+    public function valueType(int|string|null $key): Type // phpcs:ignore
     {
         return $this->type;
     }

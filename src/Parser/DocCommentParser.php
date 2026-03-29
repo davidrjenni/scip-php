@@ -61,7 +61,7 @@ final readonly class DocCommentParser
         return $tags[0]->type;
     }
 
-    /** @return array<string, PropertyTagValueNode> */
+    /** @return array<array-key, PropertyTagValueNode> */
     public function parseProperties(Node $node): array
     {
         $doc = $node->getDocComment();
@@ -76,7 +76,7 @@ final readonly class DocCommentParser
         ];
     }
 
-    /** @return array<string, MethodTagValueNode> */
+    /** @return array<array-key, MethodTagValueNode> */
     public function parseMethods(Node $node): array
     {
         $doc = $node->getDocComment();

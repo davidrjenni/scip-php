@@ -28,7 +28,6 @@ use ScipPhp\File\Reader;
 use ScipPhp\SymbolNamer;
 use ScipPhp\Types\Types;
 
-use function in_array;
 use function str_ends_with;
 
 use const DIRECTORY_SEPARATOR;
@@ -41,7 +40,7 @@ final class TypesTest extends TestCase
 
     private Parser $parser;
 
-    /** @var array<non-empty-string, list<Stmt>> */
+    /** @var array<non-empty-string, array<array-key, Stmt>> */
     private array $stmts;
 
     private Types $types;
@@ -267,28 +266,24 @@ final class TypesTest extends TestCase
      */
     private function assertMethCall(string $filename, string $name, int $line, ?string $def): void
     {
-        $classes = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
         $x = $this->findNode(
             $filename,
             $line,
-            static fn(Node $n): bool => in_array($n::class, $classes, true)
-                && isset($n->name)
+            static fn(Node $n): bool => (
+                $n instanceof MethodCall
+                || $n instanceof NullsafeMethodCall
+                || $n instanceof StaticCall
+            )
                 && $n->name instanceof Identifier
                 && $n->name->toString() === $name,
         );
 
-        self::assertContains($x::class, $classes);
-        self::assertTrue(isset($x->name));
+        self::assertContains($x::class, [MethodCall::class, NullsafeMethodCall::class, StaticCall::class]);
         self::assertInstanceOf(Identifier::class, $x->name);
 
-        if ($x instanceof StaticCall) {
-            $d = $this->types->methDef($x->class, $name);
-        } elseif ($x instanceof MethodCall || $x instanceof NullsafeMethodCall) {
-            $d = $this->types->methDef($x->var, $name);
-        } else {
-            $class = $x::class;
-            self::fail("Unexpected class: {$class}.");
-        }
+        $d = $x instanceof StaticCall
+            ? $this->types->methDef($x->class, $name)
+            : $this->types->methDef($x->var, $name);
 
         if ($def !== null) {
             self::assertNotNull($d);
@@ -305,28 +300,28 @@ final class TypesTest extends TestCase
      */
     private function assertPropFetch(string $filename, string $name, int $line, string $def): void
     {
-        $classes = [PropertyFetch::class, NullsafePropertyFetch::class, StaticPropertyFetch::class];
         $x = $this->findNode(
             $filename,
             $line,
-            static fn(Node $n): bool => in_array($n::class, $classes, true)
+            static fn(Node $n): bool => (
+                $n instanceof PropertyFetch
+                || $n instanceof NullsafePropertyFetch
+                || $n instanceof StaticPropertyFetch
+            )
                 && isset($n->name)
                 && $n->name instanceof Identifier
                 && $n->name->toString() === $name,
         );
 
-        self::assertContains($x::class, $classes);
-        self::assertTrue(isset($x->name));
+        self::assertContains(
+            $x::class,
+            [PropertyFetch::class, NullsafePropertyFetch::class, StaticPropertyFetch::class],
+        );
         self::assertInstanceOf(Identifier::class, $x->name);
 
-        if ($x instanceof StaticPropertyFetch) {
-            $d = $this->types->propDef($x->class, $name);
-        } elseif ($x instanceof PropertyFetch || $x instanceof NullsafePropertyFetch) {
-            $d = $this->types->propDef($x->var, $name);
-        } else {
-            $class = $x::class;
-            self::fail("Unexpected class: {$class}.");
-        }
+        $d = $x instanceof StaticPropertyFetch
+            ? $this->types->propDef($x->class, $name)
+            : $this->types->propDef($x->var, $name);
 
         self::assertNotNull($d);
         self::assertStringEndsWith($def, $d);

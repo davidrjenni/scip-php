@@ -66,7 +66,7 @@ final class Composer
 
     private readonly ClassLoader $loader;
 
-    /** @var array<non-empty-string, array{name: non-empty-string, version: non-empty-string}> */
+    /** @var non-empty-array<non-empty-string, array{name: non-empty-string, version: non-empty-string}> */
     private array $pkgsByPaths;
 
     /** @var array<non-empty-string, scalar> */
@@ -102,7 +102,11 @@ final class Composer
                 throw new RuntimeException("Invalid scip-php vendor directory: {$scipPhpVendorDir}.");
             }
         }
-        $this->scipPhpVendorDir = realpath($scipPhpVendorDir);
+        $scipPhpVendorDirRealPath = realpath($scipPhpVendorDir);
+        if ($scipPhpVendorDirRealPath === false) {
+            throw new RuntimeException("Cannot get absoute path to {$scipPhpVendorDir}.");
+        }
+        $this->scipPhpVendorDir = $scipPhpVendorDirRealPath;
 
         $bin = [];
         if (is_array($json['bin'] ?? null)) {
@@ -118,20 +122,40 @@ final class Composer
         if (
             is_array($json['config'] ?? null)
             && is_string($json['config']['vendor-dir'] ?? null)
-            && trim($json['config']['vendor-dir'], '/') !== ''
         ) {
-            $vendorDir = trim($json['config']['vendor-dir'], '/');
+            $dir = trim($json['config']['vendor-dir'], '/');
+            if ($dir !== '') {
+                $vendorDir = $dir;
+            }
         }
         $this->vendorDir = self::join($projectRoot, $vendorDir);
 
         $projectAutoload = Reader::read(self::join($this->vendorDir, 'autoload.php'));
         $scipPhpAutoload = Reader::read(self::join($this->scipPhpVendorDir, 'autoload.php'));
         $autoloadDir = $projectAutoload === $scipPhpAutoload ? $this->scipPhpVendorDir : $this->vendorDir;
-        $this->loader = require self::join($autoloadDir, 'autoload.php');
+        $loader = require self::join($autoloadDir, 'autoload.php');
+        if (!$loader instanceof ClassLoader) {
+            throw new RuntimeException("Cannot get autoload.php class loader.");
+        }
+        $this->loader = $loader;
 
         $installed = require self::join($this->vendorDir, 'composer', 'installed.php');
-        $this->pkgName = $installed['root']['name'];
-        $this->pkgVersion = $installed['root']['reference'] ?? $installed['root']['version'];
+
+        if (!is_array($installed) || !is_array($installed['root'])) {
+            throw new RuntimeException("Cannot get root element from installed.php.");
+        }
+
+        $pkgName = $installed['root']['name'];
+        if (!is_string($pkgName) || $pkgName === '') {
+            throw new RuntimeException("Cannot get package name.");
+        }
+        $this->pkgName = $pkgName;
+
+        $pkgVersion = $installed['root']['reference'] ?? $installed['root']['version'];
+        if (!is_string($pkgVersion) || $pkgVersion === '') {
+            throw new RuntimeException("Cannot get package version.");
+        }
+        $this->pkgVersion = $pkgVersion;
 
         $additionalClasses = [];
         foreach ($this->projectFiles as $f) {
@@ -145,18 +169,23 @@ final class Composer
         $this->loader->addClassMap($additionalClasses);
 
         $pkgsByPaths = [];
-        foreach ($installed['versions'] as $name => $info) {
-            // Replaced packages do not have an install path.
-            // See https://getcomposer.org/doc/04-schema.md#replace
-            if (!isset($info['install_path'])) {
-                continue;
-            }
-            $path = realpath($info['install_path']);
-            if ($path === false) {
-                throw new RuntimeException("Invalid install path of package {$name}: {$info['install_path']}.");
-            }
-            if ($name !== $this->pkgName) {
-                $pkgsByPaths[$path] = ['name' => $name, 'version' => $info['reference']];
+        if (is_array($installed['versions'])) {
+            foreach ($installed['versions'] as $name => $info) {
+                if (!is_string($name) || $name === '') {
+                    continue;
+                }
+                // Replaced packages do not have an install path.
+                // See https://getcomposer.org/doc/04-schema.md#replace
+                if (!is_array($info) || !is_string($info['install_path'] ?? null)) {
+                    continue;
+                }
+                $path = realpath($info['install_path']);
+                if ($path === false) {
+                    throw new RuntimeException("Invalid install path of package {$name}: {$info['install_path']}.");
+                }
+                if ($name !== $this->pkgName && is_string($info['reference']) && $info['reference'] !== '') {
+                    $pkgsByPaths[$path] = ['name' => $name, 'version' => $info['reference']];
+                }
             }
         }
 
@@ -198,7 +227,7 @@ final class Composer
 
     /**
      * @param  non-empty-string  $filename
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     private function parseJson(string $filename): array
     {
@@ -211,18 +240,27 @@ final class Composer
     }
 
     /**
-     * @param  array<string, mixed>  $autoload
-     * @return list<non-empty-string>
+     * @param  array<array-key, mixed>  $autoload
+     * @return array<int, non-empty-string>
      */
     private function loadProjectFiles(array $autoload): array
     {
         $generator = new ClassMapGenerator();
         $exclusionRegex = null;
         if (is_array($autoload['exclude-from-classmap'] ?? null) && count($autoload['exclude-from-classmap']) > 0) {
-            $exclusionRegex = '{(' . implode('|', $autoload['exclude-from-classmap']) . ')}';
+            $exclusions = [];
+            foreach ($autoload['exclude-from-classmap'] as $e) {
+                if (is_string($e) && $e !== '') {
+                    $exclusions[] = $e;
+                }
+            }
+            $exclusionRegex = '{(' . implode('|', $exclusions) . ')}';
         }
         if (is_array($autoload['classmap'] ?? null)) {
             foreach ($autoload['classmap'] as $path) {
+                if (!is_string($path) || $path === '') {
+                    continue;
+                }
                 $p = self::join($this->projectRoot, $path);
                 $generator->scanPaths($p, $exclusionRegex);
             }
@@ -259,7 +297,7 @@ final class Composer
     }
 
     /**
-     * @param  list<string>  $paths
+     * @param  array<array-key, mixed>  $paths
      * @return list<non-empty-string>
      */
     private function collectPaths(array $paths): array
@@ -270,8 +308,9 @@ final class Composer
                 continue;
             }
             $p = self::join($this->projectRoot, $p);
-            if (realpath($p) !== false) {
-                $files[] = realpath($p);
+            $p = realpath($p);
+            if ($p !== false) {
+                $files[] = $p;
             }
         }
         return $files;
@@ -337,8 +376,11 @@ final class Composer
         }
 
         $f = $this->loader->findFile($ident);
-        if ($f !== false && realpath($f) !== false) {
-            return realpath($f);
+        if ($f !== false) {
+            $f = realpath($f);
+            if ($f !== false) {
+                return $f;
+            }
         }
 
         if (function_exists($ident)) {
@@ -470,22 +512,26 @@ final class Composer
 
         $files = get_included_files();
         foreach ($files as $f) {
-            if ($f === '' || realpath($f) === false) {
+            if ($f === '') {
+                continue;
+            }
+            $f = realpath($f);
+            if ($f === false) {
                 continue;
             }
 
             $content = Reader::read($f);
             if (preg_match($defineConstPattern, $content) === 1) {
-                return realpath($f);
+                return $f;
             }
             if (preg_match($assignConstPattern, $content) !== 1) {
                 continue;
             }
             if ($hasNs && preg_match($nsPattern, $content) === 1) {
-                return realpath($f);
+                return $f;
             }
             if (!$hasNs && preg_match($anyNsPattern, $content) === 0) {
-                return realpath($f);
+                return $f;
             }
         }
         return null;

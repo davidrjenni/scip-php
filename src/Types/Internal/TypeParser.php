@@ -228,7 +228,7 @@ final readonly class TypeParser
                 return $n;
             }
             $n = $n->getAttribute('parent');
-            if ($n === null) {
+            if (!$n instanceof Node) {
                 return null;
             }
         }
@@ -238,7 +238,7 @@ final readonly class TypeParser
     {
         while (true) {
             $n = $n->getAttribute('parent');
-            if ($n === null) {
+            if (!$n instanceof Node) {
                 return null;
             }
             if ($n instanceof Namespace_) {
