@@ -243,7 +243,7 @@ final readonly class SymbolNamer
     {
         while (true) {
             $n = $n->getAttribute('parent');
-            if ($n === null) {
+            if (!$n instanceof Node) {
                 return '';
             }
             if ($n instanceof Namespace_) {
@@ -274,7 +274,7 @@ final readonly class SymbolNamer
     {
         while (true) {
             $n = $n->getAttribute('parent');
-            if ($n === null) {
+            if (!$n instanceof Node) {
                 return null;
             }
             if ($n instanceof ClassLike) {
@@ -288,7 +288,7 @@ final readonly class SymbolNamer
     {
         while (true) {
             $n = $n->getAttribute('parent');
-            if ($n === null) {
+            if (!$n instanceof Node) {
                 return null;
             }
             if ($n instanceof FunctionLike) {

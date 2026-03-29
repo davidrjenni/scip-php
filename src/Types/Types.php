@@ -59,7 +59,7 @@ final class Types
 
     private readonly DocCommentParser $docCommentParser;
 
-    /** @var array<non-empty-string, array<int, non-empty-string>> */
+    /** @var array<non-empty-string, list<non-empty-string>> */
     private array $uppers;
 
     /** @var array<non-empty-string, ?Type> */
@@ -266,6 +266,9 @@ final class Types
             return null;
         }
         $name = $this->findDef($x, $t->flatten(), $name);
+        if ($name === null) {
+            return null;
+        }
         return $this->defs[$name] ?? null;
     }
 

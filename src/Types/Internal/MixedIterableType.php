@@ -8,7 +8,7 @@ use Override;
 
 final readonly class MixedIterableType implements IterableType
 {
-    /** @param  non-empty-array<int|string, Type>  $types */
+    /** @param  non-empty-array<array-key, Type>  $types */
     public function __construct(private array $types)
     {
     }
@@ -23,6 +23,9 @@ final readonly class MixedIterableType implements IterableType
     #[Override]
     public function valueType(int|string|null $key): ?Type
     {
+        if ($key === null) {
+            return null;
+        }
         return $this->types[$key] ?? null;
     }
 }
