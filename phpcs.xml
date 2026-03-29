@@ -383,6 +383,14 @@
 		</properties>
 	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.DNFTypeHintFormat">
+		<properties>
+			<property name="withSpacesAroundOperators" value="no"/>
+			<property name="withSpacesInsideParentheses" value="no"/>
+			<property name="shortNullable" value="yes"/>
+			<property name="nullPosition" value="last"/>
+		</properties>
+	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
 	<rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
 	<rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
@@ -391,13 +399,6 @@
 	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing"/>
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
-	<rule ref="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat">
-		<properties>
-			<property name="withSpaces" value="no"/>
-			<property name="shortNullable" value="yes"/>
-			<property name="nullPosition" value="last"/>
-		</properties>
-	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
 
 	<!-- Variables -->
