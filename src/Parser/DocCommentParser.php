@@ -15,6 +15,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 
 use function count;
 
@@ -26,11 +27,11 @@ final readonly class DocCommentParser
 
     public function __construct()
     {
-        $usedAttributes = ['lines' => true, 'indexes' => true];
-        $constExprParser = new ConstExprParser(usedAttributes: $usedAttributes);
-        $typeParser = new TypeParser($constExprParser, usedAttributes: $usedAttributes);
-        $this->parser = new PhpDocParser($typeParser, $constExprParser, usedAttributes: $usedAttributes);
-        $this->lexer = new Lexer();
+        $config = new ParserConfig(usedAttributes: ['lines' => true, 'indexes' => true]);
+        $this->lexer = new Lexer($config);
+        $constExprParser = new ConstExprParser($config);
+        $typeParser = new TypeParser($config, $constExprParser);
+        $this->parser = new PhpDocParser($config, $typeParser, $constExprParser);
     }
 
     public function parsePropertyType(Node $node): ?TypeNode
