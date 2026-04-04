@@ -82,6 +82,16 @@ final class Composer
         return implode(DIRECTORY_SEPARATOR, [$elem, ...$elems]);
     }
 
+    /** @return non-empty-string */
+    private static function trimPathSeparators(string $path): string
+    {
+        $trimmed = rtrim($path, '/\\');
+        if ($trimmed === '') {
+            return $path;
+        }
+        return $trimmed;
+    }
+
     /** @param  non-empty-string  $projectRoot */
     public function __construct(private readonly string $projectRoot)
     {
@@ -123,7 +133,7 @@ final class Composer
             is_array($json['config'] ?? null)
             && is_string($json['config']['vendor-dir'] ?? null)
         ) {
-            $dir = trim($json['config']['vendor-dir'], '/');
+            $dir = trim($json['config']['vendor-dir'], '/\\');
             if ($dir !== '') {
                 $vendorDir = $dir;
             }
@@ -136,6 +146,9 @@ final class Composer
         $loader = require self::join($autoloadDir, 'autoload.php');
         if (!$loader instanceof ClassLoader) {
             throw new RuntimeException("Cannot get autoload.php class loader.");
+        }
+        if ($autoloadDir !== $this->scipPhpVendorDir) {
+            $loader->unregister();
         }
         $this->loader = $loader;
 
@@ -279,7 +292,7 @@ final class Composer
                         continue;
                     }
                     $p = self::join($this->projectRoot, $path);
-                    $p = rtrim($p, DIRECTORY_SEPARATOR);
+                    $p = self::trimPathSeparators($p);
                     $generator->scanPaths($p, $exclusionRegex, $t, $ns);
                 }
             }

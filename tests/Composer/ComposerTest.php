@@ -6,6 +6,7 @@ namespace Tests\Composer;
 
 use Override;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use ScipPhp\Composer\Composer;
 
 use function count;
@@ -80,6 +81,16 @@ final class ComposerTest extends TestCase
         self::assertStringEndsWith(self::join($root, 'src', 'file2.php'), $files[2]);
         self::assertStringEndsWith(self::join($root, 'src', 'ClassA.php'), $files[3]);
         self::assertStringEndsWith(self::join($root, 'tests', 'ClassATestCase.php'), $files[4]);
+    }
+
+    public function testTrimPathSeparatorsSupportsBothSlashStyles(): void
+    {
+        $method = new ReflectionMethod(Composer::class, 'trimPathSeparators');
+
+        self::assertSame('foo/bar', $method->invoke(null, 'foo/bar/'));
+        self::assertSame('foo\\bar', $method->invoke(null, 'foo\\bar\\'));
+        self::assertSame('foo/bar', $method->invoke(null, 'foo/bar\\'));
+        self::assertSame('foo\\bar', $method->invoke(null, 'foo\\bar/'));
     }
 
     public function testIsDependency(): void
