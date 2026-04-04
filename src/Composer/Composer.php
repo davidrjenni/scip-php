@@ -92,6 +92,27 @@ final class Composer
         return $trimmed;
     }
 
+    /** @return ?non-empty-string */
+    private static function discoverScipPhpVendorDir(): ?string
+    {
+        $packageRoot = self::join(__DIR__, '..', '..');
+        $candidates = [
+            self::join($packageRoot, 'vendor'),
+            self::join($packageRoot, '..', '..'),
+        ];
+        foreach ($candidates as $candidate) {
+            $autoload = self::join($candidate, 'autoload.php');
+            if (!is_file($autoload)) {
+                continue;
+            }
+            $realPath = realpath($candidate);
+            if ($realPath !== false) {
+                return $realPath;
+            }
+        }
+        return null;
+    }
+
     /** @param  non-empty-string  $projectRoot */
     public function __construct(private readonly string $projectRoot)
     {
@@ -99,8 +120,8 @@ final class Composer
         $autoload = is_array($json['autoload'] ?? null) ? $json['autoload'] : [];
         $autoloadDev = is_array($json['autoload-dev'] ?? null) ? $json['autoload-dev'] : [];
 
-        $scipPhpVendorDir = self::join(__DIR__, '..', '..', 'vendor');
-        if (realpath($scipPhpVendorDir) === false) {
+        $scipPhpVendorDir = self::discoverScipPhpVendorDir();
+        if ($scipPhpVendorDir === null) {
             // If the vendor directory relative to this file is not found, scip-php probably runs as a
             // dev dependency of the project that it analyses and shares the vendor directory with it.
             $cwd = getcwd();

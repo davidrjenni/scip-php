@@ -93,6 +93,16 @@ final class ComposerTest extends TestCase
         self::assertSame('foo\\bar', $method->invoke(null, 'foo\\bar/'));
     }
 
+    public function testDiscoverScipPhpVendorDirFindsOwnVendorDirectory(): void
+    {
+        $method = new ReflectionMethod(Composer::class, 'discoverScipPhpVendorDir');
+        $vendorDir = $method->invoke(null);
+
+        self::assertIsString($vendorDir);
+        self::assertStringEndsWith(self::join('vendor'), $vendorDir);
+        self::assertFileExists(self::join($vendorDir, 'autoload.php'));
+    }
+
     public function testIsDependency(): void
     {
         foreach ([...self::BUILTIN, ...self::DEPS, ...self::UNKNOWN] as $idents) {
