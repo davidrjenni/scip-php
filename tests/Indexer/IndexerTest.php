@@ -7,6 +7,7 @@ namespace Tests\Indexer;
 use Override;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ScipPhp\File\Reader;
@@ -89,6 +90,17 @@ final class IndexerTest extends TestCase
 
             self::assertSame($golden, $actual);
         }
+    }
+
+    public function testRelativePathNormalizesWindowsSeparators(): void
+    {
+        $indexer = new Indexer(self::TESTDATA_DIR . 'scip-php-test', 'test', []);
+        $method = new ReflectionMethod(Indexer::class, 'relativePath');
+
+        self::assertSame(
+            'src/Foo.php',
+            $method->invoke($indexer, self::TESTDATA_DIR . 'scip-php-test\\src\\Foo.php'),
+        );
     }
 
     /** @return array<non-empty-string, non-empty-string> */
