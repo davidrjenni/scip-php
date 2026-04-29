@@ -40,7 +40,7 @@
         "composer-runtime-api": "^2.2",
         "composer/class-map-generator": "^1.0",
         "google/protobuf": "^5.34",
-        "jetbrains/phpstorm-stubs": "^2025.3",
+        "jetbrains/phpstorm-stubs": "^2026.1",
         "nikic/php-parser": "^5.0",
         "phpstan/phpdoc-parser": "^2.3"
     },
