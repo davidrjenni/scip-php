@@ -1,0 +1,144 @@
+name: Release scip-php phar to argosbrain CDN
+
+# Triggered on tag push (vX.Y.Z) or manual dispatch. Builds a
+# self-contained .phar from this repo (CataDef fork — patches stack
+# on top of upstream davidrjenni/scip-php) and uploads it to the
+# argosbrain Cloudflare R2 bucket so the argosbrain CLI can pull it
+# from https://bundles.argosbrain.com/indexers/scip-php/<tag>/scip-php.phar
+# without touching upstream releases.
+#
+# Required repository secrets (configure once at
+# Settings → Secrets and variables → Actions):
+#   R2_ACCOUNT_ID
+#   R2_ACCESS_KEY_ID
+#   R2_SECRET_ACCESS_KEY
+#   R2_BUCKET
+#
+# All four come from the same Cloudflare R2 bucket the
+# `CataDef/neurogenesis` repo uses for stdlib bundles
+# (build-stdlib-bundles.yml) — same values, just copied across.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.0). Required for manual runs.'
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-upload:
+    name: Build phar + upload to R2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF##*/}"
+          fi
+          if [ -z "$TAG" ]; then
+            echo "::error::could not resolve release tag"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $TAG"
+
+      - name: Install PHP 8.3 + composer + box
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2, box
+          extensions: json, mbstring
+          ini-values: phar.readonly=Off, memory_limit=2G
+
+      - name: Install composer dependencies (no dev)
+        run: |
+          composer install \
+            --no-interaction \
+            --no-progress \
+            --no-dev \
+            --optimize-autoloader \
+            --prefer-dist
+
+      - name: Compile phar with Box
+        run: |
+          set -e
+          mkdir -p build
+          box compile -v
+          test -f build/scip-php.phar
+          chmod +x build/scip-php.phar
+
+      - name: Smoke-test the phar
+        run: |
+          set -e
+          ls -lh build/scip-php.phar
+          # The phar should print its help when invoked with --help;
+          # exit code 0 means the autoloader + entry point are wired
+          # correctly inside the phar.
+          php build/scip-php.phar --help
+
+      - name: Install rclone for R2 upload
+        run: curl -fsSL https://rclone.org/install.sh | sudo bash
+
+      - name: Configure rclone for Cloudflare R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          set -e
+          mkdir -p ~/.config/rclone
+          cat > ~/.config/rclone/rclone.conf <<EOF
+          [r2]
+          type = s3
+          provider = Cloudflare
+          access_key_id = $R2_ACCESS_KEY_ID
+          secret_access_key = $R2_SECRET_ACCESS_KEY
+          endpoint = https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com
+          acl = private
+          # R2 API tokens scoped to "Object Read & Write" reject
+          # rclone's pre-flight CreateBucket call; skip it (bucket
+          # is created once during operator setup).
+          no_check_bucket = true
+          EOF
+
+      - name: Upload phar to R2 (tagged + latest)
+        env:
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -e
+          echo "Uploading scip-php.phar to r2://${R2_BUCKET}/indexers/scip-php/${TAG}/"
+          rclone copyto build/scip-php.phar \
+            "r2:${R2_BUCKET}/indexers/scip-php/${TAG}/scip-php.phar" --progress
+          # `latest` alias for the argosbrain CLI auto-install path
+          # — pulled by /indexers/scip-php/latest/scip-php.phar when
+          # no specific version is requested.
+          rclone copyto build/scip-php.phar \
+            "r2:${R2_BUCKET}/indexers/scip-php/latest/scip-php.phar" --progress
+
+      - name: Upload phar as workflow artifact (debug/inspect)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scip-php-phar-${{ steps.tag.outputs.tag }}
+          path: build/scip-php.phar
+          retention-days: 30
+          if-no-files-found: error

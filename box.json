@@ -1,0 +1,11 @@
+{
+    "main": "bin/scip-php",
+    "output": "build/scip-php.phar",
+    "compression": "GZ",
+    "chmod": "0755",
+    "directories": ["src"],
+    "banner": false,
+    "shebang": "#!/usr/bin/env php",
+    "exclude-composer-files": false,
+    "check-requirements": true
+}
