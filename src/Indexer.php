@@ -17,6 +17,8 @@ use ScipPhp\Types\Types;
 
 use function array_values;
 use function str_replace;
+use function str_starts_with;
+use function substr;
 
 final readonly class Indexer
 {
@@ -57,6 +59,18 @@ final readonly class Indexer
         $this->types = new Types($this->composer, $this->namer);
     }
 
+    /** @return non-empty-string */
+    private function relativePath(string $filename): string
+    {
+        $normalizedProjectRoot = str_replace('\\', '/', $this->projectRoot);
+        $normalizedFilename = str_replace('\\', '/', $filename);
+        $prefix = $normalizedProjectRoot . '/';
+        if (str_starts_with($normalizedFilename, $prefix)) {
+            return substr($normalizedFilename, \strlen($prefix));
+        }
+        return $normalizedFilename;
+    }
+
     public function index(): Index
     {
         $projectFiles = $this->composer->projectFiles();
@@ -69,7 +83,7 @@ final readonly class Indexer
             $this->parser->traverse($filename, $indexer, $indexer->index(...));
             $documents[] = new Document([
                 'language'          => Language::PHP,
-                'relative_path'     => str_replace($this->projectRoot . '/', '', $filename),
+                'relative_path'     => $this->relativePath($filename),
                 'occurrences'       => $indexer->occurrences,
                 'symbols'           => array_values($indexer->symbols),
                 'position_encoding' => PositionEncoding::UTF8CodeUnitOffsetFromLineStart,
